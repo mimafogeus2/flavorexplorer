@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flavor Explorer</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#211a16; --bg-2:#2a221d; --ink:#efe7dd; --ink-dim:#b3a598;
+  --radius:12px;
+  --display:"Fraunces", Georgia, serif;
+  --body:system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box; margin:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--body);
+  display:flex; flex-direction:column; min-height:100dvh;
+}
+header{
+  display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
+  padding:1.1rem 1.4rem .6rem;
+}
+.wordmark{font-family:var(--display); font-weight:600; font-size:1.25rem; letter-spacing:.01em}
+.wordmark em{font-style:italic; color:var(--ink-dim)}
+.seg{display:flex; border:1px solid #4a3d33; border-radius:999px; overflow:hidden}
+.seg button{
+  font:inherit; font-size:.8rem; padding:.35rem .9rem; border:0; cursor:pointer;
+  background:transparent; color:var(--ink-dim);
+}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg); font-weight:600}
+
+#strata{display:flex; flex-direction:column}
+.stratum{
+  display:flex; align-items:center; gap:.7rem; width:100%; border:0; cursor:pointer;
+  padding:.5rem 1.4rem; font:inherit; text-align:left;
+  animation:drop .25s ease both;
+}
+.stratum .lbl{font-family:var(--display); font-weight:600; font-size:1rem}
+.stratum.home{background:var(--bg-2); color:var(--ink-dim); border-bottom:1px solid #453a31}
+.stratum.home .lbl{font-size:.85rem; font-weight:500; font-style:italic}
+.stratum .hint{margin-left:auto; font-size:.75rem; opacity:0; transition:opacity .15s}
+.stratum:hover .hint, .stratum:focus-visible .hint{opacity:.8}
+@keyframes drop{from{transform:translateY(-8px); opacity:0}}
+
+main{flex:1; display:flex; flex-direction:column; padding:1rem 1.4rem 2rem; max-width:1100px; width:100%; margin:0 auto}
+.prompt{
+  font-family:var(--display); font-weight:500; font-size:clamp(1.6rem,4vw,2.4rem);
+  margin:.8rem 0 1.2rem; letter-spacing:-.01em;
+}
+.prompt small{display:block; font-family:var(--body); font-size:.85rem; color:var(--ink-dim); margin-top:.35rem; letter-spacing:0}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:.7rem}
+.tile{
+  position:relative; aspect-ratio:1; border:0; border-radius:var(--radius); cursor:pointer;
+  padding:.8rem; display:flex; align-items:flex-end; text-align:left; overflow:hidden;
+  font:inherit; animation:pop .3s ease both;
+  transition:transform .15s ease, filter .15s ease;
+}
+.tile:hover{transform:translateY(-3px) scale(1.015); filter:brightness(1.08)}
+.tile:active{transform:scale(.98)}
+.tile .lbl{font-family:var(--display); font-weight:600; font-size:1.05rem; line-height:1.15}
+.tile .count{
+  position:absolute; top:.6rem; right:.7rem; font-size:.72rem; opacity:.65; font-variant-numeric:tabular-nums;
+}
+@keyframes pop{from{transform:translateY(10px); opacity:0}}
+
+/* cards mode */
+.stage{flex:1; display:flex; align-items:center; justify-content:center; gap:1rem; min-height:0}
+.nav{
+  font:inherit; font-size:1.6rem; width:2.6rem; height:2.6rem; border-radius:50%;
+  border:1px solid #4a3d33; background:transparent; color:var(--ink); cursor:pointer; flex:none;
+}
+.nav:hover{background:var(--bg-2)}
+.card-wrap{width:min(78vw,360px,36dvh); touch-action:pan-y}
+.card{
+  position:relative; width:100%; aspect-ratio:3/4; border:0; border-radius:20px; cursor:pointer;
+  padding:1.4rem; display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-start;
+  text-align:left; overflow:hidden; font:inherit; will-change:transform;
+  box-shadow:0 18px 40px rgba(0,0,0,.4);
+}
+.card .lbl{font-family:var(--display); font-weight:600; font-size:2rem; line-height:1.05}
+.card .sub{font-size:.8rem; margin-top:.5rem; opacity:.75}
+.card .count{position:absolute; top:1rem; right:1.1rem; font-size:.8rem; opacity:.65}
+.card.in-l{animation:inL .22s ease both} .card.in-r{animation:inR .22s ease both}
+@keyframes inL{from{transform:translateX(-40px); opacity:0}}
+@keyframes inR{from{transform:translateX(40px); opacity:0}}
+.counter{text-align:center; color:var(--ink-dim); font-size:.85rem; margin-top:1rem; font-variant-numeric:tabular-nums}
+
+/* leaf terminal view */
+.leaf{
+  margin:auto; width:min(85vw,420px); aspect-ratio:4/3; border-radius:20px; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end; padding:1.6rem;
+  box-shadow:0 18px 40px rgba(0,0,0,.4); animation:pop .3s ease both;
+}
+.leaf .lbl{font-family:var(--display); font-weight:700; font-size:2.6rem}
+.leaf-note{text-align:center; color:var(--ink-dim); font-size:.85rem; margin-top:1.2rem}
+
+button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wordmark">Flavor <em>Explorer</em></div>
+  <div class="seg" role="group" aria-label="View mode">
+    <button id="mGrid" aria-pressed="true">Grid</button>
+    <button id="mCards" aria-pressed="false">Cards</button>
+  </div>
+</header>
+<nav id="strata" aria-label="Tasting path"></nav>
+<main id="main"></main>
+
+<script>
+// ---------- data: families carry a color; deeper colors are derived ----------
+const DATA = {
+Coffee:{color:'#8a5a3b',subs:{
+  Fruity:{color:'#c93a4b',subs:{
+    Berry:['Blackberry','Raspberry','Blueberry','Strawberry','Blackcurrant','Cranberry','Elderberry','Mulberry'],
+    'Dried Fruit':['Raisin','Prune','Fig','Date','Dried Apricot','Tamarind','Golden Raisin'],
+    Citrus:['Lemon','Lime','Orange','Grapefruit','Bergamot','Mandarin','Blood Orange','Yuzu'],
+    'Stone Fruit':['Cherry','Peach','Apricot','Nectarine','Plum','Black Cherry'],
+    Orchard:['Apple','Pear','Quince','Green Apple','Red Apple'],
+    Tropical:['Pineapple','Mango','Papaya','Passion Fruit','Coconut','Lychee','Guava','Melon','Banana']}},
+  Floral:{color:'#d886a2',subs:{
+    Flowers:['Jasmine','Rose','Chamomile','Lavender','Hibiscus','Orange Blossom','Elderflower','Honeysuckle','Magnolia'],
+    'Tea-like':['Black Tea','Earl Grey','Green Tea','Oolong','Rooibos']}},
+  Sweet:{color:'#dfa04a',subs:{
+    Caramelized:['Caramel','Toffee','Butterscotch','Brown Sugar','Dulce de Leche','Burnt Caramel'],
+    Sugars:['Honey','Molasses','Maple Syrup','Golden Syrup','Cane Sugar','Panela','Demerara'],
+    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Meringue']}},
+  'Nutty & Cocoa':{color:'#a06a3c',subs:{
+    Nutty:['Almond','Hazelnut','Peanut','Walnut','Pecan','Cashew','Macadamia','Pistachio','Brazil Nut'],
+    Cocoa:['Dark Chocolate','Milk Chocolate','Cacao Nibs','Cocoa Powder',"Baker's Chocolate",'Mocha']}},
+  Spices:{color:'#9c4436',subs:{
+    Warming:['Cinnamon','Nutmeg','Clove','Ginger','Allspice','Cassia','Gingerbread'],
+    Pungent:['Black Pepper','Anise','Cardamom','Coriander Seed','Licorice','Juniper','Szechuan Pepper']}},
+  Roasted:{color:'#6b4a34',subs:{
+    Cereal:['Grain','Malt','Toast','Graham Cracker','Brown Rice','Oatmeal','Barley','Fresh Bread'],
+    Burnt:['Smoky','Ashy','Charred','Acrid','Burnt Toast','Roasted Chicory','Carbon'],
+    Tobacco:['Pipe Tobacco','Fresh Tobacco','Cigar']}},
+  'Green & Vegetal':{color:'#5c8a4e',subs:{
+    Vegetal:['Green Bell Pepper','Fresh Grass','Olive','Cucumber','Zucchini','Green Tomato','Kale'],
+    Beany:['Raw Peanut','Snow Pea','Fresh Bean','Green Bean','Soybean'],
+    'Herb-like':['Dill','Hay','Sage','Thyme','Mint','Fennel']}},
+  'Sour & Fermented':{color:'#b3ad42',subs:{
+    Sour:['Citric','Malic','Tartaric','Winey','Acetic','Lactic','Sour Cherry','Lemon Juice'],
+    Fermented:['Overripe Fruit','Boozy','Whiskey-like','Kombucha-like','Rum-like','Sourdough','Cider']}},
+  Other:{color:'#6e7f92',subs:{
+    'Papery & Musty':['Cardboard','Musty','Earthy','Woody','Stale','Damp Wood','Old Books'],
+    Chemical:['Rubber','Medicinal','Petroleum','Salty','Skunky','Gasoline']}}}},
+Tea:{color:'#6f9a55',subs:{
+  Floral:{color:'#d98aa8',subs:{
+    'White Florals':['Jasmine','Honeysuckle','Gardenia','Lily','Magnolia','Orange Blossom'],
+    'Rich Florals':['Rose','Orchid','Lilac','Peony','Narcissus','Ylang-Ylang'],
+    Wildflower:['Chrysanthemum','Osmanthus','Chamomile','Dandelion','Marigold','Elderflower']}},
+  Fruity:{color:'#c94f42',subs:{
+    Citrus:['Bergamot','Lemon','Yuzu','Orange Peel','Grapefruit','Mandarin'],
+    Orchard:['Apple','Pear','Quince','Green Apple','White Grape'],
+    'Stone Fruit':['Apricot','Peach','Plum','Nectarine','Cherry'],
+    Tropical:['Lychee','Mango','Pineapple','Passion Fruit','Coconut','Papaya'],
+    Berry:['Strawberry','Raspberry','Goji','Blackcurrant','Cranberry'],
+    Dried:['Raisin','Date','Dried Apricot','Prune','Longan']}},
+  Vegetal:{color:'#5e9151',subs:{
+    Grassy:['Fresh Grass','Hay','Straw','Bamboo Leaf','Wheatgrass','Nettle'],
+    'Green Veg':['Spinach','Asparagus','Artichoke','Edamame','Snow Pea','Bok Choy','Zucchini'],
+    Herbaceous:['Mint','Basil','Sage','Lemongrass','Thyme','Dill','Eucalyptus']}},
+  Marine:{color:'#4d7f8c',subs:{
+    Oceanic:['Seaweed','Kelp','Brine','Oyster Shell','Sea Air']}},
+  'Nutty & Toasty':{color:'#a97e4a',subs:{
+    Nuts:['Chestnut','Almond','Walnut','Hazelnut','Pecan','Pine Nut','Peanut'],
+    Toasted:['Toast','Roasted Grain','Toasted Rice','Popcorn','Baked Bread','Biscuit','Barley Tea']}},
+  Sweet:{color:'#d9a441',subs:{
+    Honeyed:['Honey','Nectar','Honeycomb','Beeswax','Maple'],
+    Caramelized:['Caramel','Brown Sugar','Malt','Toffee','Molasses'],
+    Confection:['Vanilla','Cocoa','Marzipan','Custard','Chocolate']}},
+  'Savory & Milky':{color:'#b9a06a',subs:{
+    Umami:['Broth','Nori','Miso','Dashi','Mushroom'],
+    Milky:['Cream','Butter','Milk Oolong','Condensed Milk','Coconut Milk']}},
+  Smoky:{color:'#6e5a4a',subs:{
+    Smoke:['Pine Smoke','Bonfire','Tar','Gunpowder','Campfire','Smoked Wood','Charcoal']}},
+  Earthy:{color:'#7a6353',subs:{
+    Soil:['Wet Earth','Forest Floor','Petrichor','Loam','Compost','Moss'],
+    Aged:['Leather','Tobacco','Autumn Leaves','Camphor','Betel','Old Wood'],
+    Mineral:['Wet Stone','Flint','Slate','River Stone','Chalk']}},
+  Spiced:{color:'#9a5236',subs:{
+    Warm:['Cinnamon','Clove','Ginger','Anise','Cardamom','Nutmeg','Black Pepper'],
+    Woody:['Cedar','Pine','Sandalwood','Bamboo','Cypress']}}}},
+Wine:{color:'#8e3a52',subs:{
+  Fruity:{color:'#b83a52',subs:{
+    'Red Fruit':['Cherry','Strawberry','Raspberry','Red Currant','Cranberry','Pomegranate','Red Plum','Wild Strawberry'],
+    'Dark Fruit':['Blackberry','Black Cherry','Plum','Cassis','Mulberry','Blueberry','Damson'],
+    Citrus:['Lemon','Lime','Grapefruit','Orange Zest','Tangerine','Marmalade','Preserved Lemon'],
+    'Orchard & Stone':['Green Apple','Pear','Peach','Apricot','Nectarine','Quince','White Peach','Yellow Apple'],
+    Tropical:['Pineapple','Melon','Lychee','Passion Fruit','Guava','Mango','Banana','Kiwi'],
+    Dried:['Raisin','Fig','Prune','Dried Cranberry','Date','Fruitcake','Dried Apricot']}},
+  Floral:{color:'#cf7fa4',subs:{
+    'Blue Florals':['Violet','Lavender','Iris','Hyacinth'],
+    'White Florals':['Elderflower','Orange Blossom','Acacia','Honeysuckle','Jasmine','Chamomile'],
+    Rose:['Rose','Potpourri','Dried Rose','Turkish Delight']}},
+  Herbal:{color:'#61905b',subs:{
+    Green:['Bell Pepper','Grass','Tomato Leaf','Jalapeño','Gooseberry','Boxwood','Asparagus'],
+    'Dried Herb':['Eucalyptus','Mint','Thyme','Bay Leaf','Sage','Rosemary','Tea Leaf','Dill']}},
+  Spice:{color:'#99503a',subs:{
+    'Sweet Spice':['Cinnamon','Clove','Anise','Nutmeg','Vanilla','Ginger'],
+    Pungent:['Black Pepper','Licorice','White Pepper','Juniper','Cardamom']}},
+  'Earth & Mineral':{color:'#7d6a58',subs:{
+    Earth:['Forest Floor','Mushroom','Truffle','Wet Leaves','Potting Soil','Beetroot'],
+    Mineral:['Wet Stone','Chalk','Flint','Saline','Slate','Petrichor','Crushed Rock']}},
+  Oak:{color:'#8a6134',subs:{
+    Barrel:['Vanilla','Coconut','Cedar','Sandalwood','Baking Spices','Dill'],
+    Char:['Toast','Smoke','Espresso','Charred Wood','Coffee Grounds','Caramel']}},
+  Microbial:{color:'#b48e58',subs:{
+    Yeast:['Brioche','Sourdough','Bread Dough','Biscuit','Lager'],
+    Dairy:['Butter','Cream','Yogurt','Cheese Rind'],
+    Wild:['Barnyard','Musk','Horse Blanket','Band-Aid','Game']}},
+  Aged:{color:'#6e5a6e',subs:{
+    Tertiary:['Leather','Tobacco','Cocoa','Cigar Box','Dried Leaves'],
+    Oxidative:['Walnut','Caramel','Bruised Apple','Toffee','Sherry','Roasted Nuts'],
+    Petrol:['Petrol','Beeswax','Kerosene','Lanolin','Rubber']}},
+  Faults:{color:'#8c8272',subs:{
+    'Cork & Must':['Musty Cork','Wet Newspaper','Damp Basement','Wet Cardboard','Wet Dog'],
+    Volatile:['Vinegar','Nail Polish','Acetone','Balsamic'],
+    Reduction:['Struck Match','Rotten Egg','Burnt Rubber','Garlic','Boiled Cabbage']}}}},
+Beer:{color:'#c08a3e',subs:{
+  Malty:{color:'#b07a3e',subs:{
+    Bready:['Bread Crust','Biscuit','Dough','Cracker','Toast','Wheat','Grainy'],
+    Caramelized:['Caramel','Toffee','Burnt Sugar','Brown Sugar','Bread Pudding'],
+    Roasted:['Coffee','Chocolate','Burnt Toast','Espresso','Dark Chocolate','Ash','Smoke']}},
+  Hoppy:{color:'#6a9a3f',subs:{
+    Citrus:['Grapefruit','Orange Peel','Lime Zest','Lemon','Tangerine','Yuzu'],
+    Tropical:['Mango','Passion Fruit','Guava','Lychee','Pineapple','Papaya','Melon','Coconut'],
+    'Stone Fruit':['Apricot','Peach','Nectarine','Cherry'],
+    Piney:['Pine Resin','Spruce','Juniper','Fir','Sap'],
+    'Dank & Resinous':['Resin','Weedy','Catty','Garlic-Onion','Sticky Resin'],
+    'Floral & Herbal':['Floral','Grassy','Noble','Lavender','Chamomile','Mint','Tea']}},
+  Fermentation:{color:'#c9a13e',subs:{
+    Esters:['Banana','Pear','Apple','Stone Fruit','Bubblegum','Strawberry','Pear Drops','Red Apple'],
+    'Spicy Phenols':['Clove','White Pepper','Nutmeg','Allspice','Cinnamon'],
+    Yeast:['Doughy','Brioche','Fresh Yeast','Biscuity']}},
+  'Sour & Funky':{color:'#a8b04a',subs:{
+    Tart:['Lemon','Green Apple','Vinegar','Sour Cherry','Gooseberry','Lactic Tang','Kiwi'],
+    Funk:['Barnyard','Hay','Earthy','Horse Blanket','Musty Cellar','Goaty']}},
+  Adjuncts:{color:'#c9825e',subs:{
+    'Sweet Additions':['Vanilla','Coconut','Honey','Lactose','Maple','Marshmallow','Chocolate','Peanut Butter'],
+    Fruited:['Cherry','Raspberry','Apricot','Passion Fruit','Blackberry','Peach','Guava'],
+    Spiced:['Coriander','Orange Peel','Pumpkin Spice','Cinnamon','Ginger','Chili','Grains of Paradise']}},
+  'Off-Flavors':{color:'#7f8b7a',subs:{
+    Buttery:['Diacetyl','Movie Popcorn','Butterscotch','Rancid Butter'],
+    Vegetal:['Cooked Corn','Cabbage','Celery','Tomato Juice','Cooked Vegetables'],
+    Stale:['Cardboard','Skunky','Papery','Sherry-like','Wet Dog','Leathery','Metallic']}}}},
+Whiskey:{color:'#b0722e',subs:{
+  Cereal:{color:'#b5893f',subs:{
+    Grain:['Malted Barley','Corn','Rye Bread','Oatmeal','Wheat','Cornbread','Cooked Mash'],
+    Baked:['Biscuit','Porridge','Bran','Shortbread','Toasted Bread','Pastry']}},
+  Fruity:{color:'#c05548',subs:{
+    Orchard:['Apple','Pear','Green Apple','Banana','Baked Apple','Pear Drop','Quince'],
+    Dried:['Raisin','Fig','Date','Prune','Sultana','Dried Apricot'],
+    Citrus:['Orange Peel','Lemon','Marmalade','Lime','Grapefruit','Candied Peel']}},
+  'Floral & Grassy':{color:'#8fa050',subs:{
+    Floral:['Heather','Rose Water','Elderflower','Geranium','Violet'],
+    Grassy:['Cut Grass','Hay','Straw','Herb Garden','Fern']}},
+  'Peaty & Smoky':{color:'#5d6360',subs:{
+    Smoke:['Bonfire','Tar','Creosote','Peat Smoke','Ash','Charcoal','Smoked Fish'],
+    Medicinal:['Iodine','Antiseptic','Sea Spray','TCP','Bandages','Carbolic Soap']}},
+  Woody:{color:'#7c5230',subs:{
+    Oak:['Vanilla','Coconut','Cedar','Sawdust','Sandalwood','Pencil Shavings'],
+    Char:['Toasted Oak','Espresso','Dark Chocolate','Burnt Sugar','Molasses','Campfire Embers']}},
+  'Winey & Sherried':{color:'#7e4a5e',subs:{
+    Fortified:['Sherry','Port','Madeira','Marsala','Red Wine','Rancio'],
+    Rich:['Fruitcake','Walnut','Christmas Cake','Marzipan','Treacle','Stewed Fruit']}},
+  Feinty:{color:'#8a6a52',subs:{
+    Leathery:['Leather','Tobacco Pouch','Old Books','Saddle','Cigar Box'],
+    Waxy:['Beeswax','Candle Wax','Plasticine','Furniture Polish','Putty']}},
+  Sulphury:{color:'#6b7069',subs:{
+    Sulphur:['Struck Match','Rubber','Meaty','Cabbage Water','Gunpowder','Spent Fireworks']}},
+  'Sweet & Spice':{color:'#c08a3e',subs:{
+    Sweet:['Honey','Caramel','Butterscotch','Maple','Golden Syrup','Vanilla Fudge','Toffee Apple'],
+    Spice:['Cinnamon','Clove','Black Pepper','Ginger','Nutmeg','Anise','White Pepper','Chili Warmth']}}}},
+Chocolate:{color:'#6f4a35',subs:{
+  Cocoa:{color:'#6f4a35',subs:{
+    'Pure Cocoa':['Cacao Nib','Dark Cocoa','Cocoa Powder','Bitter Cocoa','Roasted Cacao'],
+    Baked:['Brownie','Fudge','Chocolate Cake','Biscuit','Pastry']}},
+  Fruity:{color:'#bd4a52',subs:{
+    Berry:['Raspberry','Cherry','Blackcurrant','Strawberry','Blueberry','Cranberry'],
+    Citrus:['Orange','Bergamot','Lemon','Lime','Grapefruit'],
+    'Stone Fruit':['Apricot','Plum','Peach','Black Cherry'],
+    Tropical:['Banana','Passion Fruit','Coconut','Mango','Pineapple','Lychee'],
+    Dried:['Raisin','Fig','Prune','Date','Dried Cherry']}},
+  Floral:{color:'#cd85a4',subs:{
+    Flowers:['Jasmine','Orange Blossom','Rose','Violet','Lavender','Honeysuckle','Elderflower']}},
+  Nutty:{color:'#a3763f',subs:{
+    Nuts:['Hazelnut','Almond','Peanut','Walnut','Pecan','Macadamia','Chestnut'],
+    Confection:['Marzipan','Praline','Nougat','Gianduja','Peanut Butter']}},
+  'Caramel & Dairy':{color:'#cf9a4a',subs:{
+    Caramelized:['Caramel','Toffee','Butterscotch','Honey','Brown Sugar','Dulce de Leche','Burnt Caramel'],
+    Dairy:['Cream','Butter','Malted Milk','Yogurt','Condensed Milk','Milk Powder']}},
+  Spiced:{color:'#94502f',subs:{
+    Warm:['Cinnamon','Nutmeg','Clove','Ginger','Cardamom','Allspice'],
+    Bold:['Licorice','Black Pepper','Chili','Smoked Chili','Anise','Tobacco']}},
+  'Vegetal & Fresh':{color:'#7a9a5e',subs:{
+    Green:['Grass','Green Tea','Olive','Cut Grass','Cucumber','Matcha'],
+    Fresh:['Mint','Eucalyptus','Menthol','Pine']}},
+  'Earthy & Roasted':{color:'#66594a',subs:{
+    Earth:['Mushroom','Forest Floor','Wet Earth','Moss','Truffle','Damp Soil'],
+    Roast:['Coffee','Toast','Smoke','Espresso','Charred Wood','Burnt Toast']}}}},
+Cider:{color:'#b8552e',subs:{
+  Fruity:{color:'#c05548',subs:{
+    Apple:['Fresh Apple','Baked Apple','Apple Skin','Bruised Apple','Green Apple','Red Apple','Apple Juice','Cooked Apple'],
+    Orchard:['Pear','Quince','Stone Fruit','Apricot','White Grape','Gooseberry'],
+    Citrus:['Lemon','Orange Zest','Grapefruit','Lime']}},
+  'Floral & Honey':{color:'#d9a441',subs:{
+    Floral:['Apple Blossom','Elderflower','Meadow','Honeysuckle','Rose','Dandelion'],
+    Honeyed:['Honey','Beeswax','Honeycomb','Mead-like','Nectar']}},
+  'Funky & Wild':{color:'#a8a03e',subs:{
+    Wild:['Barnyard','Horse Blanket','Hay','Musty Cellar','Wet Wool','Earthy Funk'],
+    Sharp:['Cider Vinegar','Sour Apple','Lactic','Sherbet','Lemon Sour','Acetic Tang']}},
+  'Tannic & Woody':{color:'#8a6134',subs:{
+    Tannin:['Skin Tannin','Black Tea','Walnut','Grape Skin','Strong Tea','Crabapple'],
+    Woody:['Oak','Cedar','Toasted Oak','Vanilla Oak','Pencil Shavings']}},
+  Spiced:{color:'#94502f',subs:{
+    Warm:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Star Anise'],
+    Earthy:['Leather','Smoke','Tobacco','Forest Floor','Mushroom']}}}},
+Rum:{color:'#7d4526',subs:{
+  'Sweet & Caramel':{color:'#b4762e',subs:{
+    Sugars:['Molasses','Brown Sugar','Caramel','Demerara','Burnt Sugar','Maple Syrup','Golden Syrup'],
+    Confection:['Vanilla','Toffee','Honey','Fudge','Marzipan','Nougat','Crème Brûlée','Butterscotch']}},
+  Fruity:{color:'#c05548',subs:{
+    Tropical:['Banana','Pineapple','Coconut','Mango','Papaya','Guava','Passion Fruit','Plantain'],
+    Dried:['Raisin','Date','Fig','Prune','Dried Apricot','Fruitcake','Tamarind'],
+    Citrus:['Orange Peel','Lime','Grapefruit','Candied Orange','Lemon Zest']}},
+  'Funky & Estery':{color:'#a8a03e',subs:{
+    Esters:['Overripe Banana','Bruised Pineapple','Varnish','Nail Polish','Pear Drops','Bubblegum'],
+    Hogo:['Barnyard','Olive Brine','Briny','Overripe Mango','Blue Cheese','Wet Rope']}},
+  Spice:{color:'#94502f',subs:{
+    Baking:['Cinnamon','Nutmeg','Allspice','Clove','Star Anise','Cardamom','Ginger'],
+    Pungent:['Black Pepper','Ginger','Anise','Chili','White Pepper','Licorice']}},
+  'Oak & Aged':{color:'#7c5230',subs:{
+    Barrel:['Vanilla','Toasted Oak','Coconut','Char','Cedar','Sawdust','Smoke'],
+    Mature:['Tobacco','Leather','Coffee','Dark Chocolate','Old Leather','Cigar','Espresso']}}}},
+Gin:{color:'#5f8f7a',subs:{
+  'Juniper & Pine':{color:'#4f7a52',subs:{
+    Conifer:['Juniper Berry','Pine Needle','Resin','Camphor','Spruce Tip','Fir','Cypress','Pine Sap']}},
+  Citrus:{color:'#c9a13e',subs:{
+    Peel:['Lemon Peel','Orange Peel','Grapefruit','Lime','Bergamot','Yuzu','Pomelo','Candied Citrus','Lemon Sherbet']}},
+  Floral:{color:'#cf9fb5',subs:{
+    Blossom:['Elderflower','Rose','Lavender','Chamomile','Violet','Honeysuckle','Orange Blossom','Hibiscus','Jasmine']}},
+  Herbal:{color:'#6f9a55',subs:{
+    'Green Herbs':['Basil','Sage','Thyme','Mint','Rosemary','Lemongrass','Verbena','Tarragon'],
+    Savory:['Bay Leaf','Olive','Cucumber','Celery','Dill','Samphire','Saline']}},
+  Spice:{color:'#96552e',subs:{
+    Warm:['Cardamom','Coriander','Cinnamon','Grains of Paradise','Nutmeg','Star Anise','Caraway','Fennel Seed'],
+    Peppery:['Black Pepper','Cubeb','Ginger','Pink Peppercorn','Chili','Szechuan Pepper']}},
+  'Earthy & Rooty':{color:'#7d6a4a',subs:{
+    Roots:['Angelica','Orris Root','Licorice Root','Ginger Root','Burdock','Gentian'],
+    Earth:['Damp Earth','Woody','Pine Forest','Moss']}}}},
+'Mezcal & Tequila':{color:'#7d8f56',subs:{
+  'Roasted Agave':{color:'#96683e',subs:{
+    'Sweet Roast':['Roasted Agave','Sweet Potato','Caramelized Squash','Baked Yam','Roasted Corn','Piloncillo'],
+    Sugary:['Agave Nectar','Brown Sugar','Honey','Vanilla']}},
+  Vegetal:{color:'#6f9a3e',subs:{
+    Green:['Raw Agave','Green Pepper','Aloe','Cucumber','Bell Pepper','Nopal','Snap Pea','Celery'],
+    Herbal:['Sage','Mint','Grassy','Eucalyptus','Cilantro','Epazote']}},
+  Smoky:{color:'#6e5a4a',subs:{
+    Smoke:['Campfire','Charcoal','Tar','Ash','Mesquite','Smoked Meat','Creosote'],
+    Burnt:['Burnt Sugar','Rubber','Charred Wood','Gunpowder']}},
+  Fruity:{color:'#c05548',subs:{
+    Citrus:['Lime','Grapefruit','Orange','Lemon','Tangerine'],
+    Tropical:['Pineapple','Guava','Melon','Mango','Papaya','Banana']}},
+  'Earthy & Mineral':{color:'#8a7a62',subs:{
+    Earth:['Wet Clay','Dust','Leather','Adobe','Petrichor','Damp Cave'],
+    Mineral:['Flint','Salt','Stone','Chalk','Slate','Saline']}},
+  'Spice & Pepper':{color:'#94502f',subs:{
+    Spice:['White Pepper','Cinnamon','Anise','Chili','Black Pepper','Clove','Nutmeg']}}}},
+Sake:{color:'#8fa8a0',subs:{
+  Fruity:{color:'#c9797f',subs:{
+    Orchard:['Green Apple','Pear','Nashi','White Grape','Muscat','Quince'],
+    Tropical:['Banana','Melon','Lychee','Pineapple','Mango','Coconut'],
+    Citrus:['Yuzu','Lemon','Lime','Grapefruit','Mikan']}},
+  Floral:{color:'#cf9fb5',subs:{
+    Blossom:['Cherry Blossom','White Flowers','Honeysuckle','Jasmine','Lily','Acacia']}},
+  'Rice & Cereal':{color:'#c9bd96',subs:{
+    Grain:['Steamed Rice','Mochi','Rice Flour','Cooked Grain','Rice Bran','Rice Pudding'],
+    Koji:['Sweet Koji','Chestnut','Roasted Chestnut','Amazake']}},
+  'Creamy & Lactic':{color:'#b9ac8e',subs:{
+    Dairy:['Yogurt','Cream','Ricotta','Fresh Cream','Milk','Buttermilk'],
+    Yeasty:['Sake Lees','Bread Dough','Fresh Yeast','Steamed Bun']}},
+  'Savory & Umami':{color:'#8a8a6a',subs:{
+    Umami:['Dashi','Soy Sauce','Miso','Seaweed','Kombu','Bonito','Shiitake'],
+    Nutty:['Roasted Nut','Sesame','Almond','Walnut','Cashew']}},
+  'Aged & Koshu':{color:'#96683e',subs:{
+    Oxidative:['Caramel','Dried Fig','Sherry','Honey','Maple','Soy Caramel','Dried Mushroom']}},
+  Mineral:{color:'#8a97a0',subs:{
+    Clean:['Wet Stone','Spring Water','Rain','Snowmelt','River Stone','Limestone']}}}},
+Kombucha:{color:'#ad8a45',subs:{
+  'Tart & Acidic':{color:'#b3ad42',subs:{
+    Vinegar:['Apple Cider Vinegar','White Vinegar','Balsamic','Malt Vinegar','Sherry Vinegar'],
+    'Bright Tart':['Lemon','Green Apple','Gooseberry','Rhubarb','Sour Cherry','Tamarind']}},
+  Fruity:{color:'#c25a45',subs:{
+    Orchard:['Apple','Pear','Apple Cider','Quince','White Grape'],
+    'Stone & Berry':['Peach','Strawberry','Cherry','Apricot','Raspberry','Blackberry']}},
+  'Tea & Tannic':{color:'#8a6134',subs:{
+    Tea:['Black Tea','Green Tea','Tannin','Oolong','Earl Grey','Jasmine Tea']}},
+  'Funky & Fermented':{color:'#a8a03e',subs:{
+    Ferment:['Yeast','Sourdough','Beer-like','Cider-like','Wine-like','Bread Dough'],
+    Wild:['Vinegar Mother','Barnyard','Musty','SCOBY','Wet Straw','Damp Cellar']}},
+  'Sweet & Floral':{color:'#cf9a4a',subs:{
+    Sweet:['Honey','Cane Sugar','Caramel','Apple Juice','Molasses'],
+    Floral:['Elderflower','Jasmine','Rose','Hibiscus','Chamomile']}}}},
+Cheese:{color:'#d9a53f',subs:{
+  'Fresh & Lactic':{color:'#ded3a2',subs:{
+    Milky:['Fresh Milk','Cream','Butter','Steamed Milk','Sweet Whey','Ricotta'],
+    Tangy:['Yogurt','Buttermilk','Sour Cream','Lemony','Crème Fraîche','Goat Tang']}},
+  'Grassy & Herbal':{color:'#83944e',subs:{
+    Pasture:['Fresh Grass','Hay','Wild Herbs','Wildflower','Alpine Herbs','Chive'],
+    Vegetal:['Artichoke','Cooked Vegetable','Broccoli','Cabbage','Green Olive']}},
+  Fruity:{color:'#bd5c47',subs:{
+    Bright:['Citrus','Green Apple','Lemon','White Wine','Sour Cherry'],
+    Rich:['Pineapple','Dried Apricot','Wine-like','Fig Jam','Raisin']}},
+  Nutty:{color:'#a97e42',subs:{
+    Toasted:['Hazelnut','Walnut','Almond','Peanut','Cashew','Pecan'],
+    Browned:['Browned Butter','Toast','Roasted Grain']}},
+  'Sweet & Caramel':{color:'#c9913c',subs:{
+    Caramelized:['Caramel','Toffee','Butterscotch','Salted Caramel','Burnt Sugar'],
+    'Sweet Cream':['Condensed Milk','Malted Milk','Custard','White Chocolate']}},
+  'Earthy & Mushroom':{color:'#7d6b52',subs:{
+    Fungal:['Button Mushroom','Truffle','Forest Floor','Porcini','Wild Mushroom'],
+    Cellar:['Cave','Wet Stone','Musty','Damp Stone','Old Cellar','Mineral']}},
+  'Pungent & Funky':{color:'#98703e',subs:{
+    'Washed Rind':['Barnyard','Meaty','Ammonia','Beef Broth','Garlic','Cured Meat'],
+    Blue:['Sharp Blue','Peppery Mold','Metallic','Piquant','Salty Mold','Horseradish']}},
+  Smoky:{color:'#6e5a4a',subs:{
+    Smoke:['Smoked Wood','Bacon','Campfire','Applewood','Hickory','Ham']}}}},
+Honey:{color:'#d68f2c',subs:{
+  Floral:{color:'#d987a8',subs:{
+    Delicate:['Acacia','Clover','Alfalfa','Cotton Blossom','Fireweed','Tupelo'],
+    Perfumed:['Orange Blossom','Lavender','Linden','Wildflower','Rose','Jasmine','Honeysuckle']}},
+  Fruity:{color:'#c25a45',subs:{
+    Fresh:['Citrus','Apple','Apricot','Berry','Peach','Pear','Cranberry'],
+    Ripe:['Dried Fig','Raisin','Tropical Fruit','Date','Prune','Cooked Fruit']}},
+  'Warm & Caramel':{color:'#b46a2e',subs:{
+    Sugary:['Caramel','Toffee','Brown Sugar','Molasses','Burnt Sugar','Cotton Candy'],
+    Rich:['Vanilla','Beeswax','Butterscotch','Custard','Marzipan','Maple']}},
+  'Herbal & Fresh':{color:'#7f9a4e',subs:{
+    Green:['Fresh Herbs','Grass','Mint','Eucalyptus','Cut Grass','Thyme','Rosemary','Sage'],
+    Dry:['Hay','Straw','Chamomile','Dried Herbs','Tea','Fern']}},
+  'Woody & Resinous':{color:'#8a6134',subs:{
+    Forest:['Pine Resin','Cedar','Tree Sap','Fir','Spruce','Propolis'],
+    Dark:['Chestnut','Oak','Tobacco','Carob','Buckwheat']}},
+  'Earthy & Malty':{color:'#7d6a4a',subs:{
+    Malty:['Malt','Molasses','Dark Bread','Barley','Toffee','Brown Bread'],
+    Wild:['Barnyard','Leather','Smoke','Game','Musky']}},
+  'Off Notes':{color:'#8c8272',subs:{
+    Off:['Fermented','Yeasty','Medicinal','Sweaty','Sour Ferment','Wet Cardboard','Chemical']}}}},
+'Olive Oil':{color:'#8a9a3a',subs:{
+  'Green & Grassy':{color:'#6f9a3e',subs:{
+    'Fresh Cut':['Fresh Grass','Green Leaf','Mown Hay','Wheatgrass','Green Stems','Nettle'],
+    Vegetal:['Artichoke','Green Tomato','Tomato Leaf','Green Bean','Asparagus','Celery','Snap Pea']}},
+  Fruity:{color:'#c9a13e',subs:{
+    Ripe:['Ripe Olive','Buttery Fruit','Tropical','Melon','Banana','Stone Fruit'],
+    Fresh:['Green Apple','Green Banana','Citrus Zest','Kiwi','Pear','Red Tomato']}},
+  'Nutty & Buttery':{color:'#b0894e',subs:{
+    Nuts:['Almond','Pine Nut','Walnut','Hazelnut','Pistachio','Green Almond'],
+    Buttery:['Butter','Cream','Cocoa Butter','Sweet Cream']}},
+  'Pungent & Peppery':{color:'#96552e',subs:{
+    Peppery:['Black Pepper','Chili','Throat Catch','White Pepper','Ginger','Mustard'],
+    'Bitter Greens':['Arugula','Radicchio','Bitter Herb','Dandelion','Chicory','Artichoke Leaf']}},
+  Defects:{color:'#8c8272',subs:{
+    Rancid:['Rancid Nut','Old Oil','Crayon','Stale Nuts','Putty','Linseed'],
+    Fermented:['Fusty','Winey','Vinegary','Yeasty','Sour Wine'],
+    Musty:['Musty','Muddy','Wet Wood','Damp Cellar','Earthy Mold','Humid Straw']}}}},
+'Maple Syrup':{color:'#a5622d',subs:{
+  Confection:{color:'#cf9a4a',subs:{
+    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Whipped Cream','White Chocolate']}},
+  Caramelized:{color:'#b4762e',subs:{
+    Sugars:['Caramel','Toffee','Brown Sugar','Burnt Sugar','Molasses','Demerara','Cotton Candy']}},
+  Roasted:{color:'#7c5230',subs:{
+    Dark:['Coffee','Cocoa','Toast','Espresso','Dark Chocolate','Burnt Marshmallow']}},
+  Milky:{color:'#c9bd96',subs:{
+    Dairy:['Butter','Cream','Condensed Milk','Buttermilk','Custard','Sweet Cream']}},
+  Fruity:{color:'#c05548',subs:{
+    Fruits:['Baked Apple','Peach','Dried Fruit','Pear','Raisin','Apricot','Citrus Zest']}},
+  'Floral & Herbal':{color:'#9a8a4e',subs:{
+    Flowers:['Clover','Dandelion','Honeysuckle','Chamomile','Wildflower'],
+    Herbaceous:['Hay','Fresh Grass','Straw','Green Tea']}},
+  'Spice & Woody':{color:'#94502f',subs:{
+    Spice:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Anise'],
+    Woody:['Bark','Cedar','Toasted Nut','Maple Wood','Oak','Sawdust']}}}}
+};
+
+// ---------- color helpers ----------
+function hexToHsl(hex){
+  const n=parseInt(hex.slice(1),16), r=(n>>16&255)/255, g=(n>>8&255)/255, b=(n&255)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min; let h=0;
+  if(d){ h= max===r ? ((g-b)/d+(g<b?6:0)) : max===g ? (b-r)/d+2 : (r-g)/d+4; h*=60; }
+  const l=(max+min)/2, s=d?d/(1-Math.abs(2*l-1)):0;
+  return [h,s*100,l*100];
+}
+const hsl=([h,s,l])=>`hsl(${h.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}%)`;
+const parseC=c=>c[0]==='#'?hexToHsl(c):c.match(/[\d.]+/g).map(Number);
+function derive(base,i,n){ // spread children across lightness, drift hue slightly
+  const [h,s,l]=parseC(base);
+  const t=n>1? i/(n-1) : .5;
+  return [h+(t-.5)*22, Math.min(s+6,90), Math.max(20,Math.min(76, l-11+t*24))];
+}
+function luminance(cssColor){ // via canvas-free HSL/hex parse: we only feed hsl() or hex
+  let r,g,b;
+  if(cssColor[0]==='#'){ const n=parseInt(cssColor.slice(1),16); r=n>>16&255; g=n>>8&255; b=n&255; }
+  else{ const [h,s,l]=cssColor.match(/[\d.]+/g).map(Number);
+    const a=s/100*Math.min(l/100,1-l/100);
+    const f=k=>{k=(k+h/30)%12; return l/100-a*Math.max(-1,Math.min(k-3,9-k,1));};
+    r=f(0)*255; g=f(8)*255; b=f(4)*255; }
+  return (0.2126*r+0.7152*g+0.0722*b)/255;
+}
+const inkFor=c=>luminance(c)>0.52?'#241a12':'#f7efe4';
+
+// ---------- normalize data into one tree ----------
+function makeNode(label,spec,color){
+  const node={label,color};
+  if(Array.isArray(spec)){
+    node.children=spec.map((s,i)=>({label:s,color:hsl(derive(color,i,spec.length))}));
+  }else if(spec&&spec.subs){
+    const keys=Object.keys(spec.subs);
+    node.children=keys.map((k,i)=>{
+      const child=spec.subs[k];
+      const c=child.color||hsl(derive(spec.color||color,i,keys.length));
+      return makeNode(k,child,child.color||c);
+    });
+  }
+  return node;
+}
+const ROOT={label:'Flavor Explorer',children:Object.keys(DATA).map(k=>makeNode(k,DATA[k],DATA[k].color))};
+
+const PROMPTS=[
+  ['What are you tasting?','Pick a subject — each one has its own wheel.'],
+  ['Which family calls out?','Trust your first impression.'],
+  ['Getting closer — which kind?',''],
+  ['Name it.','Tap the flavor that matches.']
+];
+const TEXTURES=[
+  {i:'radial-gradient(circle at 2px 2px, rgba(255,255,255,.28) 1.2px, transparent 1.4px)', s:'13px 13px'},
+  {i:'repeating-linear-gradient(45deg, rgba(255,255,255,.10) 0 2px, transparent 2px 11px)', s:'auto'},
+  {i:'repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 9px)', s:'auto'},
+  {i:'repeating-linear-gradient(45deg, rgba(255,255,255,.07) 0 1px, transparent 1px 8px), repeating-linear-gradient(-45deg, rgba(0,0,0,.08) 0 1px, transparent 1px 8px)', s:'auto'},
+  {i:'repeating-radial-gradient(circle at 72% 28%, rgba(255,255,255,.09) 0 2px, transparent 2px 13px)', s:'auto'},
+  {i:'radial-gradient(circle at 6px 6px, rgba(0,0,0,.15) 2px, transparent 2.4px)', s:'19px 19px'}
+];
+function paint(el,node,i){
+  const t=TEXTURES[i%TEXTURES.length];
+  el.style.background=`${t.i} ${node.color}`;
+  el.style.backgroundSize=t.s;
+  el.style.backgroundColor=node.color;
+  el.style.color=inkFor(node.color);
+}
+
+// ---------- state ----------
+let path=[ROOT], mode=localStorage.getItem('fx-mode')||'grid', cardIndex=0, lastDir='r';
+const $=s=>document.querySelector(s);
+
+function setMode(m){
+  mode=m; localStorage.setItem('fx-mode',m);
+  $('#mGrid').setAttribute('aria-pressed',m==='grid');
+  $('#mCards').setAttribute('aria-pressed',m==='cards');
+  render();
+}
+$('#mGrid').onclick=()=>setMode('grid');
+$('#mCards').onclick=()=>setMode('cards');
+
+// the hash is the source of truth: navigation just sets it, applyHash renders
+const pathToHash=p=>'#/'+p.slice(1).map(n=>encodeURIComponent(n.label)).join('/');
+function drill(node){ lastDir='r'; location.hash=pathToHash([...path,node]); }
+function jumpTo(level){ location.hash=pathToHash(path.slice(0,level+1)); }
+function applyHash(){
+  const labels=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean).map(decodeURIComponent);
+  const old=path, p=[ROOT];
+  for(const l of labels){
+    const n=p.at(-1).children?.find(c=>c.label===l);
+    if(!n) break;
+    p.push(n);
+  }
+  const removed=old[p.length]; // set when navigating up: the child we came from
+  cardIndex=removed?Math.max(0,(p.at(-1).children||[]).indexOf(removed)):0;
+  path=p; render();
+}
+window.addEventListener('hashchange',applyHash);
+
+function render(){
+  const cur=path.at(-1);
+  // strata
+  const strata=$('#strata'); strata.innerHTML='';
+  if(path.length>1){
+    const b=document.createElement('button');
+    b.className='stratum home';
+    b.innerHTML=`<span class="lbl">What are you tasting?</span><span class="hint">start over ↩</span>`;
+    b.onclick=()=>jumpTo(0);
+    strata.appendChild(b);
+  }
+  path.slice(1).forEach((node,idx)=>{
+    const b=document.createElement('button');
+    b.className='stratum'; paint(b,node,idx);
+    b.innerHTML=`<span class="lbl"></span><span class="hint">return here ↩</span>`;
+    b.querySelector('.lbl').textContent=node.label;
+    b.onclick=()=>jumpTo(idx+1); // truncate so this node is current → its children show
+    strata.appendChild(b);
+  });
+
+  const main=$('#main'); main.innerHTML='';
+  if(!cur.children){ renderLeaf(main,cur); return; }
+
+  const depth=Math.min(path.length-1,PROMPTS.length-1);
+  const [title,sub]=PROMPTS[depth];
+  const h=document.createElement('h1'); h.className='prompt'; h.textContent=title;
+  if(sub){ const s=document.createElement('small'); s.textContent=sub; h.appendChild(s); }
+  main.appendChild(h);
+
+  (mode==='grid'?renderGrid:renderCards)(main,cur);
+}
+
+function renderGrid(main,cur){
+  const g=document.createElement('div'); g.className='grid';
+  cur.children.forEach((node,i)=>{
+    const b=document.createElement('button');
+    b.className='tile'; paint(b,node,i);
+    b.style.animationDelay=`${i*22}ms`;
+    if(node.children){ const c=document.createElement('span'); c.className='count'; c.textContent=node.children.length; b.appendChild(c); }
+    const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; b.appendChild(l);
+    b.onclick=()=>drill(node,i);
+    g.appendChild(b);
+  });
+  main.appendChild(g);
+}
+
+function renderCards(main,cur){
+  const kids=cur.children, node=kids[cardIndex];
+  const stage=document.createElement('div'); stage.className='stage';
+  const prev=document.createElement('button'); prev.className='nav'; prev.textContent='‹'; prev.setAttribute('aria-label','Previous');
+  const next=document.createElement('button'); next.className='nav'; next.textContent='›'; next.setAttribute('aria-label','Next');
+  const wrap=document.createElement('div'); wrap.className='card-wrap';
+  const card=document.createElement('button');
+  card.className='card '+(lastDir==='l'?'in-l':'in-r');
+  paint(card,node,cardIndex);
+  if(node.children){ const c=document.createElement('span'); c.className='count'; c.textContent=node.children.length; card.appendChild(c); }
+  const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; card.appendChild(l);
+  const s=document.createElement('span'); s.className='sub';
+  s.textContent=node.children?'tap to dive in':'a flavor — swipe for more'; card.appendChild(s);
+
+  const step=d=>{ lastDir=d>0?'r':'l'; cardIndex=(cardIndex+d+kids.length)%kids.length; render(); };
+  prev.onclick=()=>step(-1); next.onclick=()=>step(1);
+
+  // swipe / drag
+  let x0=null,dx=0;
+  card.addEventListener('pointerdown',e=>{ x0=e.clientX; dx=0; card.setPointerCapture(e.pointerId); card.style.transition='none'; });
+  card.addEventListener('pointermove',e=>{ if(x0===null)return; dx=e.clientX-x0; card.style.transform=`translateX(${dx}px) rotate(${dx/40}deg)`; });
+  card.addEventListener('pointerup',()=>{
+    card.style.transition=''; card.style.transform='';
+    if(Math.abs(dx)>60) step(dx<0?1:-1);
+    else if(Math.abs(dx)<8 && node.children) drill(node,cardIndex);
+    x0=null;
+  });
+  card.addEventListener('pointercancel',()=>{ card.style.transform=''; x0=null; });
+
+  wrap.appendChild(card); stage.append(prev,wrap,next); main.appendChild(stage);
+  const c=document.createElement('div'); c.className='counter';
+  c.textContent=`${cardIndex+1} / ${kids.length}`; main.appendChild(c);
+}
+
+function renderLeaf(main,node){
+  const d=document.createElement('div'); d.className='leaf'; paint(d,node,3);
+  const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; d.appendChild(l);
+  main.appendChild(d);
+  const n=document.createElement('p'); n.className='leaf-note';
+  n.textContent='Found it. Tap any layer above to keep exploring.'; main.appendChild(n);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'||e.key==='Backspace'){ if(path.length>1){ e.preventDefault(); jumpTo(path.length-2);} }
+  if(mode==='cards'&&path.at(-1).children){
+    if(e.key==='ArrowLeft'){ lastDir='l'; cardIndex=(cardIndex-1+path.at(-1).children.length)%path.at(-1).children.length; render(); }
+    if(e.key==='ArrowRight'){ lastDir='r'; cardIndex=(cardIndex+1)%path.at(-1).children.length; render(); }
+    if(e.key==='Enter'&&document.activeElement?.className!=='nav'){ const n=path.at(-1).children[cardIndex]; if(n.children&&document.activeElement?.classList.contains('card')) drill(n,cardIndex); }
+  }
+});
+
+$('#mGrid').setAttribute('aria-pressed',mode==='grid');
+$('#mCards').setAttribute('aria-pressed',mode==='cards');
+applyHash(); // initial render from URL — supports deep links
+</script>
+</body>
+</html>
