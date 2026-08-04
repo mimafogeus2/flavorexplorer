@@ -559,6 +559,12 @@ function makeNode(label,spec,color){
   return node;
 }
 const ROOT={label:'Flavor Explorer',children:Object.keys(DATA).map(k=>makeNode(k,DATA[k],DATA[k].color))};
+// collapse single-child chains: a category with one subcategory adopts its children directly
+(function collapse(n){
+  if(!n.children) return;
+  n.children.forEach(collapse);
+  while(n.children.length===1&&n.children[0].children) n.children=n.children[0].children;
+})(ROOT);
 
 const PROMPTS=[
   ['What are you tasting?','Pick a subject — each one has its own wheel.'],
@@ -654,7 +660,8 @@ function render(){
   if(!cur.children){ renderLeaf(main,cur); return; }
 
   const depth=Math.min(path.length-1,PROMPTS.length-1);
-  const [title,sub]=PROMPTS[depth];
+  // levels can vary in depth now — if this level holds flavors, always prompt "Name it."
+  const [title,sub]=cur.children.every(c=>!c.children)?PROMPTS[PROMPTS.length-1]:PROMPTS[depth];
   const h=document.createElement('h1'); h.className='prompt'; h.textContent=title;
   if(sub){ const s=document.createElement('small'); s.textContent=sub; h.appendChild(s); }
   main.appendChild(h);
