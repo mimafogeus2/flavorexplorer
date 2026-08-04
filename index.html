@@ -44,7 +44,9 @@ header{
 .stratum.home .lbl{font-size:.85rem; font-weight:500; font-style:italic}
 .stratum .hint{margin-left:auto; font-size:.75rem; opacity:0; transition:opacity .15s}
 .stratum:hover .hint, .stratum:focus-visible .hint{opacity:.8}
+.stratum.out{animation:rise .22s ease both; pointer-events:none}
 @keyframes drop{from{transform:translateY(-8px); opacity:0}}
+@keyframes rise{to{transform:translateY(-8px); opacity:0}}
 
 main{flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; padding:1rem 1.4rem 2rem; max-width:1100px; width:100%; margin:0 auto}
 .prompt{
@@ -589,25 +591,42 @@ function applyHash(){
 }
 window.addEventListener('hashchange',applyHash);
 
-function render(){
-  const cur=path.at(-1);
-  // strata
-  const strata=$('#strata'); strata.innerHTML='';
-  if(path.length>1){
-    const b=document.createElement('button');
+const HOME={home:true};
+function makeStratum(entry,k){ // k = index in the entries list; for real nodes, path[k]
+  const b=document.createElement('button');
+  if(entry===HOME){
     b.className='stratum home';
     b.innerHTML=`<span class="lbl">What are you tasting?</span><span class="hint">start over ↩</span>`;
     b.onclick=()=>jumpTo(0);
-    strata.appendChild(b);
-  }
-  path.slice(1).forEach((node,idx)=>{
-    const b=document.createElement('button');
-    b.className='stratum'; paint(b,node,idx);
+  }else{
+    b.className='stratum'; paint(b,entry,k-1);
     b.innerHTML=`<span class="lbl"></span><span class="hint">return here ↩</span>`;
-    b.querySelector('.lbl').textContent=node.label;
-    b.onclick=()=>jumpTo(idx+1); // truncate so this node is current → its children show
-    strata.appendChild(b);
+    b.querySelector('.lbl').textContent=entry.label;
+    b.onclick=()=>jumpTo(k);
+  }
+  b._node=entry;
+  return b;
+}
+function renderStrata(){
+  // diff against current DOM: untouched bars keep their elements (no animation replay),
+  // only appended bars drop in and removed bars rise out
+  const strata=$('#strata');
+  const entries=path.length>1?[HOME,...path.slice(1)]:[];
+  const existing=[...strata.children].filter(el=>!el.classList.contains('out'));
+  let keep=0;
+  while(keep<existing.length&&keep<entries.length&&existing[keep]._node===entries[keep]) keep++;
+  existing.slice(keep).forEach(el=>{
+    el.classList.add('out');
+    el.onanimationend=()=>el.remove();
+    setTimeout(()=>el.remove(),400); // reduced-motion: no animationend fires
   });
+  entries.slice(keep).forEach((e,i)=>{
+    strata.insertBefore(makeStratum(e,keep+i),strata.querySelector('.out'));
+  });
+}
+function render(){
+  const cur=path.at(-1);
+  renderStrata();
 
   const main=$('#main'); main.innerHTML='';
   if(!cur.children){ renderLeaf(main,cur); return; }
