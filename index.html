@@ -710,7 +710,8 @@ function renderCards(main,cur){
 }
 
 function renderLeaf(main,node){
-  const d=document.createElement('div'); d.className='leaf'; paint(d,node,3);
+  const d=document.createElement('div'); d.className='leaf';
+  paint(d,node,Math.max(0,(path.at(-2)?.children||[]).indexOf(node))); // same texture as its grid tile
   const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; d.appendChild(l);
   main.appendChild(d);
   const n=document.createElement('p'); n.className='leaf-note';
