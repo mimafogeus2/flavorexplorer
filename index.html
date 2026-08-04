@@ -38,6 +38,15 @@ header{
 }
 .wordmark{font-family:var(--display); font-weight:600; font-size:1.25rem; letter-spacing:.01em}
 .wordmark em{font-style:italic; color:var(--ink-dim)}
+.hcontrols{display:flex; align-items:center; gap:.6rem; flex-wrap:wrap}
+#search{
+  font:inherit; font-size:.85rem; background:transparent; color:var(--ink);
+  border:1px solid #4a3d33; border-radius:999px; padding:.35rem .9rem;
+  width:clamp(130px,26vw,220px);
+}
+#search::placeholder{color:var(--ink-dim)}
+.tile .stack{display:flex; flex-direction:column; gap:.2rem; min-width:0}
+.tile .ctx{font-size:.66rem; opacity:.8; line-height:1.25; font-family:var(--body)}
 .seg{display:flex; border:1px solid #4a3d33; border-radius:999px; overflow:hidden}
 .seg button{
   font:inherit; font-size:.8rem; padding:.35rem .9rem; border:0; cursor:pointer;
@@ -128,9 +137,12 @@ button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
 <body>
 <header>
   <div class="wordmark">Flavor <em>Explorer</em></div>
+  <div class="hcontrols">
+  <input id="search" type="search" placeholder="Search flavors…" aria-label="Search flavors and categories">
   <div class="seg" role="group" aria-label="View mode">
     <button id="mGrid" aria-pressed="true">Grid</button>
     <button id="mCards" aria-pressed="false">Cards</button>
+  </div>
   </div>
 </header>
 <nav id="strata" aria-label="Tasting path"></nav>
@@ -269,7 +281,7 @@ Beer:{color:'#c08a3e',subs:{
     Yeast:['Doughy','Brioche','Fresh Yeast','Biscuity']}},
   'Sour & Funky':{color:'#a8b04a',subs:{
     Tart:['Lemon','Green Apple','Vinegar','Sour Cherry','Gooseberry','Lactic Tang','Kiwi'],
-    Funk:['Barnyard','Hay','Earthy','Horse Blanket','Musty Cellar','Goaty']}},
+    Funk:['Barnyard','Hay','Earthy','Horse Blanket','Musty Cellar','Goaty','Socks']}},
   Adjuncts:{color:'#c9825e',subs:{
     'Sweet Additions':['Vanilla','Coconut','Honey','Lactose','Maple','Marshmallow','Chocolate','Peanut Butter'],
     Fruited:['Cherry','Raspberry','Apricot','Passion Fruit','Blackberry','Peach','Guava'],
@@ -652,9 +664,48 @@ function renderStrata(){
     strata.insertBefore(makeStratum(e,keep+i),strata.querySelector('.out'));
   });
 }
+// flat index of every category and note, with its full chain for navigation
+const INDEX=[];
+(function idx(n,chain){
+  (n.children||[]).forEach((c,i)=>{ const ch=[...chain,c]; INDEX.push({node:c,chain:ch,i}); idx(c,ch); });
+})(ROOT,[]);
+
+function renderSearch(q){
+  const main=$('#main'); main.innerHTML='';
+  const ql=q.toLowerCase();
+  const hits=INDEX.filter(e=>e.node.label.toLowerCase().includes(ql));
+  hits.sort((a,b)=>{const al=a.node.label.toLowerCase(),bl=b.node.label.toLowerCase();
+    return (bl.startsWith(ql)-al.startsWith(ql))||al.localeCompare(bl);});
+  const h=document.createElement('h1'); h.className='prompt';
+  h.textContent=hits.length?`${hits.length} match${hits.length===1?'':'es'}`:'No matches';
+  if(!hits.length){const s=document.createElement('small');s.textContent='Try a shorter word — “berry”, “smoke”, “floral”…';h.appendChild(s);}
+  main.appendChild(h);
+  const g=document.createElement('div'); g.className='grid';
+  hits.slice(0,60).forEach((e,gi)=>{
+    const b=document.createElement('button');
+    b.className=e.node.children?'tile':'tile is-leaf'; paint(b,e.node,e.i);
+    b.style.animationDelay=`${Math.min(gi*14,400)}ms`;
+    if(e.node.children){const c=document.createElement('span');c.className='count';c.textContent=e.node.children.length;b.appendChild(c);}
+    const st=document.createElement('span'); st.className='stack';
+    const l=document.createElement('span'); l.className='lbl'; l.textContent=e.node.label; st.appendChild(l);
+    if(e.chain.length>1){const x=document.createElement('span'); x.className='ctx';
+      x.textContent=e.chain.slice(0,-1).map(n=>n.label).join(' › '); st.appendChild(x);}
+    b.appendChild(st);
+    b.onclick=()=>{ $('#search').value='';
+      const target=pathToHash([ROOT,...e.chain]);
+      if(location.hash===target) render(); else location.hash=target; };
+    g.appendChild(b);
+  });
+  main.appendChild(g);
+  if(hits.length>60){const p=document.createElement('p'); p.className='leaf-note';
+    p.textContent=`Showing 60 of ${hits.length} — keep typing to narrow down.`; main.appendChild(p);}
+}
+
 function render(){
   const cur=path.at(-1);
   renderStrata();
+  const q=$('#search').value.trim();
+  if(q.length>=2){ renderSearch(q); return; }
 
   const main=$('#main'); main.innerHTML='';
   if(!cur.children){ renderLeaf(main,cur); return; }
@@ -726,7 +777,11 @@ function renderLeaf(main,node){
   n.textContent='Found it. Tap any layer above to keep exploring.'; main.appendChild(n);
 }
 
+$('#search').addEventListener('input',()=>render());
 document.addEventListener('keydown',e=>{
+  const si=$('#search');
+  if(e.target===si){ if(e.key==='Escape'){ si.value=''; si.blur(); render(); } return; }
+  if(e.key==='/'){ e.preventDefault(); si.focus(); return; }
   if(e.key==='Escape'||e.key==='Backspace'){ if(path.length>1){ e.preventDefault(); jumpTo(path.length-2);} }
   if(mode==='cards'&&path.at(-1).children){
     if(e.key==='ArrowLeft'){ lastDir='l'; cardIndex=(cardIndex-1+path.at(-1).children.length)%path.at(-1).children.length; render(); }
