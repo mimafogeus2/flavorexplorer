@@ -673,11 +673,12 @@ const INDEX=[];
 function renderSearch(q){
   const main=$('#main'); main.innerHTML='';
   const ql=q.toLowerCase();
-  const hits=INDEX.filter(e=>e.node.label.toLowerCase().includes(ql));
+  const scope=path.length>1?path[1]:null; // inside a wheel, search only that wheel
+  const hits=INDEX.filter(e=>(!scope||e.chain[0]===scope)&&e.node.label.toLowerCase().includes(ql));
   hits.sort((a,b)=>{const al=a.node.label.toLowerCase(),bl=b.node.label.toLowerCase();
     return (bl.startsWith(ql)-al.startsWith(ql))||al.localeCompare(bl);});
   const h=document.createElement('h1'); h.className='prompt';
-  h.textContent=hits.length?`${hits.length} match${hits.length===1?'':'es'}`:'No matches';
+  h.textContent=(hits.length?`${hits.length} match${hits.length===1?'':'es'}`:'No matches')+(scope?` in ${scope.label}`:'');
   if(!hits.length){const s=document.createElement('small');s.textContent='Try a shorter word — “berry”, “smoke”, “floral”…';h.appendChild(s);}
   main.appendChild(h);
   const g=document.createElement('div'); g.className='grid';
@@ -688,8 +689,8 @@ function renderSearch(q){
     if(e.node.children){const c=document.createElement('span');c.className='count';c.textContent=e.node.children.length;b.appendChild(c);}
     const st=document.createElement('span'); st.className='stack';
     const l=document.createElement('span'); l.className='lbl'; l.textContent=e.node.label; st.appendChild(l);
-    if(e.chain.length>1){const x=document.createElement('span'); x.className='ctx';
-      x.textContent=e.chain.slice(0,-1).map(n=>n.label).join(' › '); st.appendChild(x);}
+    const crumbs=e.chain.slice(scope?1:0,-1).map(n=>n.label).join(' › ');
+    if(crumbs){const x=document.createElement('span'); x.className='ctx'; x.textContent=crumbs; st.appendChild(x);}
     b.appendChild(st);
     b.onclick=()=>{ $('#search').value='';
       const target=pathToHash([ROOT,...e.chain]);
@@ -704,6 +705,7 @@ function renderSearch(q){
 function render(){
   const cur=path.at(-1);
   renderStrata();
+  $('#search').placeholder=path.length>1?`Search ${path[1].label}…`:'Search flavors…';
   const q=$('#search').value.trim();
   if(q.length>=2){ renderSearch(q); return; }
 
