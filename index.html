@@ -139,6 +139,10 @@ button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
   <div class="wordmark">Flavor <em>Explorer</em></div>
   <div class="hcontrols">
   <input id="search" type="search" placeholder="Search flavors…" aria-label="Search flavors and categories">
+  <div class="seg" role="group" aria-label="Detail level">
+    <button id="dBasic" aria-pressed="true">Essentials</button>
+    <button id="dDeep" aria-pressed="false">Everything</button>
+  </div>
   <div class="seg" role="group" aria-label="View mode">
     <button id="mGrid" aria-pressed="true">Grid</button>
     <button id="mCards" aria-pressed="false">Cards</button>
@@ -153,7 +157,8 @@ button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
 const DATA = {
 Coffee:{color:'#8a5a3b',subs:{
   Fruity:{color:'#c93a4b',subs:{
-    Berry:['Blackberry','Raspberry','Blueberry','Strawberry','Blackcurrant','Cranberry','Elderberry','Mulberry'],
+    Berry:['Blackberry','Raspberry','Blueberry','Strawberry','Blackcurrant','Cranberry','Elderberry','Mulberry','Boysenberry*','Salmonberry*'],
+    'Melon*':['Cantaloupe','Honeydew','Watermelon Rind'],
     'Dried Fruit':['Raisin','Prune','Fig','Date','Dried Apricot','Tamarind','Golden Raisin'],
     Citrus:['Lemon','Lime','Orange','Grapefruit','Bergamot','Mandarin','Blood Orange','Yuzu'],
     'Stone Fruit':['Cherry','Peach','Apricot','Nectarine','Plum','Black Cherry'],
@@ -229,7 +234,7 @@ Tea:{color:'#6f9a55',subs:{
     Woody:['Cedar','Pine','Sandalwood','Bamboo','Cypress']}}}},
 Wine:{color:'#8e3a52',subs:{
   Fruity:{color:'#b83a52',subs:{
-    'Red Fruit':['Cherry','Strawberry','Raspberry','Red Currant','Cranberry','Pomegranate','Red Plum','Wild Strawberry'],
+    'Red Fruit':['Cherry','Strawberry','Raspberry','Red Currant','Cranberry','Pomegranate','Red Plum','Wild Strawberry','Morello Cherry*','Redcurrant Jelly*'],
     'Dark Fruit':['Blackberry','Black Cherry','Plum','Cassis','Mulberry','Blueberry','Damson'],
     Citrus:['Lemon','Lime','Grapefruit','Orange Zest','Tangerine','Marmalade','Preserved Lemon'],
     'Orchard & Stone':['Green Apple','Pear','Peach','Apricot','Nectarine','Quince','White Peach','Yellow Apple'],
@@ -556,27 +561,36 @@ function luminance(cssColor){ // via canvas-free HSL/hex parse: we only feed hsl
 const inkFor=c=>luminance(c)>0.52?'#241a12':'#f7efe4';
 
 // ---------- normalize data into one tree ----------
-function makeNode(label,spec,color){
+// detail levels: a category key or flavor name ending in '*' only exists in
+// "Everything" mode; without the star it appears in both. Star is stripped for display.
+const DEEP=/\*$/;
+function makeNode(label,spec,color,deep){
   const node={label,color};
   if(Array.isArray(spec)){
-    node.children=spec.map((s,i)=>({label:s,color:hsl(derive(color,i,spec.length))}));
+    const leaves=spec.filter(s=>deep||!DEEP.test(s));
+    node.children=leaves.map((s,i)=>({label:s.replace(DEEP,''),color:hsl(derive(color,i,leaves.length))}));
   }else if(spec&&spec.subs){
-    const keys=Object.keys(spec.subs);
+    const keys=Object.keys(spec.subs).filter(k=>deep||!DEEP.test(k));
     node.children=keys.map((k,i)=>{
       const child=spec.subs[k];
       const c=child.color||hsl(derive(spec.color||color,i,keys.length));
-      return makeNode(k,child,child.color||c);
+      return makeNode(k.replace(DEEP,''),child,child.color||c,deep);
     });
   }
   return node;
 }
-const ROOT={label:'Flavor Explorer',children:Object.keys(DATA).map(k=>makeNode(k,DATA[k],DATA[k].color))};
-// collapse single-child chains: a category with one subcategory adopts its children directly
-(function collapse(n){
-  if(!n.children) return;
-  n.children.forEach(collapse);
-  while(n.children.length===1&&n.children[0].children) n.children=n.children[0].children;
-})(ROOT);
+function buildRoot(deep){
+  const root={label:'Flavor Explorer',children:Object.keys(DATA).map(k=>makeNode(k,DATA[k],DATA[k].color,deep))};
+  // collapse single-child chains: a category with one subcategory adopts its children directly
+  (function collapse(n){
+    if(!n.children) return;
+    n.children.forEach(collapse);
+    while(n.children.length===1&&n.children[0].children) n.children=n.children[0].children;
+  })(root);
+  return root;
+}
+let depth=localStorage.getItem('fx-depth')||'basic';
+let ROOT=buildRoot(depth==='deep');
 
 const PROMPTS=[
   ['What are you tasting?','Pick a subject — each one has its own wheel.'],
@@ -665,10 +679,24 @@ function renderStrata(){
   });
 }
 // flat index of every category and note, with its full chain for navigation
-const INDEX=[];
-(function idx(n,chain){
-  (n.children||[]).forEach((c,i)=>{ const ch=[...chain,c]; INDEX.push({node:c,chain:ch,i}); idx(c,ch); });
-})(ROOT,[]);
+function buildIndex(root){
+  const ix=[];
+  (function idx(n,chain){
+    (n.children||[]).forEach((c,i)=>{ const ch=[...chain,c]; ix.push({node:c,chain:ch,i}); idx(c,ch); });
+  })(root,[]);
+  return ix;
+}
+let INDEX=buildIndex(ROOT);
+
+function setDepth(d){
+  depth=d; localStorage.setItem('fx-depth',d);
+  $('#dBasic').setAttribute('aria-pressed',d==='basic');
+  $('#dDeep').setAttribute('aria-pressed',d==='deep');
+  ROOT=buildRoot(d==='deep'); INDEX=buildIndex(ROOT);
+  applyHash(); // re-resolve the current URL against the rebuilt tree
+}
+$('#dBasic').onclick=()=>setDepth('basic');
+$('#dDeep').onclick=()=>setDepth('deep');
 
 function renderSearch(q){
   const main=$('#main'); main.innerHTML='';
@@ -794,7 +822,7 @@ document.addEventListener('keydown',e=>{
 
 $('#mGrid').setAttribute('aria-pressed',mode==='grid');
 $('#mCards').setAttribute('aria-pressed',mode==='cards');
-applyHash(); // initial render from URL — supports deep links
+setDepth(depth); // sets toggle state and does the initial render from the URL
 </script>
 </body>
 </html>
