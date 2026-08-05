@@ -159,379 +159,413 @@ Coffee:{color:'#8a5a3b',subs:{
   Fruity:{color:'#c93a4b',subs:{
     Berry:['Blackberry','Raspberry','Blueberry','Strawberry','Blackcurrant','Cranberry','Elderberry','Mulberry','Boysenberry*','Salmonberry*'],
     'Melon*':['Cantaloupe','Honeydew','Watermelon Rind'],
-    'Dried Fruit':['Raisin','Prune','Fig','Date','Dried Apricot','Tamarind','Golden Raisin'],
-    Citrus:['Lemon','Lime','Orange','Grapefruit','Bergamot','Mandarin','Blood Orange','Yuzu'],
-    'Stone Fruit':['Cherry','Peach','Apricot','Nectarine','Plum','Black Cherry'],
-    Orchard:['Apple','Pear','Quince','Green Apple','Red Apple'],
-    Tropical:['Pineapple','Mango','Papaya','Passion Fruit','Coconut','Lychee','Guava','Melon','Banana']}},
+    'Dried Fruit':['Raisin','Prune','Fig','Date','Dried Apricot','Tamarind','Golden Raisin','Dried Mango*','Dried Cherry*','Date Syrup*'],
+    Citrus:{subs:{
+      'Classic Citrus':['Lemon','Lime','Orange','Grapefruit','Bergamot','Mandarin','Blood Orange','Yuzu'],
+      'Exotic Citrus*':['Kumquat','Pomelo','Calamansi','Citron',"Buddha's Hand"],
+      'Candied Citrus*':['Marmalade','Candied Peel','Orangette']}},
+    'Stone Fruit':['Cherry','Peach','Apricot','Nectarine','Plum','Black Cherry','White Peach*','Loquat*','Greengage*'],
+    Orchard:['Apple','Pear','Quince','Green Apple','Red Apple','Crabapple*','Asian Pear*','Medlar*'],
+    Tropical:['Pineapple','Mango','Papaya','Passion Fruit','Coconut','Lychee','Guava','Melon','Banana','Starfruit*','Jackfruit*','Soursop*','Tamarillo*']}},
   Floral:{color:'#d886a2',subs:{
-    Flowers:['Jasmine','Rose','Chamomile','Lavender','Hibiscus','Orange Blossom','Elderflower','Honeysuckle','Magnolia'],
-    'Tea-like':['Black Tea','Earl Grey','Green Tea','Oolong','Rooibos']}},
+    Flowers:['Jasmine','Rose','Chamomile','Lavender','Hibiscus','Orange Blossom','Elderflower','Honeysuckle','Magnolia','Violet*','Ylang-Ylang*','Freesia*','Wild Rose*'],
+    'Tea-like':['Black Tea','Earl Grey','Green Tea','Oolong','Rooibos','Jasmine Tea*','Chai*'],
+    'Perfumed*':['Potpourri','Incense','Rosewater','Talc']}},
   Sweet:{color:'#dfa04a',subs:{
-    Caramelized:['Caramel','Toffee','Butterscotch','Brown Sugar','Dulce de Leche','Burnt Caramel'],
-    Sugars:['Honey','Molasses','Maple Syrup','Golden Syrup','Cane Sugar','Panela','Demerara'],
-    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Meringue']}},
+    Caramelized:['Caramel','Toffee','Butterscotch','Brown Sugar','Dulce de Leche','Burnt Caramel','Crème Brûlée*','Burnt Honey*'],
+    Sugars:['Honey','Molasses','Maple Syrup','Golden Syrup','Cane Sugar','Panela','Demerara','Agave*','Turbinado*'],
+    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Meringue','Crème Anglaise*','Pastry Cream*'],
+    'Confectionery*':['Nougat','Marzipan','Cotton Candy','Rock Candy','Fudge','Taffy']}},
   'Nutty & Cocoa':{color:'#a06a3c',subs:{
-    Nutty:['Almond','Hazelnut','Peanut','Walnut','Pecan','Cashew','Macadamia','Pistachio','Brazil Nut'],
-    Cocoa:['Dark Chocolate','Milk Chocolate','Cacao Nibs','Cocoa Powder',"Baker's Chocolate"]}},
+    Nutty:['Almond','Hazelnut','Peanut','Walnut','Pecan','Cashew','Macadamia','Pistachio','Brazil Nut','Pine Nut*','Chestnut*','Nut Butter*'],
+    Cocoa:['Dark Chocolate','Milk Chocolate','Cacao Nibs','Cocoa Powder',"Baker's Chocolate",'Chocolate Syrup*','Brownie*','Mole*']}},
   Spices:{color:'#9c4436',subs:{
-    Warming:['Cinnamon','Nutmeg','Clove','Ginger','Allspice','Cassia','Gingerbread'],
-    Pungent:['Black Pepper','Anise','Cardamom','Coriander Seed','Licorice','Juniper','Szechuan Pepper']}},
+    Warming:['Cinnamon','Nutmeg','Clove','Ginger','Allspice','Cassia','Gingerbread','Star Anise*','Mace*'],
+    Pungent:['Black Pepper','Anise','Cardamom','Coriander Seed','Licorice','Juniper','Szechuan Pepper','Cumin*','Fenugreek*','Turmeric*'],
+    'Savory Spice*':['Curry Leaf','Bay Leaf','Sumac','Saffron']}},
   Roasted:{color:'#6b4a34',subs:{
-    Cereal:['Grain','Malt','Toast','Graham Cracker','Brown Rice','Oatmeal','Barley','Fresh Bread'],
-    Burnt:['Smoky','Ashy','Charred','Acrid','Burnt Toast','Roasted Chicory','Carbon'],
-    Tobacco:['Pipe Tobacco','Fresh Tobacco','Cigar']}},
+    Cereal:['Grain','Malt','Toast','Graham Cracker','Brown Rice','Oatmeal','Barley','Fresh Bread','Rye*','Puffed Rice*','Corn Flakes*'],
+    Burnt:['Smoky','Ashy','Charred','Acrid','Burnt Toast','Roasted Chicory','Carbon','Burnt Marshmallow*'],
+    Tobacco:['Pipe Tobacco','Fresh Tobacco','Cigar','Cigarillo*','Snuff*']}},
   'Green & Vegetal':{color:'#5c8a4e',subs:{
-    Vegetal:['Green Bell Pepper','Fresh Grass','Olive','Cucumber','Zucchini','Green Tomato','Kale'],
-    Beany:['Raw Peanut','Snow Pea','Fresh Bean','Green Bean','Soybean'],
-    'Herb-like':['Dill','Hay','Sage','Thyme','Mint','Fennel']}},
+    Vegetal:['Green Bell Pepper','Fresh Grass','Olive','Cucumber','Zucchini','Green Tomato','Kale','Artichoke*','Celery*','Asparagus*'],
+    Beany:['Raw Peanut','Snow Pea','Fresh Bean','Green Bean','Soybean','Edamame*','Lentil*'],
+    'Herb-like':['Dill','Hay','Sage','Thyme','Mint','Fennel','Basil*','Cilantro*','Parsley*']}},
   'Sour & Fermented':{color:'#b3ad42',subs:{
-    Sour:['Citric','Malic','Tartaric','Winey','Acetic','Lactic','Sour Cherry','Lemon Juice'],
-    Fermented:['Overripe Fruit','Boozy','Whiskey-like','Kombucha-like','Rum-like','Sourdough','Cider']}},
+    Sour:['Citric','Malic','Tartaric','Winey','Acetic','Lactic','Sour Cherry','Lemon Juice','Tamarind*','Green Grape*','Gooseberry*'],
+    Fermented:['Overripe Fruit','Boozy','Whiskey-like','Kombucha-like','Rum-like','Sourdough','Cider','Miso*','Balsamic*']}},
   Other:{color:'#6e7f92',subs:{
     'Papery & Musty':['Cardboard','Musty','Earthy','Woody','Stale','Damp Wood','Old Books'],
-    Chemical:['Rubber','Medicinal','Petroleum','Salty','Skunky','Gasoline']}}}},
+    'Savory & Brothy*':['Broth','Beef Jerky','Soy Sauce','Umami'],
+    Chemical:['Rubber','Medicinal','Petroleum','Salty','Skunky','Gasoline','Acetone*','Bitter Medicine*']}}}},
 Tea:{color:'#6f9a55',subs:{
   Floral:{color:'#d98aa8',subs:{
-    'White Florals':['Jasmine','Honeysuckle','Gardenia','Lily','Magnolia','Orange Blossom'],
-    'Rich Florals':['Rose','Orchid','Lilac','Peony','Narcissus','Ylang-Ylang'],
-    Wildflower:['Chrysanthemum','Osmanthus','Chamomile','Dandelion','Marigold','Elderflower']}},
+    'White Florals':['Jasmine','Honeysuckle','Gardenia','Lily','Magnolia','Orange Blossom','Tuberose*','Frangipani*'],
+    'Rich Florals':['Rose','Orchid','Lilac','Peony','Narcissus','Ylang-Ylang','Wisteria*','Hyacinth*'],
+    Wildflower:['Chrysanthemum','Osmanthus','Chamomile','Dandelion','Marigold','Elderflower','Buttercup*','Clover Blossom*'],
+    'Dried Flowers*':['Potpourri','Dried Rose','Pressed Flowers','Dried Osmanthus']}},
   Fruity:{color:'#c94f42',subs:{
-    Citrus:['Bergamot','Lemon','Yuzu','Orange Peel','Grapefruit','Mandarin'],
-    Orchard:['Apple','Pear','Quince','Green Apple','White Grape'],
-    'Stone Fruit':['Apricot','Peach','Plum','Nectarine','Cherry'],
-    Tropical:['Lychee','Mango','Pineapple','Passion Fruit','Coconut','Papaya','Banana'],
-    Berry:['Strawberry','Raspberry','Goji','Blackcurrant','Cranberry'],
-    Dried:['Raisin','Date','Dried Apricot','Prune','Longan']}},
+    Citrus:['Bergamot','Lemon','Yuzu','Orange Peel','Grapefruit','Mandarin','Kumquat*','Pomelo*','Sudachi*'],
+    Orchard:['Apple','Pear','Quince','Green Apple','White Grape','Nashi Pear*','Crabapple*'],
+    'Stone Fruit':['Apricot','Peach','Plum','Nectarine','Cherry','Greengage*','Loquat*','Yellow Plum*'],
+    Tropical:['Lychee','Mango','Pineapple','Passion Fruit','Coconut','Papaya','Banana','Longan*','Rambutan*','Starfruit*'],
+    Berry:['Strawberry','Raspberry','Goji','Blackcurrant','Cranberry','Mulberry*','Schisandra*'],
+    Dried:['Raisin','Date','Dried Apricot','Prune','Longan','Candied Jujube*','Dried Fig*']}},
   Vegetal:{color:'#5e9151',subs:{
-    Grassy:['Fresh Grass','Hay','Straw','Bamboo Leaf','Wheatgrass','Nettle'],
-    'Green Veg':['Spinach','Asparagus','Artichoke','Edamame','Snow Pea','Bok Choy','Zucchini'],
-    Herbaceous:['Mint','Spearmint','Peppermint','Basil','Sage','Lemongrass','Thyme','Dill','Eucalyptus']}},
+    Grassy:['Fresh Grass','Hay','Straw','Bamboo Leaf','Wheatgrass','Nettle','Fresh Bamboo*','Rice Paddy*'],
+    'Green Veg':['Spinach','Asparagus','Artichoke','Edamame','Snow Pea','Bok Choy','Zucchini','Green Bean*','Lettuce*'],
+    Herbaceous:['Mint','Spearmint','Peppermint','Basil','Sage','Lemongrass','Thyme','Dill','Eucalyptus','Shiso*','Fennel Frond*','Chervil*']}},
   Marine:{color:'#4d7f8c',subs:{
-    Oceanic:['Seaweed','Kelp','Brine','Oyster Shell','Sea Air']}},
+    Oceanic:['Seaweed','Kelp','Brine','Oyster Shell','Sea Air','Dried Fish*','Tide Pool*']}},
   'Nutty & Toasty':{color:'#a97e4a',subs:{
-    Nuts:['Chestnut','Almond','Walnut','Hazelnut','Pecan','Pine Nut','Peanut'],
-    Toasted:['Toast','Roasted Grain','Toasted Rice','Popcorn','Baked Bread','Biscuit','Roasted Barley']}},
+    Nuts:['Chestnut','Almond','Walnut','Hazelnut','Pecan','Pine Nut','Peanut','Macadamia*','Pistachio*','Water Chestnut*'],
+    Toasted:['Toast','Roasted Grain','Toasted Rice','Popcorn','Baked Bread','Biscuit','Roasted Barley','Genmai*','Pie Crust*','Charred Corn*']}},
   Sweet:{color:'#d9a441',subs:{
-    Honeyed:['Honey','Nectar','Honeycomb','Beeswax','Maple'],
-    Caramelized:['Caramel','Brown Sugar','Malty','Toffee','Molasses'],
-    Confection:['Vanilla','Cocoa','Marzipan','Custard','Chocolate']}},
+    Honeyed:['Honey','Nectar','Honeycomb','Beeswax','Maple','Buckwheat Honey*','Royal Jelly*'],
+    Caramelized:['Caramel','Brown Sugar','Malty','Toffee','Molasses','Burnt Sugar*','Maple Candy*'],
+    Confection:['Vanilla','Cocoa','Marzipan','Custard','Chocolate','White Chocolate*','Almond Cookie*','Mochi*']}},
   'Savory & Milky':{color:'#b9a06a',subs:{
-    Umami:['Broth','Nori','Miso','Dashi','Mushroom'],
-    Milky:['Cream','Butter','Condensed Milk','Coconut Milk','Sticky Rice']}},
+    Umami:['Broth','Nori','Miso','Dashi','Mushroom','Chicken Broth*','Kombu*','Ripe Tomato*'],
+    Milky:['Cream','Butter','Condensed Milk','Coconut Milk','Sticky Rice','Steamed Milk*','Yogurt*','Ghee*']}},
   Smoky:{color:'#6e5a4a',subs:{
-    Smoke:['Pine Smoke','Bonfire','Tar','Campfire','Smoked Wood','Charcoal']}},
+    Smoke:['Pine Smoke','Bonfire','Tar','Campfire','Smoked Wood','Charcoal','Peat*','Ash*','Incense Smoke*']}},
   Earthy:{color:'#7a6353',subs:{
-    Soil:['Wet Earth','Forest Floor','Petrichor','Loam','Compost','Moss'],
-    Aged:['Leather','Tobacco','Autumn Leaves','Betel Nut','Old Wood'],
-    Mineral:['Wet Stone','Flint','Slate','River Stone','Chalk']}},
+    Soil:['Wet Earth','Forest Floor','Petrichor','Loam','Compost','Moss','Cave Air*','Truffle*','Beetroot*'],
+    Aged:['Leather','Tobacco','Autumn Leaves','Betel Nut','Old Wood','Antique Wood*','Old Library*','Dried Bamboo*'],
+    Mineral:['Wet Stone','Flint','Slate','River Stone','Chalk','Granite*','Hot Spring*','Iron*']}},
   Medicinal:{color:'#6d7f6a',subs:{
-    'Herbal Medicine':['Chinese Herbs','Ginseng','Licorice Root','Angelica','Dried Roots']}},
+    'Herbal Medicine':['Chinese Herbs','Ginseng','Licorice Root','Angelica','Dried Roots','Dried Jujube*','Bitter Herb*']}},
   Cooling:{color:'#6fa08d',subs:{
-    'Camphor & Mint':['Camphor','Menthol','Wintergreen','Pine Balm']}},
+    'Camphor & Mint':['Camphor','Menthol','Wintergreen','Pine Balm','Cooling Herbs*','Mountain Air*']}},
   Spiced:{color:'#9a5236',subs:{
-    Warm:['Cinnamon','Clove','Ginger','Anise','Cardamom','Nutmeg','Black Pepper'],
-    Woody:['Cedar','Pine','Sandalwood','Bamboo','Cypress']}}}},
+    Warm:['Cinnamon','Clove','Ginger','Anise','Cardamom','Nutmeg','Black Pepper','Star Anise*','Licorice*','Dried Ginger*'],
+    Woody:['Cedar','Pine','Sandalwood','Bamboo','Cypress','Agarwood*','Hinoki*','Camphor Wood*']}}}},
 Wine:{color:'#8e3a52',subs:{
   Fruity:{color:'#b83a52',subs:{
-    'Red Fruit':['Cherry','Strawberry','Raspberry','Red Currant','Cranberry','Pomegranate','Red Plum','Wild Strawberry','Morello Cherry*','Redcurrant Jelly*'],
-    'Dark Fruit':['Blackberry','Black Cherry','Plum','Cassis','Mulberry','Blueberry','Damson'],
-    Citrus:['Lemon','Lime','Grapefruit','Orange Zest','Tangerine','Marmalade','Preserved Lemon'],
-    'Orchard & Stone':['Green Apple','Pear','Peach','Apricot','Nectarine','Quince','White Peach','Yellow Apple'],
-    Tropical:['Pineapple','Melon','Lychee','Passion Fruit','Guava','Mango','Banana','Kiwi'],
-    Dried:['Raisin','Fig','Prune','Dried Cranberry','Date','Fruitcake','Dried Apricot']}},
+    'Red Fruit':{subs:{
+      'Fresh Red':['Cherry','Strawberry','Raspberry','Red Currant','Cranberry','Pomegranate','Red Plum','Wild Strawberry'],
+      'Ripe & Jammy*':['Strawberry Jam','Cherry Cola','Morello Cherry','Redcurrant Jelly','Red Fruit Compote'],
+      'Tart Red*':['Sour Cherry','Underripe Strawberry','Rhubarb']}},
+    'Dark Fruit':['Blackberry','Black Cherry','Plum','Cassis','Mulberry','Blueberry','Damson','Blackberry Jam*','Blueberry Compote*','Bramble*'],
+    Citrus:['Lemon','Lime','Grapefruit','Orange Zest','Tangerine','Marmalade','Preserved Lemon','Kumquat*','Candied Citron*'],
+    'Orchard & Stone':['Green Apple','Pear','Peach','Apricot','Nectarine','Quince','White Peach','Yellow Apple','Mirabelle*','Baked Apple*','Quince Paste*'],
+    Tropical:['Pineapple','Melon','Lychee','Passion Fruit','Guava','Mango','Banana','Kiwi','Green Mango*','Papaya*','Starfruit*'],
+    Dried:['Raisin','Fig','Prune','Dried Cranberry','Date','Fruitcake','Dried Apricot','Sultana*','Fig Paste*','Membrillo*']}},
+  'Confected*':{color:'#c98aa0',subs:{
+    Candy:['Bubblegum','Candied Fruit','Turkish Delight','Toffee Apple','Pear Drop'],
+    Syrupy:['Grenadine','Fruit Syrup','Jam','Cassis Liqueur']}},
   Floral:{color:'#cf7fa4',subs:{
-    'Blue Florals':['Violet','Lavender','Iris','Hyacinth'],
-    'White Florals':['Elderflower','Orange Blossom','Acacia','Honeysuckle','Jasmine','Chamomile'],
-    Rose:['Rose','Potpourri','Dried Rose','Turkish Delight']}},
+    'Blue Florals':['Violet','Lavender','Iris','Hyacinth','Wisteria*'],
+    'White Florals':['Elderflower','Orange Blossom','Acacia','Honeysuckle','Jasmine','Chamomile','Linden*','Magnolia*'],
+    Rose:['Rose','Potpourri','Dried Rose','Turkish Delight','Rose Oil*','Lychee Rose*']}},
   Herbal:{color:'#61905b',subs:{
-    Green:['Bell Pepper','Grass','Tomato Leaf','Jalapeño','Gooseberry','Boxwood','Asparagus'],
-    'Dried Herb':['Eucalyptus','Mint','Thyme','Bay Leaf','Sage','Rosemary','Tea Leaf','Dill']}},
+    Green:['Bell Pepper','Grass','Tomato Leaf','Jalapeño','Gooseberry','Boxwood','Asparagus','Nettle*','Snap Pea*','Crushed Leaf*'],
+    'Dried Herb':['Eucalyptus','Mint','Thyme','Bay Leaf','Sage','Rosemary','Tea Leaf','Dill','Fennel*','Lavender*','Garrigue*','Tarragon*']}},
   Spice:{color:'#99503a',subs:{
-    'Sweet Spice':['Cinnamon','Clove','Anise','Nutmeg','Vanilla','Ginger'],
-    Pungent:['Black Pepper','Licorice','White Pepper','Juniper','Cardamom']}},
+    'Sweet Spice':['Cinnamon','Clove','Anise','Nutmeg','Vanilla','Ginger','Five Spice*','Gingerbread*'],
+    Pungent:['Black Pepper','Licorice','White Pepper','Juniper','Cardamom','Cracked Peppercorn*','Saffron*']}},
   'Earth & Mineral':{color:'#7d6a58',subs:{
-    Earth:['Forest Floor','Mushroom','Truffle','Wet Leaves','Potting Soil','Beetroot'],
-    Mineral:['Wet Stone','Chalk','Flint','Saline','Slate','Petrichor','Crushed Rock']}},
+    Earth:['Forest Floor','Mushroom','Truffle','Wet Leaves','Potting Soil','Beetroot','Compost*','Sous Bois*'],
+    Mineral:['Wet Stone','Chalk','Flint','Saline','Slate','Petrichor','Crushed Rock','Graphite*','Iodine*','Oyster Shell*','Volcanic Rock*']}},
   Oak:{color:'#8a6134',subs:{
-    Barrel:['Vanilla','Coconut','Cedar','Sandalwood','Baking Spices','Dill'],
-    Char:['Toast','Smoke','Espresso','Charred Wood','Coffee Grounds','Caramel']}},
+    Barrel:['Vanilla','Coconut','Cedar','Sandalwood','Baking Spices','Dill','Bourbon Barrel*','Resin*'],
+    Char:['Toast','Smoke','Espresso','Charred Wood','Coffee Grounds','Caramel','Mocha*','Burnt Vanilla*']}},
   Microbial:{color:'#b48e58',subs:{
-    Yeast:['Brioche','Sourdough','Bread Dough','Biscuit','Lager'],
-    Dairy:['Butter','Cream','Yogurt','Cheese Rind'],
-    Wild:['Barnyard','Musk','Horse Blanket','Band-Aid','Game']}},
+    Yeast:['Brioche','Sourdough','Bread Dough','Biscuit','Lager','Champagne Lees*','Toasted Brioche*'],
+    Dairy:['Butter','Cream','Yogurt','Cheese Rind','Crème Fraîche*','Parmesan*'],
+    Wild:['Barnyard','Musk','Horse Blanket','Band-Aid','Game','Salami*','Sweaty Saddle*']}},
   Aged:{color:'#6e5a6e',subs:{
-    Tertiary:['Leather','Tobacco','Cocoa','Cigar Box','Dried Leaves'],
-    Oxidative:['Walnut','Caramel','Bruised Apple','Toffee','Roasted Nuts'],
-    Petrol:['Petrol','Beeswax','Kerosene','Lanolin','Rubber']}},
+    Tertiary:['Leather','Tobacco','Cocoa','Cigar Box','Dried Leaves','Balsamic*','Soy Sauce*','Forest Honey*'],
+    Oxidative:['Walnut','Caramel','Bruised Apple','Toffee','Roasted Nuts','Rancio*','Marmite*'],
+    Petrol:['Petrol','Beeswax','Kerosene','Lanolin','Rubber','Diesel*','Paraffin*']}},
   Faults:{color:'#8c8272',subs:{
-    'Cork & Must':['Musty Cork','Wet Newspaper','Damp Basement','Wet Cardboard','Wet Dog'],
-    Volatile:['Vinegar','Nail Polish','Acetone','Balsamic'],
-    Reduction:['Struck Match','Rotten Egg','Burnt Rubber','Garlic','Boiled Cabbage']}}}},
+    'Cork & Must':['Musty Cork','Wet Newspaper','Damp Basement','Wet Cardboard','Wet Dog','Moldy Cork*'],
+    Volatile:['Vinegar','Nail Polish','Acetone','Balsamic','Solvent*'],
+    Reduction:['Struck Match','Rotten Egg','Burnt Rubber','Garlic','Boiled Cabbage','Struck Flint*','Canned Corn*'],
+    'Mousy & Other*':['Mouse Cage','Geranium Leaf','Soapy','Bitter Almond']}}}},
 Beer:{color:'#c08a3e',subs:{
   Malty:{color:'#b07a3e',subs:{
-    Bready:['Bread Crust','Biscuit','Dough','Cracker','Toast','Wheat','Grainy'],
-    Caramelized:['Caramel','Toffee','Burnt Sugar','Brown Sugar','Bread Pudding'],
-    Roasted:['Coffee','Chocolate','Burnt Toast','Espresso','Dark Chocolate','Ash','Smoke']}},
+    Bready:['Bread Crust','Biscuit','Dough','Cracker','Toast','Wheat','Grainy','Pumpernickel*','Sourdough Crust*','Water Cracker*'],
+    Caramelized:['Caramel','Toffee','Burnt Sugar','Brown Sugar','Bread Pudding','Hard Candy*','Treacle*'],
+    Roasted:['Coffee','Chocolate','Burnt Toast','Espresso','Dark Chocolate','Ash','Smoke','Carob*','Licorice*']}},
   Hoppy:{color:'#6a9a3f',subs:{
-    Citrus:['Grapefruit','Orange Peel','Lime Zest','Lemon','Tangerine','Yuzu'],
-    Tropical:['Mango','Passion Fruit','Guava','Lychee','Pineapple','Papaya','Melon','Coconut'],
-    'Stone Fruit':['Apricot','Peach','Nectarine','Cherry'],
-    Piney:['Pine Resin','Spruce','Juniper','Fir','Sap'],
-    'Dank & Resinous':['Resin','Weedy','Catty','Garlic-Onion','Sticky Resin'],
-    'Floral & Herbal':['Floral','Grassy','Noble','Lavender','Chamomile','Mint','Tea']}},
+    Citrus:['Grapefruit','Orange Peel','Lime Zest','Lemon','Tangerine','Yuzu','Pomelo*','Makrut Lime*'],
+    Tropical:['Mango','Passion Fruit','Guava','Lychee','Pineapple','Papaya','Melon','Coconut','Starfruit*','Green Papaya*'],
+    'Stone Fruit':['Apricot','Peach','Nectarine','Cherry','Plum*','Apricot Skin*'],
+    Piney:['Pine Resin','Spruce','Juniper','Fir','Sap','Cedar*','Eucalyptus*'],
+    'Dank & Resinous':['Resin','Weedy','Catty','Garlic-Onion','Sticky Resin','Diesel*','Incense*'],
+    'Floral & Herbal':['Floral','Grassy','Noble','Lavender','Chamomile','Mint','Tea','Elderflower*','Sage*','Lemongrass*']}},
   Fermentation:{color:'#c9a13e',subs:{
-    Esters:['Banana','Pear','Apple','Stone Fruit','Bubblegum','Strawberry','Pear Drops','Red Apple'],
-    'Spicy Phenols':['Clove','White Pepper','Nutmeg','Allspice','Cinnamon'],
-    Yeast:['Doughy','Brioche','Fresh Yeast','Biscuity']}},
+    Esters:['Banana','Pear','Apple','Stone Fruit','Bubblegum','Strawberry','Pear Drops','Red Apple','Rosewater*','Honeydew*'],
+    'Spicy Phenols':['Clove','White Pepper','Nutmeg','Allspice','Cinnamon','Smoked Phenol*','Medicinal*'],
+    Yeast:['Doughy','Brioche','Fresh Yeast','Biscuity','Nutritional Yeast*','Marmite*']}},
   'Sour & Funky':{color:'#a8b04a',subs:{
-    Tart:['Lemon','Green Apple','Vinegar','Sour Cherry','Gooseberry','Lactic Tang','Kiwi'],
-    Funk:['Barnyard','Hay','Earthy','Horse Blanket','Musty Cellar','Goaty','Socks']}},
+    Tart:['Lemon','Green Apple','Vinegar','Sour Cherry','Gooseberry','Lactic Tang','Kiwi','Rhubarb*','Sour Candy*','Grapefruit Pith*'],
+    Funk:['Barnyard','Hay','Earthy','Horse Blanket','Musty Cellar','Goaty','Socks','Cheese Rind*','Olive Brine*','Wet Wool*']}},
   Adjuncts:{color:'#c9825e',subs:{
-    'Sweet Additions':['Vanilla','Coconut','Honey','Lactose','Maple','Marshmallow','Chocolate','Peanut Butter'],
-    Fruited:['Cherry','Raspberry','Apricot','Passion Fruit','Blackberry','Peach','Guava'],
-    Spiced:['Coriander','Orange Peel','Pumpkin Spice','Cinnamon','Ginger','Chili','Grains of Paradise']}},
+    'Sweet Additions':['Vanilla','Coconut','Honey','Lactose','Maple','Marshmallow','Chocolate','Peanut Butter','Marshmallow Fluff*','Graham Cracker*','Cinnamon Bun*'],
+    Fruited:['Cherry','Raspberry','Apricot','Passion Fruit','Blackberry','Peach','Guava','Mango*','Sour Cherry*','Cranberry*'],
+    Spiced:['Coriander','Orange Peel','Pumpkin Spice','Cinnamon','Ginger','Chili','Grains of Paradise','Chai*','Nutmeg*','Juniper*']}},
+  'Barrel-Aged*':{color:'#7c5230',subs:{
+    Spirit:['Bourbon','Rum Barrel','Tequila Barrel','Brandy'],
+    Wood:['Toasted Oak','Vanilla Oak','Coconut','Cedar'],
+    Fortified:['Sherry','Port','Vermouth','Madeira']}},
   'Off-Flavors':{color:'#7f8b7a',subs:{
-    Buttery:['Diacetyl','Movie Popcorn','Butterscotch','Rancid Butter'],
-    Vegetal:['Cooked Corn','Cabbage','Celery','Tomato Juice','Cooked Vegetables'],
-    Stale:['Cardboard','Skunky','Papery','Sherry-like','Wet Dog','Leathery','Metallic']}}}},
+    Buttery:['Diacetyl','Movie Popcorn','Butterscotch','Rancid Butter','Slick Butter*'],
+    Vegetal:['Cooked Corn','Cabbage','Celery','Tomato Juice','Cooked Vegetables','Creamed Corn*','Canned Peas*'],
+    Stale:['Cardboard','Skunky','Papery','Sherry-like','Wet Dog','Leathery','Metallic','Lightstruck*','Old Grain*','Wet Paper*']}}}},
 Whiskey:{color:'#b0722e',subs:{
   Cereal:{color:'#b5893f',subs:{
-    Grain:['Malted Barley','Corn','Rye Bread','Oatmeal','Wheat','Cornbread','Cooked Mash'],
-    Baked:['Biscuit','Porridge','Bran','Shortbread','Toasted Bread','Pastry']}},
+    Grain:['Malted Barley','Corn','Rye Bread','Oatmeal','Wheat','Cornbread','Cooked Mash','Semolina*','Rice Pudding*'],
+    Baked:['Biscuit','Porridge','Bran','Shortbread','Toasted Bread','Pastry','Flapjack*','Digestive Biscuit*','Croissant*']}},
   Fruity:{color:'#c05548',subs:{
-    Orchard:['Apple','Pear','Green Apple','Banana','Baked Apple','Pear Drop','Quince'],
-    Dried:['Raisin','Fig','Date','Prune','Sultana','Dried Apricot'],
-    Citrus:['Orange Peel','Lemon','Marmalade','Lime','Grapefruit','Candied Peel']}},
+    Orchard:['Apple','Pear','Green Apple','Banana','Baked Apple','Pear Drop','Quince','Bramley Apple*','Poached Pear*'],
+    Dried:['Raisin','Fig','Date','Prune','Sultana','Dried Apricot','Dried Mango*','Banana Chips*'],
+    Citrus:['Orange Peel','Lemon','Marmalade','Lime','Grapefruit','Candied Peel','Tangerine*','Lemon Curd*']}},
   'Floral & Grassy':{color:'#8fa050',subs:{
-    Floral:['Heather','Rose Water','Elderflower','Geranium','Violet'],
-    Grassy:['Cut Grass','Hay','Straw','Herb Garden','Fern']}},
+    Floral:['Heather','Rose Water','Elderflower','Geranium','Violet','Honeysuckle*','Meadow Flowers*'],
+    Grassy:['Cut Grass','Hay','Straw','Herb Garden','Fern','Silage*','Nettle*','Bracken*']}},
   'Peaty & Smoky':{color:'#5d6360',subs:{
-    Smoke:['Bonfire','Tar','Creosote','Peat Smoke','Ash','Charcoal','Smoked Fish'],
-    Medicinal:['Iodine','Antiseptic','Sea Spray','TCP','Bandages','Carbolic Soap']}},
+    Smoke:{subs:{
+      'Classic Smoke':['Bonfire','Tar','Creosote','Peat Smoke','Ash','Charcoal','Smoked Fish'],
+      'Coastal Smoke*':['Kippers','Seaweed Smoke','Salted Peat','Smokehouse'],
+      'Industrial Smoke*':['Coal Smoke','Soot','Engine Oil','Burning Heather']}},
+    Medicinal:['Iodine','Antiseptic','Sea Spray','TCP','Bandages','Carbolic Soap','Hospital Gauze*','Menthol*']}},
   Woody:{color:'#7c5230',subs:{
-    Oak:['Vanilla','Coconut','Cedar','Sawdust','Sandalwood','Pencil Shavings'],
-    Char:['Toasted Oak','Espresso','Dark Chocolate','Burnt Sugar','Molasses','Campfire Embers']}},
+    Oak:['Vanilla','Coconut','Cedar','Sawdust','Sandalwood','Pencil Shavings','Virgin Oak*','Oak Stave*','Resin*'],
+    Char:['Toasted Oak','Espresso','Dark Chocolate','Burnt Sugar','Molasses','Campfire Embers','Charcoal*','Burnt Ends*']}},
   'Winey & Sherried':{color:'#7e4a5e',subs:{
-    Fortified:['Sherry','Port','Madeira','Marsala','Red Wine','Rancio'],
-    Rich:['Fruitcake','Walnut','Christmas Cake','Marzipan','Treacle','Stewed Fruit']}},
+    Fortified:['Sherry','Port','Madeira','Marsala','Red Wine','Rancio','Oloroso*','Amontillado*','Pedro Ximénez*'],
+    Rich:['Fruitcake','Walnut','Christmas Cake','Marzipan','Treacle','Stewed Fruit','Plum Pudding*','Mincemeat*','Rum-Soaked Raisin*']}},
   Feinty:{color:'#8a6a52',subs:{
-    Leathery:['Leather','Tobacco Pouch','Old Books','Saddle','Cigar Box'],
-    Waxy:['Beeswax','Candle Wax','Plasticine','Furniture Polish','Putty']}},
+    Leathery:['Leather','Tobacco Pouch','Old Books','Saddle','Cigar Box','Wax Jacket*','Horsehair*'],
+    Waxy:['Beeswax','Candle Wax','Plasticine','Furniture Polish','Putty','Paraffin*','Lanolin*','Crayon*']}},
   Sulphury:{color:'#6b7069',subs:{
-    Sulphur:['Struck Match','Rubber','Meaty','Cabbage Water','Gunpowder','Spent Fireworks']}},
+    Sulphur:['Struck Match','Rubber','Meaty','Cabbage Water','Gunpowder','Spent Fireworks','Cordite*','Flint*']}},
   'Sweet & Spice':{color:'#c08a3e',subs:{
-    Sweet:['Honey','Caramel','Butterscotch','Maple','Golden Syrup','Vanilla Fudge','Toffee Apple'],
-    Spice:['Cinnamon','Clove','Black Pepper','Ginger','Nutmeg','Anise','White Pepper','Chili Warmth']}}}},
+    Sweet:['Honey','Caramel','Butterscotch','Maple','Golden Syrup','Vanilla Fudge','Toffee Apple','Heather Honey*','Barley Sugar*'],
+    Spice:['Cinnamon','Clove','Black Pepper','Ginger','Nutmeg','Anise','White Pepper','Chili Warmth','Allspice*','Mace*','Dried Chili*']}}}},
 Chocolate:{color:'#6f4a35',subs:{
   Cocoa:{color:'#6f4a35',subs:{
-    'Pure Cocoa':['Cacao Nib','Dark Cocoa','Cocoa Powder','Bitter Cocoa','Roasted Cacao'],
-    Baked:['Brownie','Fudge','Chocolate Cake','Biscuit','Pastry']}},
+    'Pure Cocoa':['Cacao Nib','Dark Cocoa','Cocoa Powder','Bitter Cocoa','Roasted Cacao','Stone-Ground Cacao*','Cocoa Husk*'],
+    Baked:['Brownie','Fudge','Chocolate Cake','Biscuit','Pastry','Lava Cake*',"Devil's Food*"]}},
   Fruity:{color:'#bd4a52',subs:{
-    Berry:['Raspberry','Cherry','Blackcurrant','Strawberry','Blueberry','Cranberry'],
-    Citrus:['Orange','Bergamot','Lemon','Lime','Grapefruit'],
-    'Stone Fruit':['Apricot','Plum','Peach','Black Cherry'],
-    Tropical:['Banana','Passion Fruit','Coconut','Mango','Pineapple','Lychee'],
-    Dried:['Raisin','Fig','Prune','Date','Dried Cherry']}},
+    Berry:['Raspberry','Cherry','Blackcurrant','Strawberry','Blueberry','Cranberry','Açaí*','Goji*'],
+    Citrus:['Orange','Bergamot','Lemon','Lime','Grapefruit','Yuzu*','Candied Orange*'],
+    'Stone Fruit':['Apricot','Plum','Peach','Black Cherry','Nectarine*','Mirabelle*'],
+    Tropical:['Banana','Passion Fruit','Coconut','Mango','Pineapple','Lychee','Guava*','Papaya*','Starfruit*'],
+    Dried:['Raisin','Fig','Prune','Date','Dried Cherry','Dried Cranberry*','Tamarind*']}},
   Floral:{color:'#cd85a4',subs:{
-    Flowers:['Jasmine','Orange Blossom','Rose','Violet','Lavender','Honeysuckle','Elderflower']}},
+    Flowers:['Jasmine','Orange Blossom','Rose','Violet','Lavender','Honeysuckle','Elderflower','Ylang-Ylang*','Chamomile*','Geranium*']}},
   Nutty:{color:'#a3763f',subs:{
-    Nuts:['Hazelnut','Almond','Peanut','Walnut','Pecan','Macadamia','Chestnut'],
-    Confection:['Marzipan','Praline','Nougat','Gianduja','Peanut Butter']}},
+    Nuts:['Hazelnut','Almond','Peanut','Walnut','Pecan','Macadamia','Chestnut','Pistachio*','Brazil Nut*','Tiger Nut*'],
+    Confection:['Marzipan','Praline','Nougat','Gianduja','Peanut Butter','Halva*','Nut Brittle*']}},
   'Caramel & Dairy':{color:'#cf9a4a',subs:{
-    Caramelized:['Caramel','Toffee','Butterscotch','Honey','Brown Sugar','Dulce de Leche','Burnt Caramel'],
-    Dairy:['Cream','Butter','Malted Milk','Yogurt','Condensed Milk','Milk Powder']}},
+    Caramelized:['Caramel','Toffee','Butterscotch','Honey','Brown Sugar','Dulce de Leche','Burnt Caramel','Salted Caramel*','Cajeta*'],
+    Dairy:['Cream','Butter','Malted Milk','Yogurt','Condensed Milk','Milk Powder','Brown Butter*','Crème Fraîche*','Goat Milk*']}},
+  'Fermented & Winey*':{color:'#8e5a6e',subs:{
+    Bright:['Red Wine','Balsamic','Kombucha-like','Yogurt Tang'],
+    Deep:['Sherry','Rum','Overripe Fruit','Port']}},
   Spiced:{color:'#94502f',subs:{
-    Warm:['Cinnamon','Nutmeg','Clove','Ginger','Cardamom','Allspice'],
-    Bold:['Licorice','Black Pepper','Chili','Smoked Chili','Anise','Tobacco']}},
+    Warm:['Cinnamon','Nutmeg','Clove','Ginger','Cardamom','Allspice','Chai*','Star Anise*'],
+    Bold:['Licorice','Black Pepper','Chili','Smoked Chili','Anise','Tobacco','Ancho*','Long Pepper*','Sichuan Pepper*']}},
   'Vegetal & Fresh':{color:'#7a9a5e',subs:{
-    Green:['Grass','Green Tea','Olive','Cut Grass','Cucumber','Matcha'],
-    Fresh:['Mint','Eucalyptus','Menthol','Pine']}},
+    Green:['Grass','Green Tea','Olive','Cut Grass','Cucumber','Matcha','Fresh Hay*','Snap Pea*'],
+    Fresh:['Mint','Eucalyptus','Menthol','Pine','Camphor*','Basil*']}},
   'Earthy & Roasted':{color:'#66594a',subs:{
-    Earth:['Mushroom','Forest Floor','Wet Earth','Moss','Truffle','Damp Soil'],
-    Roast:['Coffee','Toast','Smoke','Espresso','Charred Wood','Burnt Toast']}}}},
+    Earth:['Mushroom','Forest Floor','Wet Earth','Moss','Truffle','Damp Soil','Petrichor*','Black Tea*'],
+    Roast:['Coffee','Toast','Smoke','Espresso','Charred Wood','Burnt Toast','Roasted Barley*','Char*']}}}},
 Cider:{color:'#b8552e',subs:{
   Fruity:{color:'#c05548',subs:{
-    Apple:['Fresh Apple','Baked Apple','Apple Skin','Bruised Apple','Green Apple','Red Apple','Apple Juice','Cooked Apple'],
-    Orchard:['Pear','Quince','Stone Fruit','Apricot','White Grape','Gooseberry'],
-    Citrus:['Lemon','Orange Zest','Grapefruit','Lime']}},
+    Apple:['Fresh Apple','Baked Apple','Apple Skin','Bruised Apple','Green Apple','Red Apple','Apple Juice','Cooked Apple','Russet Apple*','Apple Butter*','Cider Apple*'],
+    Orchard:['Pear','Quince','Stone Fruit','Apricot','White Grape','Gooseberry','Medlar*','Damson*'],
+    Citrus:['Lemon','Orange Zest','Grapefruit','Lime','Yuzu*']}},
   'Floral & Honey':{color:'#d9a441',subs:{
-    Floral:['Apple Blossom','Elderflower','Meadow','Honeysuckle','Rose','Dandelion'],
-    Honeyed:['Honey','Beeswax','Honeycomb','Mead-like','Nectar']}},
+    Floral:['Apple Blossom','Elderflower','Meadow','Honeysuckle','Rose','Dandelion','Chamomile*','Hawthorn Blossom*'],
+    Honeyed:['Honey','Beeswax','Honeycomb','Mead-like','Nectar','Heather Honey*']}},
   'Funky & Wild':{color:'#a8a03e',subs:{
-    Wild:['Barnyard','Horse Blanket','Hay','Musty Cellar','Wet Wool','Earthy Funk'],
-    Sharp:['Sour Apple','Lactic','Sherbet','Lemon Sour','Acetic Tang']}},
+    Wild:['Barnyard','Horse Blanket','Hay','Musty Cellar','Wet Wool','Earthy Funk','Scrumpy Funk*','Lees*'],
+    Sharp:['Sour Apple','Lactic','Sherbet','Lemon Sour','Acetic Tang','Gooseberry*','Verjus*']}},
   'Tannic & Woody':{color:'#8a6134',subs:{
-    Tannin:['Skin Tannin','Black Tea','Walnut','Grape Skin','Strong Tea','Crabapple'],
-    Woody:['Oak','Cedar','Toasted Oak','Vanilla Oak','Pencil Shavings']}},
+    Tannin:['Skin Tannin','Black Tea','Walnut','Grape Skin','Strong Tea','Crabapple','Bittersweet Apple*','Oak Gall*'],
+    Woody:['Oak','Cedar','Toasted Oak','Vanilla Oak','Pencil Shavings','Apple Wood*']}},
   Spiced:{color:'#94502f',subs:{
-    Warm:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Star Anise'],
-    Earthy:['Leather','Smoke','Tobacco','Forest Floor','Mushroom']}}}},
+    Warm:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Star Anise','Mulling Spice*'],
+    Earthy:['Leather','Smoke','Tobacco','Forest Floor','Mushroom','Damp Orchard*','Straw*']}}}},
 Rum:{color:'#7d4526',subs:{
   'Sweet & Caramel':{color:'#b4762e',subs:{
-    Sugars:['Molasses','Brown Sugar','Caramel','Demerara','Burnt Sugar','Maple Syrup','Golden Syrup'],
-    Confection:['Vanilla','Toffee','Honey','Fudge','Marzipan','Nougat','Crème Brûlée','Butterscotch']}},
+    Sugars:['Molasses','Brown Sugar','Caramel','Demerara','Burnt Sugar','Maple Syrup','Golden Syrup','Panela*','Cane Juice*'],
+    Confection:['Vanilla','Toffee','Honey','Fudge','Marzipan','Nougat','Crème Brûlée','Butterscotch','Bananas Foster*','Praline*','Treacle Tart*']}},
   Fruity:{color:'#c05548',subs:{
-    Tropical:['Banana','Pineapple','Coconut','Mango','Papaya','Guava','Passion Fruit','Plantain'],
-    Dried:['Raisin','Date','Fig','Prune','Dried Apricot','Fruitcake','Tamarind'],
-    Citrus:['Orange Peel','Lime','Grapefruit','Candied Orange','Lemon Zest']}},
+    Tropical:['Banana','Pineapple','Coconut','Mango','Papaya','Guava','Passion Fruit','Plantain','Soursop*','Grilled Pineapple*','Tamarind*'],
+    Dried:['Raisin','Date','Fig','Prune','Dried Apricot','Fruitcake','Tamarind','Candied Ginger*','Dried Banana*'],
+    Citrus:['Orange Peel','Lime','Grapefruit','Candied Orange','Lemon Zest','Charred Orange*','Key Lime*']}},
   'Funky & Estery':{color:'#a8a03e',subs:{
-    Esters:['Overripe Banana','Bruised Pineapple','Varnish','Nail Polish','Pear Drops','Bubblegum'],
-    Hogo:['Barnyard','Olive Brine','Briny','Overripe Mango','Blue Cheese','Wet Rope']}},
+    Esters:['Overripe Banana','Bruised Pineapple','Varnish','Nail Polish','Pear Drops','Bubblegum','Pineapple Funk*','Acetone*'],
+    Hogo:['Barnyard','Olive Brine','Briny','Overripe Mango','Blue Cheese','Wet Rope','Overripe Papaya*','Salt Fish*','Diesel*']}},
   Spice:{color:'#94502f',subs:{
-    Baking:['Cinnamon','Nutmeg','Allspice','Clove','Star Anise','Cardamom','Ginger'],
-    Pungent:['Black Pepper','Ginger','Anise','Chili','White Pepper','Licorice']}},
+    Baking:['Cinnamon','Nutmeg','Allspice','Clove','Star Anise','Cardamom','Ginger','Vanilla Pod*','Tonka Bean*'],
+    Pungent:['Black Pepper','Ginger','Anise','Chili','White Pepper','Licorice','Dried Chili*','Clove Oil*']}},
   'Oak & Aged':{color:'#7c5230',subs:{
-    Barrel:['Vanilla','Toasted Oak','Coconut','Char','Cedar','Sawdust','Smoke'],
-    Mature:['Tobacco','Leather','Coffee','Dark Chocolate','Old Leather','Cigar','Espresso']}}}},
+    Barrel:['Vanilla','Toasted Oak','Coconut','Char','Cedar','Sawdust','Smoke','Charred Cask*','Pencil Cedar*'],
+    Mature:['Tobacco','Leather','Coffee','Dark Chocolate','Old Leather','Cigar','Espresso','Antique Furniture*','Balsamic*']}}}},
 Gin:{color:'#5f8f7a',subs:{
   'Juniper & Pine':{color:'#4f7a52',subs:{
-    Conifer:['Juniper Berry','Pine Needle','Resin','Camphor','Spruce Tip','Fir','Cypress','Pine Sap']}},
+    Conifer:['Juniper Berry','Pine Needle','Resin','Camphor','Spruce Tip','Fir','Cypress','Pine Sap','Douglas Fir*','Juniper Oil*','Forest Air*']}},
   Citrus:{color:'#c9a13e',subs:{
-    Peel:['Lemon Peel','Orange Peel','Grapefruit','Lime','Bergamot','Yuzu','Pomelo','Candied Citrus','Lemon Sherbet']}},
+    Peel:['Lemon Peel','Orange Peel','Grapefruit','Lime','Bergamot','Yuzu','Pomelo','Candied Citrus','Lemon Sherbet','Makrut Lime*','Meyer Lemon*','Citron*']}},
   Floral:{color:'#cf9fb5',subs:{
-    Blossom:['Elderflower','Rose','Lavender','Chamomile','Violet','Honeysuckle','Orange Blossom','Hibiscus','Jasmine']}},
+    Blossom:['Elderflower','Rose','Lavender','Chamomile','Violet','Honeysuckle','Orange Blossom','Hibiscus','Jasmine','Gorse*','Meadowsweet*','Apple Blossom*']}},
+  'Fruit-Forward*':{color:'#b46a8e',subs:{
+    Berries:['Sloe','Raspberry','Blackberry','Strawberry','Blackcurrant'],
+    Orchard:['Rhubarb','Apple','Quince','Pear'],
+    Stone:['Damson','Cherry','Apricot']}},
   Herbal:{color:'#6f9a55',subs:{
-    'Green Herbs':['Basil','Sage','Thyme','Mint','Rosemary','Lemongrass','Verbena','Tarragon'],
-    Savory:['Bay Leaf','Olive','Cucumber','Celery','Dill','Samphire','Saline']}},
+    'Green Herbs':['Basil','Sage','Thyme','Mint','Rosemary','Lemongrass','Verbena','Tarragon','Fennel Frond*','Shiso*','Curry Leaf*'],
+    Savory:['Bay Leaf','Olive','Cucumber','Celery','Dill','Samphire','Saline','Caper*','Tomato Leaf*']}},
   Spice:{color:'#96552e',subs:{
-    Warm:['Cardamom','Coriander','Cinnamon','Grains of Paradise','Nutmeg','Star Anise','Caraway','Fennel Seed'],
-    Peppery:['Black Pepper','Cubeb','Ginger','Pink Peppercorn','Chili','Szechuan Pepper']}},
+    Warm:['Cardamom','Coriander','Cinnamon','Grains of Paradise','Nutmeg','Star Anise','Caraway','Fennel Seed','Vanilla*','Tonka*','Cassia*'],
+    Peppery:['Black Pepper','Cubeb','Ginger','Pink Peppercorn','Chili','Szechuan Pepper','Long Pepper*','Timut Pepper*']}},
   'Earthy & Rooty':{color:'#7d6a4a',subs:{
-    Roots:['Angelica','Orris Root','Licorice Root','Ginger Root','Burdock','Gentian'],
-    Earth:['Damp Earth','Woody','Pine Forest','Moss']}}}},
+    Roots:['Angelica','Orris Root','Licorice Root','Ginger Root','Burdock','Gentian','Vetiver*','Galangal*','Turmeric Root*'],
+    Earth:['Damp Earth','Woody','Pine Forest','Moss','Wet Stone*','Peat*']}}}},
 'Mezcal & Tequila':{color:'#7d8f56',subs:{
   'Roasted Agave':{color:'#96683e',subs:{
-    'Sweet Roast':['Roasted Agave','Sweet Potato','Caramelized Squash','Baked Yam','Roasted Corn','Piloncillo'],
-    Sugary:['Agave Nectar','Brown Sugar','Honey','Vanilla']}},
+    'Sweet Roast':['Roasted Agave','Sweet Potato','Caramelized Squash','Baked Yam','Roasted Corn','Piloncillo','Charred Agave Heart*','Candied Pumpkin*'],
+    Sugary:['Agave Nectar','Brown Sugar','Honey','Vanilla','Burnt Honey*']}},
   Vegetal:{color:'#6f9a3e',subs:{
-    Green:['Raw Agave','Green Pepper','Aloe','Cucumber','Bell Pepper','Nopal','Snap Pea','Celery'],
-    Herbal:['Sage','Mint','Grassy','Eucalyptus','Cilantro','Epazote']}},
+    Green:['Raw Agave','Green Pepper','Aloe','Cucumber','Bell Pepper','Nopal','Snap Pea','Celery','Tomatillo*','Green Banana*'],
+    Herbal:['Sage','Mint','Grassy','Eucalyptus','Cilantro','Epazote','Damiana*','Hoja Santa*']}},
   Smoky:{color:'#6e5a4a',subs:{
-    Smoke:['Campfire','Charcoal','Tar','Ash','Mesquite','Smoked Meat','Creosote'],
-    Burnt:['Burnt Sugar','Rubber','Charred Wood','Gunpowder']}},
+    Smoke:['Campfire','Charcoal','Tar','Ash','Mesquite','Smoked Meat','Creosote','Copal*','Wood Ember*'],
+    Burnt:['Burnt Sugar','Rubber','Charred Wood','Gunpowder','Scorched Clay*']}},
   Fruity:{color:'#c05548',subs:{
-    Citrus:['Lime','Grapefruit','Orange','Lemon','Tangerine'],
-    Tropical:['Pineapple','Guava','Melon','Mango','Papaya','Banana']}},
+    Citrus:['Lime','Grapefruit','Orange','Lemon','Tangerine','Key Lime*','Candied Lime*'],
+    Tropical:['Pineapple','Guava','Melon','Mango','Papaya','Banana','Soursop*','Prickly Pear*','Watermelon*']}},
+  'Lactic & Fermented*':{color:'#b0a06a',subs:{
+    Ferment:['Pulque','Sourdough','Tepache','Yogurt'],
+    Funk:['Wet Leather','Blue Cheese','Brine','Damp Hay']}},
   'Earthy & Mineral':{color:'#8a7a62',subs:{
-    Earth:['Wet Clay','Dust','Leather','Adobe','Petrichor','Damp Cave'],
-    Mineral:['Flint','Salt','Stone','Chalk','Slate','Saline']}},
+    Earth:['Wet Clay','Dust','Leather','Adobe','Petrichor','Damp Cave','Cave Floor*','Roasted Earth*'],
+    Mineral:['Flint','Salt','Stone','Chalk','Slate','Saline','Obsidian*','Sea Salt*']}},
   'Spice & Pepper':{color:'#94502f',subs:{
-    Spice:['White Pepper','Cinnamon','Anise','Chili','Black Pepper','Clove','Nutmeg']}}}},
+    Spice:['White Pepper','Cinnamon','Anise','Chili','Black Pepper','Clove','Nutmeg','Cacao*','Canela*','Poblano*']}}}},
 Sake:{color:'#8fa8a0',subs:{
   Fruity:{color:'#c9797f',subs:{
-    Orchard:['Green Apple','Pear','Nashi','White Grape','Muscat','Quince'],
-    Tropical:['Banana','Melon','Lychee','Pineapple','Mango','Coconut'],
-    Citrus:['Yuzu','Lemon','Lime','Grapefruit','Mikan']}},
+    Orchard:['Green Apple','Pear','Nashi','White Grape','Muscat','Quince','White Peach*','Golden Kiwi*'],
+    Tropical:['Banana','Melon','Lychee','Pineapple','Mango','Coconut','Starfruit*','Dragonfruit*'],
+    Citrus:['Yuzu','Lemon','Lime','Grapefruit','Mikan','Sudachi*','Kabosu*']}},
   Floral:{color:'#cf9fb5',subs:{
-    Blossom:['Cherry Blossom','White Flowers','Honeysuckle','Jasmine','Lily','Acacia']}},
+    Blossom:['Cherry Blossom','White Flowers','Honeysuckle','Jasmine','Lily','Acacia','Plum Blossom*','Wisteria*']}},
   'Rice & Cereal':{color:'#c9bd96',subs:{
-    Grain:['Steamed Rice','Mochi','Rice Flour','Cooked Grain','Rice Bran','Rice Pudding'],
-    Koji:['Sweet Koji','Chestnut','Roasted Chestnut','Amazake']}},
+    Grain:['Steamed Rice','Mochi','Rice Flour','Cooked Grain','Rice Bran','Rice Pudding','Rice Cake*','Rice Porridge*'],
+    Koji:['Sweet Koji','Chestnut','Roasted Chestnut','Amazake','Steamed Chestnut*','Chestnut Honey*']}},
   'Creamy & Lactic':{color:'#b9ac8e',subs:{
-    Dairy:['Yogurt','Cream','Ricotta','Fresh Cream','Milk','Buttermilk'],
-    Yeasty:['Yeast Lees','Bread Dough','Fresh Yeast','Steamed Bun']}},
+    Dairy:['Yogurt','Cream','Ricotta','Fresh Cream','Milk','Buttermilk','Whipped Cream*','Rice Milk*'],
+    Yeasty:['Yeast Lees','Bread Dough','Fresh Yeast','Steamed Bun','Brioche*','White Bread*']}},
   'Savory & Umami':{color:'#8a8a6a',subs:{
-    Umami:['Dashi','Soy Sauce','Miso','Seaweed','Kombu','Bonito','Shiitake'],
-    Nutty:['Roasted Nut','Sesame','Almond','Walnut','Cashew']}},
+    Umami:['Dashi','Soy Sauce','Miso','Seaweed','Kombu','Bonito','Shiitake','Oyster*','Chicken Broth*'],
+    Nutty:['Roasted Nut','Sesame','Almond','Walnut','Cashew','Peanut*','Pine Nut*']}},
   'Aged & Koshu':{color:'#96683e',subs:{
-    Oxidative:['Caramel','Dried Fig','Sherry','Honey','Maple','Soy Caramel','Dried Mushroom']}},
+    Oxidative:['Caramel','Dried Fig','Sherry','Honey','Maple','Soy Caramel','Dried Mushroom','Nut Brittle*','Soy Glaze*','Old Library*']}},
   Mineral:{color:'#8a97a0',subs:{
-    Clean:['Wet Stone','Spring Water','Rain','Snowmelt','River Stone','Limestone']}}}},
+    Clean:['Wet Stone','Spring Water','Rain','Snowmelt','River Stone','Limestone','Bamboo Water*','Cold Steel*']}}}},
 Kombucha:{color:'#ad8a45',subs:{
   'Tart & Acidic':{color:'#b3ad42',subs:{
-    Vinegar:['Apple Cider Vinegar','White Vinegar','Balsamic','Malt Vinegar','Sherry Vinegar'],
-    'Bright Tart':['Lemon','Green Apple','Gooseberry','Rhubarb','Sour Cherry','Tamarind']}},
+    Vinegar:['Apple Cider Vinegar','White Vinegar','Balsamic','Malt Vinegar','Sherry Vinegar','Rice Vinegar*','Champagne Vinegar*'],
+    'Bright Tart':['Lemon','Green Apple','Gooseberry','Rhubarb','Sour Cherry','Tamarind','Kiwi*','Sour Plum*']}},
   Fruity:{color:'#c25a45',subs:{
-    Orchard:['Apple','Pear','Apple Cider','Quince','White Grape'],
-    'Stone & Berry':['Peach','Strawberry','Cherry','Apricot','Raspberry','Blackberry']}},
+    Orchard:['Apple','Pear','Apple Cider','Quince','White Grape','Fuji Apple*','Nashi*'],
+    'Stone & Berry':['Peach','Strawberry','Cherry','Apricot','Raspberry','Blackberry','Nectarine*','Blackcurrant*']}},
   'Tea & Tannic':{color:'#8a6134',subs:{
-    Tea:['Black Tea','Green Tea','Tannin','Oolong','Earl Grey','Jasmine Tea']}},
+    Tea:['Black Tea','Green Tea','Tannin','Oolong','Earl Grey','Jasmine Tea','White Tea*','Roasted Oolong*','Matcha*']}},
   'Funky & Fermented':{color:'#a8a03e',subs:{
-    Ferment:['Yeast','Sourdough','Beer-like','Cider-like','Wine-like','Bread Dough'],
-    Wild:['Vinegar Mother','Barnyard','Musty','Wet Straw','Damp Cellar']}},
+    Ferment:['Yeast','Sourdough','Beer-like','Cider-like','Wine-like','Bread Dough','Ginger Bug*','Water Kefir*'],
+    Wild:['Vinegar Mother','Barnyard','Musty','Wet Straw','Damp Cellar','Lambic Funk*','Orchard Floor*']}},
   'Sweet & Floral':{color:'#cf9a4a',subs:{
-    Sweet:['Honey','Cane Sugar','Caramel','Apple Juice','Molasses'],
-    Floral:['Elderflower','Jasmine','Rose','Hibiscus','Chamomile']}}}},
+    Sweet:['Honey','Cane Sugar','Caramel','Apple Juice','Molasses','Agave*','Stone Fruit Nectar*'],
+    Floral:['Elderflower','Jasmine','Rose','Hibiscus','Chamomile','Lavender*','Osmanthus*']}}}},
 Cheese:{color:'#d9a53f',subs:{
   'Fresh & Lactic':{color:'#ded3a2',subs:{
-    Milky:['Fresh Milk','Cream','Butter','Steamed Milk','Sweet Whey'],
-    Tangy:['Yogurt','Buttermilk','Sour Cream','Lemony','Crème Fraîche','Goat Tang']}},
+    Milky:['Fresh Milk','Cream','Butter','Steamed Milk','Sweet Whey','Sheep Milk*','Goat Milk*','Clotted Cream*'],
+    Tangy:['Yogurt','Buttermilk','Sour Cream','Lemony','Crème Fraîche','Goat Tang','Kefir*','Labneh*']}},
   'Grassy & Herbal':{color:'#83944e',subs:{
-    Pasture:['Fresh Grass','Hay','Wild Herbs','Wildflower','Alpine Herbs','Chive'],
-    Vegetal:['Artichoke','Cooked Vegetable','Broccoli','Cabbage','Green Olive']}},
+    Pasture:['Fresh Grass','Hay','Wild Herbs','Wildflower','Alpine Herbs','Chive','Wild Garlic*','Meadow*'],
+    Vegetal:['Artichoke','Cooked Vegetable','Broccoli','Cabbage','Green Olive','Boiled Potato*','Cauliflower*']}},
   Fruity:{color:'#bd5c47',subs:{
-    Bright:['Citrus','Green Apple','Lemon','White Wine','Sour Cherry'],
-    Rich:['Pineapple','Dried Apricot','Wine-like','Fig Jam','Raisin']}},
+    Bright:['Citrus','Green Apple','Lemon','White Wine','Sour Cherry','Gooseberry*','Champagne*'],
+    Rich:['Pineapple','Dried Apricot','Wine-like','Fig Jam','Raisin','Roasted Pineapple*','Date*']}},
   Nutty:{color:'#a97e42',subs:{
-    Toasted:['Hazelnut','Walnut','Almond','Peanut','Cashew','Pecan'],
-    Browned:['Browned Butter','Toast','Roasted Grain']}},
+    Toasted:['Hazelnut','Walnut','Almond','Peanut','Cashew','Pecan','Roasted Chestnut*','Sesame*'],
+    Browned:['Browned Butter','Toast','Roasted Grain','Ghee*','Fried Dough*']}},
   'Sweet & Caramel':{color:'#c9913c',subs:{
-    Caramelized:['Caramel','Toffee','Butterscotch','Salted Caramel','Burnt Sugar'],
-    'Sweet Cream':['Condensed Milk','Malted Milk','Custard','White Chocolate']}},
+    Caramelized:['Caramel','Toffee','Butterscotch','Salted Caramel','Burnt Sugar','Dulce de Leche*','Maple*'],
+    'Sweet Cream':['Condensed Milk','Malted Milk','Custard','White Chocolate','Panna Cotta*','Milk Jam*']}},
   'Earthy & Mushroom':{color:'#7d6b52',subs:{
-    Fungal:['Button Mushroom','Truffle','Forest Floor','Porcini','Wild Mushroom'],
-    Cellar:['Cave','Wet Stone','Musty','Damp Stone','Old Cellar','Mineral']}},
+    Fungal:['Button Mushroom','Truffle','Forest Floor','Porcini','Wild Mushroom','Morel*','Yeast Bloom*'],
+    Cellar:['Cave','Wet Stone','Musty','Damp Stone','Old Cellar','Mineral','Limestone Cave*','Damp Burlap*']}},
   'Pungent & Funky':{color:'#98703e',subs:{
-    'Washed Rind':['Barnyard','Meaty','Ammonia','Beef Broth','Garlic','Cured Meat'],
-    Blue:['Peppery Mold','Metallic','Piquant','Salty Mold','Horseradish']}},
+    'Washed Rind':['Barnyard','Meaty','Ammonia','Beef Broth','Garlic','Cured Meat','Onion Broth*','Brined Meat*'],
+    Blue:['Peppery Mold','Metallic','Piquant','Salty Mold','Horseradish','Iron*','Sea Brine*']}},
+  'Oniony & Alliaceous*':{color:'#a08a52',subs:{
+    Allium:['Roasted Onion','Garlic Confit','Chive','Leek Broth','Shallot']}},
   Smoky:{color:'#6e5a4a',subs:{
-    Smoke:['Smoked Wood','Bacon','Campfire','Applewood','Hickory','Ham']}}}},
+    Smoke:['Smoked Wood','Bacon','Campfire','Applewood','Hickory','Ham','Smoked Paprika*','Charcuterie Smoke*']}}}},
 Honey:{color:'#d68f2c',subs:{
   Floral:{color:'#d987a8',subs:{
-    Delicate:['Acacia','Clover','Alfalfa','Cotton Blossom','Fireweed','Tupelo'],
-    Perfumed:['Orange Blossom','Lavender','Linden','Wildflower','Rose','Jasmine','Honeysuckle']}},
+    Delicate:['Acacia','Clover','Alfalfa','Cotton Blossom','Fireweed','Tupelo','Raspberry Blossom*','Sage Blossom*'],
+    Perfumed:['Orange Blossom','Lavender','Linden','Wildflower','Rose','Jasmine','Honeysuckle','Citrus Blossom*','Rosemary Blossom*']}},
   Fruity:{color:'#c25a45',subs:{
-    Fresh:['Citrus','Apple','Apricot','Berry','Peach','Pear','Cranberry'],
-    Ripe:['Dried Fig','Raisin','Tropical Fruit','Date','Prune','Cooked Fruit']}},
+    Fresh:['Citrus','Apple','Apricot','Berry','Peach','Pear','Cranberry','Green Grape*','Currant*'],
+    Ripe:['Dried Fig','Raisin','Tropical Fruit','Date','Prune','Cooked Fruit','Apricot Jam*','Candied Fruit*']}},
   'Warm & Caramel':{color:'#b46a2e',subs:{
-    Sugary:['Caramel','Toffee','Brown Sugar','Molasses','Burnt Sugar','Cotton Candy'],
-    Rich:['Vanilla','Beeswax','Butterscotch','Custard','Marzipan','Maple']}},
+    Sugary:['Caramel','Toffee','Brown Sugar','Molasses','Burnt Sugar','Cotton Candy','Barley Sugar*','Golden Syrup*'],
+    Rich:['Vanilla','Beeswax','Butterscotch','Custard','Marzipan','Maple','Dulce de Leche*','Halva*']}},
   'Herbal & Fresh':{color:'#7f9a4e',subs:{
-    Green:['Fresh Herbs','Grass','Mint','Eucalyptus','Cut Grass','Thyme','Rosemary','Sage'],
-    Dry:['Hay','Straw','Chamomile','Dried Herbs','Tea','Fern']}},
+    Green:['Fresh Herbs','Grass','Mint','Eucalyptus','Cut Grass','Thyme','Rosemary','Sage','Lemongrass*','Green Tea*'],
+    Dry:['Hay','Straw','Chamomile','Dried Herbs','Tea','Fern','Chaff*','Straw Bale*']}},
   'Woody & Resinous':{color:'#8a6134',subs:{
-    Forest:['Pine Resin','Cedar','Tree Sap','Fir','Spruce','Propolis'],
-    Dark:['Chestnut','Oak','Tobacco','Carob','Buckwheat']}},
+    Forest:['Pine Resin','Cedar','Tree Sap','Fir','Spruce','Propolis','Honeydew*','Amber Resin*'],
+    Dark:['Chestnut','Oak','Tobacco','Carob','Buckwheat','Date Syrup*','Burnt Toffee*']}},
   'Earthy & Malty':{color:'#7d6a4a',subs:{
-    Malty:['Malt','Molasses','Dark Bread','Barley','Toffee','Brown Bread'],
-    Wild:['Barnyard','Leather','Smoke','Game','Musky']}},
+    Malty:['Malt','Molasses','Dark Bread','Barley','Toffee','Brown Bread','Rye Bread*','Malted Milk*'],
+    Wild:['Barnyard','Leather','Smoke','Game','Musky','Bee Bread*','Sourdough*']}},
   'Off Notes':{color:'#8c8272',subs:{
-    Off:['Fermented','Yeasty','Medicinal','Sweaty','Sour Ferment','Wet Cardboard','Chemical']}}}},
+    Off:['Fermented','Yeasty','Medicinal','Sweaty','Sour Ferment','Wet Cardboard','Chemical','Smoke Taint*','Metallic*']}}}},
 'Olive Oil':{color:'#8a9a3a',subs:{
   'Green & Grassy':{color:'#6f9a3e',subs:{
-    'Fresh Cut':['Fresh Grass','Green Leaf','Mown Hay','Wheatgrass','Green Stems','Nettle'],
-    Vegetal:['Artichoke','Green Tomato','Tomato Leaf','Green Bean','Asparagus','Celery','Snap Pea']}},
+    'Fresh Cut':['Fresh Grass','Green Leaf','Mown Hay','Wheatgrass','Green Stems','Nettle','Crushed Olive Leaf*','Fig Leaf*'],
+    Vegetal:['Artichoke','Green Tomato','Tomato Leaf','Green Bean','Asparagus','Celery','Snap Pea','Fennel*','Chard*']}},
   Fruity:{color:'#c9a13e',subs:{
-    Ripe:['Ripe Olive','Buttery Fruit','Tropical','Melon','Banana','Stone Fruit'],
-    Fresh:['Green Apple','Green Banana','Citrus Zest','Kiwi','Pear','Red Tomato']}},
+    Ripe:['Ripe Olive','Buttery Fruit','Tropical','Melon','Banana','Stone Fruit','Fig*','Avocado*'],
+    Fresh:['Green Apple','Green Banana','Citrus Zest','Kiwi','Pear','Red Tomato','Passion Fruit*','Lemongrass*']}},
   'Nutty & Buttery':{color:'#b0894e',subs:{
-    Nuts:['Almond','Pine Nut','Walnut','Hazelnut','Pistachio','Green Almond'],
-    Buttery:['Butter','Cream','Cocoa Butter','Sweet Cream']}},
+    Nuts:['Almond','Pine Nut','Walnut','Hazelnut','Pistachio','Green Almond','Marcona Almond*','Cashew*'],
+    Buttery:['Butter','Cream','Cocoa Butter','Sweet Cream','Melted Butter*','Custard*']}},
   'Pungent & Peppery':{color:'#96552e',subs:{
-    Peppery:['Black Pepper','Chili','Throat Catch','White Pepper','Ginger','Mustard'],
-    'Bitter Greens':['Arugula','Radicchio','Bitter Herb','Dandelion','Chicory','Artichoke Leaf']}},
+    Peppery:['Black Pepper','Chili','Throat Catch','White Pepper','Ginger','Mustard','Watercress*','Horseradish*'],
+    'Bitter Greens':['Arugula','Radicchio','Bitter Herb','Dandelion','Chicory','Artichoke Leaf','Endive*','Olive Leaf*','Walnut Skin*']}},
   Defects:{color:'#8c8272',subs:{
-    Rancid:['Rancid Nut','Crayon','Stale Nuts','Putty','Linseed'],
-    Fermented:['Fusty','Winey','Vinegary','Yeasty','Sour Wine'],
-    Musty:['Musty','Muddy','Wet Wood','Damp Cellar','Earthy Mold','Humid Straw']}}}},
+    Rancid:['Rancid Nut','Crayon','Stale Nuts','Putty','Linseed','Varnish*','Old Walnut*'],
+    Fermented:['Fusty','Winey','Vinegary','Yeasty','Sour Wine','Olive Brine*','Sauerkraut*'],
+    Musty:['Musty','Muddy','Wet Wood','Damp Cellar','Earthy Mold','Humid Straw','Wet Rope*','Cellar Mold*']}}}},
 'Maple Syrup':{color:'#a5622d',subs:{
   Confection:{color:'#cf9a4a',subs:{
-    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Whipped Cream','White Chocolate']}},
+    Vanilla:['Vanilla','Marshmallow','Custard','Cream Soda','Whipped Cream','White Chocolate','Buttercream*','Meringue*']}},
   Caramelized:{color:'#b4762e',subs:{
-    Sugars:['Caramel','Toffee','Brown Sugar','Burnt Sugar','Molasses','Demerara','Cotton Candy']}},
+    Sugars:['Caramel','Toffee','Brown Sugar','Burnt Sugar','Molasses','Demerara','Cotton Candy','Praline*','Golden Syrup*']}},
   Roasted:{color:'#7c5230',subs:{
-    Dark:['Coffee','Cocoa','Toast','Espresso','Dark Chocolate','Burnt Marshmallow']}},
+    Dark:['Coffee','Cocoa','Toast','Espresso','Dark Chocolate','Burnt Marshmallow','Coffee Grounds*','Carob*']}},
   Milky:{color:'#c9bd96',subs:{
-    Dairy:['Butter','Cream','Condensed Milk','Buttermilk','Custard','Sweet Cream']}},
+    Dairy:['Butter','Cream','Condensed Milk','Buttermilk','Custard','Sweet Cream','Clotted Cream*','Eggnog*']}},
   Fruity:{color:'#c05548',subs:{
-    Fruits:['Baked Apple','Peach','Dried Fruit','Pear','Raisin','Apricot','Citrus Zest']}},
+    Fruits:['Baked Apple','Peach','Dried Fruit','Pear','Raisin','Apricot','Citrus Zest','Banana*','Fig*','Candied Orange*']}},
   'Floral & Herbal':{color:'#9a8a4e',subs:{
-    Flowers:['Clover','Dandelion','Honeysuckle','Chamomile','Wildflower'],
-    Herbaceous:['Hay','Fresh Grass','Straw','Green Tea']}},
+    Flowers:['Clover','Dandelion','Honeysuckle','Chamomile','Wildflower','Linden*','Meadowsweet*'],
+    Herbaceous:['Hay','Fresh Grass','Straw','Green Tea','Corn Silk*','Fern*']}},
   'Spice & Woody':{color:'#94502f',subs:{
-    Spice:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Anise'],
-    Woody:['Bark','Cedar','Toasted Nut','Oak','Sawdust']}}}}
+    Spice:['Cinnamon','Clove','Nutmeg','Ginger','Allspice','Anise','Fenugreek*','Star Anise*'],
+    Woody:['Bark','Cedar','Toasted Nut','Oak','Sawdust','Birch*','Hickory*','Charred Barrel*']}}}}
 };
 
 // ---------- color helpers ----------
