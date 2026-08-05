@@ -568,6 +568,624 @@ Honey:{color:'#d68f2c',subs:{
     Woody:['Bark','Cedar','Toasted Nut','Oak','Sawdust','Birch*','Hickory*','Charred Barrel*']}}}}
 };
 
+// ---------- Everything-only bulk data (merged over DATA in deep mode; no stars needed) ----------
+// arrays append to existing subs; new keys become new subs/families (full DATA format)
+const EXTRA={
+Coffee:{
+  Fruity:{
+    Berry:['Loganberry','Cloudberry','Lingonberry','Huckleberry','Marionberry','Black Raspberry','Alpine Strawberry','Jostaberry','Red Gooseberry','Berry Compote','Berry Jam','Bramble Jelly'],
+    Citrus:{'Classic Citrus':['Meyer Lemon','Cara Cara Orange','Seville Orange','Clementine','Tangelo','Satsuma','Lemon Zest','Lime Leaf'],
+      'Exotic Citrus*':['Finger Lime','Makrut Lime','Sudachi','Kabosu','Yuzu Marmalade'],
+      'Candied Citrus*':['Lemon Sherbet','Citrus Gummy','Limoncello','Candied Kumquat']},
+    'Stone Fruit':['Yellow Peach','Donut Peach','Santa Rosa Plum','Italian Prune','Peach Skin','Apricot Jam','Cherry Compote','Amarena Cherry','Maraschino Cherry'],
+    Orchard:['Fuji Apple','Gala Apple','Honeycrisp','Granny Smith','Braeburn','Pink Lady','Bartlett Pear','Bosc Pear','Anjou Pear','Apple Butter','Applesauce'],
+    Tropical:['Dragonfruit','Mangosteen','Cherimoya','Feijoa','Kiwi','Green Mango','Ripe Plantain','Pineapple Core','Coconut Water','Coconut Cream'],
+    'Dried Fruit':['Dried Blueberry','Dried Strawberry','Fruit Leather','Dried Papaya','Candied Pineapple','Trail Mix'],
+    'Winey & Jammy':['Red Wine','Port','Sangria','Berry Cobbler','Fruit Punch','Grape Juice','Concord Grape','Muscat Grape','Raisin Bread']},
+  Floral:{
+    Flowers:['Lily of the Valley','Neroli','Geranium','Carnation','Mimosa','Heliotrope','Sweet Pea','Lotus','Gardenia','Acacia'],
+    'Tea-like':['White Tea','Matcha','Genmaicha','Mint Tea','Hibiscus Tea'],
+    'Perfumed*':['Musk','Amber','Dried Petals']},
+  Sweet:{
+    Caramelized:['Salted Caramel','Toffee Apple','Caramel Popcorn','Flan','Crème Caramel'],
+    Sugars:['Piloncillo','Date Sugar','Sorghum Syrup','Rock Sugar','Simple Syrup'],
+    Vanilla:['Vanilla Bean','French Vanilla','Cake Batter','Frosting','Whipped Cream'],
+    'Confectionery*':['Caramel Chew','Toffee Brittle','Pralines','Candy Corn','Butter Mint']},
+  'Nutty & Cocoa':{
+    Nutty:['Roasted Almond','Candied Pecan','Praline','Peanut Brittle','Walnut Skin','Marzipan','Sesame','Tahini','Roasted Hazelnut'],
+    Cocoa:['Hot Cocoa','Chocolate Milk','Ganache','Chocolate Truffle','Fudge Brownie','Mexican Chocolate']},
+  Spices:{
+    Warming:['Chai Spice','Pumpkin Spice','Clove Bud','Cinnamon Bark','Candied Ginger'],
+    Pungent:['Grains of Paradise','Long Pepper','Pink Peppercorn','Aniseed','Caraway'],
+    'Savory Spice*':['Coriander Leaf','Curry Powder','Garam Masala']},
+  Roasted:{
+    Cereal:['Granola','Muesli','Shredded Wheat','Rice Cracker','Pretzel','Bagel Crust'],
+    Burnt:['Campfire Ash','Charred Oak','Burnt Popcorn','Scorched Earth'],
+    Tobacco:['Chewing Tobacco','Cigar Wrapper','Humidor']},
+  'Green & Vegetal':{
+    Vegetal:['Snap Pea','Romaine','Spinach','Swiss Chard','Broccoli Stem','Green Pumpkin'],
+    Beany:['Chickpea','Black Bean','Mung Bean','Pea Shoot'],
+    'Herb-like':['Rosemary','Oregano','Marjoram','Bay Laurel','Chervil','Tarragon']},
+  'Sour & Fermented':{
+    Sour:['Verjus','Sour Candy','Rhubarb','Cranberry Juice','Underripe Plum'],
+    Fermented:['Sake-like','Beer-like','Tepache','Fruit Wine','Black Garlic']},
+  Other:{
+    'Papery & Musty':['Dusty Attic','Old Rope','Chalk Dust','Newsprint'],
+    'Savory & Brothy*':['Mushroom Broth','Bouillon','Roasted Meat','Bacon Fat'],
+    Chemical:['Iodine','Creosote','Plastic','Vinyl','Ink']}},
+Tea:{
+  Floral:{
+    'White Florals':['Lily of the Valley','Neroli','Pomelo Blossom','Camellia','Mock Orange'],
+    'Rich Florals':['Damask Rose','Lotus','Sweet Pea','Carnation','Mimosa'],
+    Wildflower:['Cornflower','Daisy','Yarrow','Heather'],
+    'Dried Flowers*':['Dried Lavender','Dried Jasmine','Dried Chrysanthemum']},
+  Fruity:{
+    Citrus:['Calamansi','Finger Lime','Tangerine Peel','Dried Tangerine Peel','Candied Yuzu'],
+    Orchard:['Fuji Apple','Golden Delicious','Baked Pear','Applesauce'],
+    Melon:['Honeydew','Cantaloupe','Winter Melon','Watermelon Rind','Korean Melon'],
+    'Stone Fruit':['White Peach','Peach Skin','Umeboshi','Green Plum'],
+    Tropical:['Guava','Mangosteen','Dragonfruit','Sugarcane','Young Coconut'],
+    Berry:['Blueberry','Blackberry','Wild Strawberry','Red Gooseberry'],
+    Dried:['Dried Mango','Dried Pineapple','Fruit Peel','Jujube Paste']},
+  Vegetal:{
+    Grassy:['Cut Hay','Sweetgrass','Green Wheat','Reed'],
+    'Green Veg':['Kale','Watercress','Celery Leaf','Pea Shoot','Raw Pumpkin'],
+    Herbaceous:['Marjoram','Oregano','Lemon Balm','Verbena','Bay Leaf','Rosemary'],
+    'Steamed Greens':['Steamed Spinach','Blanched Bok Choy','Cooked Nettle','Steamed Artichoke']},
+  Marine:{Oceanic:['Nori Sheet','Shellfish','Sea Salt','Rock Pool','Fresh Oyster']},
+  'Nutty & Toasty':{
+    Nuts:['Roasted Chestnut','Candied Walnut','Ginkgo Nut','Lotus Seed'],
+    Toasted:['Toasted Sesame','Roasted Buckwheat','Graham Cracker','Wheat Toast']},
+  Sweet:{
+    Honeyed:['Wildflower Honey','Chestnut Honey','Sugarcane Juice'],
+    Caramelized:['Butterscotch','Toasted Marshmallow','Candied Yam'],
+    Confection:['Red Bean Paste','Sesame Candy','Milk Candy','Rice Candy']},
+  'Savory & Milky':{
+    Umami:['Buttered Corn','Oyster Sauce','Bone Broth','Tomato Vine'],
+    Milky:['Soy Milk','Almond Milk','Rice Pudding','Malted Milk']},
+  Smoky:{Smoke:['Mesquite','Hickory','Frankincense','Burnt Cedar','Chimney Soot']},
+  Earthy:{
+    Soil:['Garden Soil','Root Cellar','Fallen Log','Humus'],
+    Aged:['Antique Shop','Incense Ash','Parchment','Camphor Chest'],
+    Mineral:['Basalt','Clay Pot','Mineral Spring','Limestone']},
+  Medicinal:{'Herbal Medicine':['Astragalus','Bitter Melon','Herbal Bitters','Root Decoction','Dang Gui']},
+  Cooling:{'Camphor & Mint':['Borneol','Cooling Tingle','Fresh Snow','Icy Spring']},
+  Spiced:{
+    Warm:['Cassia','Mace','Fennel Seed','Sichuan Peppercorn'],
+    Woody:['Aged Oak','Rosewood','Juniper Wood','Bamboo Sheath']},
+  'Animalic & Musky':{color:'#8a7460',subs:{
+    Musky:['Musk','Beeswax','Lanolin','Warm Fur','Leather Strap']}}},
+Wine:{
+  Fruity:{
+    'Red Fruit':{'Fresh Red':['Bing Cherry','Rainier Cherry','Loganberry','Red Gooseberry'],
+      'Ripe & Jammy*':['Raspberry Coulis','Cherry Pie','Strawberry Shortcake','Fruit Leather'],
+      'Tart Red*':['Cranberry Sauce','Pomegranate Molasses','Hibiscus']},
+    'Dark Fruit':['Boysenberry','Black Plum','Elderberry','Bramble Jelly'],
+    Citrus:['Meyer Lemon','Lime Zest','Citrus Pith','Candied Lemon','Yuzu'],
+    'Orchard & Stone':['Golden Delicious','Anjou Pear','Greengage','Apricot Kernel','White Nectarine','Poached Pear'],
+    Tropical:['Cantaloupe','Honeydew','Feijoa','Custard Apple','Green Pineapple'],
+    Dried:['Golden Raisin','Dried Mango','Prune Juice','Fig Compote','Christmas Cake']},
+  'Confected*':{Candy:['Cotton Candy','Strawberry Bonbon','Rock Candy','Cherry Drop'],
+    Syrupy:['Maraschino','Crème de Cassis','Elderberry Syrup']},
+  Floral:{
+    'Blue Florals':['Bluebell','Forget-Me-Not'],
+    'White Florals':['Lily','Freesia','Mock Orange','White Rose'],
+    Rose:['Fresh Cut Rose','Rosehip','Damask Rose'],
+    'Herb Flowers':['Broom','Gorse','Acacia Blossom','Almond Blossom']},
+  Herbal:{
+    Green:['Fresh Fennel','Celery Leaf','Sorrel','Green Peppercorn','Ivy'],
+    'Dried Herb':['Oregano','Marjoram','Dried Sage','Herbes de Provence','Tobacco Leaf'],
+    'Vegetal & Savory':['Black Olive','Green Olive','Capsicum','Sun-Dried Tomato','Tomato Paste','Rhubarb Stalk']},
+  Spice:{'Sweet Spice':['Cola','Sarsaparilla','Cinnamon Stick','Candied Ginger'],
+    Pungent:['Sichuan Pepper','Clove Bud','Anise Seed']},
+  'Earth & Mineral':{
+    Earth:['Black Earth','Peat','Underbrush','Autumn Leaves','Mushroom Broth'],
+    Mineral:['Limestone','Basalt','River Pebble','Sea Spray','Struck Steel','Pencil Lead']},
+  Oak:{Barrel:['French Oak','American Oak','Toasted Coconut','Oak Spice','Cooperage'],
+    Char:['Roasted Coffee','Bacon Fat','Smoked Meat','Toasted Bread']},
+  Microbial:{Yeast:['Beer Bread','Pizza Dough','Nutritional Yeast','Lees'],
+    Dairy:['Buttermilk','Whole Milk','Buttercream'],
+    Wild:['Farmhouse Funk','Wet Fur']},
+  Aged:{Tertiary:['Cedar Humidor','Old Library','Dried Porcini','Truffle Honey'],
+    Oxidative:['Salted Almond','Dried Date','Molasses'],
+    Petrol:['Machine Oil','New Tire','Waxed Canvas']},
+  Faults:{'Cork & Must':['Old Sponge','Mildew'],
+    Volatile:['Glue'],
+    Reduction:['Skunk','Burnt Match','Durian'],
+    'Mousy & Other*':['Corn Chip']},
+  'Autolytic & Sparkling':{color:'#b8a988',subs:{
+    Bakery:['Brioche Crumb','Croissant','Toast Point','Almond Pastry','Shortbread'],
+    'Creamy Mousse':['Whipped Cream','Lemon Curd','Meringue','Sea Foam']}},
+  'Fortified & Dessert':{color:'#8a5a40',subs:{
+    'Nutty Oxidative':['Toasted Almond','Walnut Liqueur','Praline','Burnt Orange'],
+    Luscious:['Apricot Nectar','Honeyed Fig','Botrytis Honey','Marmalade Toast','Crème Brûlée']}}},
+Beer:{
+  Malty:{Bready:['Rye Crust','Bagel','Pita','Malt Loaf','Brown Bread','Digestive Biscuit'],
+    Caramelized:['Muscovado','Sticky Toffee Pudding','Flapjack','Golden Syrup','Honeycomb'],
+    Roasted:['Cold Brew','Cacao Husk','Charred Rye','Roasted Chicory','Molasses']},
+  Hoppy:{Citrus:['Blood Orange','Kumquat','Citrus Pith','Lemongrass','Bergamot'],
+    Tropical:['Dragonfruit','Cantaloupe','Honeydew','White Grape','Kiwi'],
+    'Stone Fruit':['White Peach','Greengage','Yellow Plum'],
+    Piney:['Pine Needle Tea','Rosemary Resin','Forest Floor','Balsam'],
+    'Dank & Resinous':['Pine Tar','Sagebrush','Wet Pine','Hop Oil'],
+    'Floral & Herbal':['Rose','Hibiscus','Chrysanthemum','Woodruff','Dill','Thyme']},
+  Fermentation:{Esters:['Lychee','Cantaloupe','Juicy Fruit Gum','Tutti Frutti','Orange Candy'],
+    'Spicy Phenols':['Dried Ginger','Szechuan Pepper','Cracked Coriander','Vanilla Phenol'],
+    Yeast:['Bread Pudding','Proofing Dough','Bakery Air','Cracker']},
+  'Sour & Funky':{Tart:['Meyer Lemon','Tart Cherry Juice','Green Grape','Unripe Peach','Sour Apple Candy'],
+    Funk:['Gym Bag','Aged Gouda Rind','Compost Straw','Pond Water','Mushroom']},
+  Adjuncts:{'Sweet Additions':['Toasted Coconut',"S'mores",'Cookie Dough','Cake Batter','Molasses Cookie'],
+    Fruited:['Boysenberry','Marionberry','Key Lime','Plum','Fig','Blood Orange'],
+    Spiced:['Cardamom','Star Anise','Lavender','Rosemary','Cocoa Nib','Vanilla Bean']},
+  'Barrel-Aged*':{Spirit:['Cognac','Mezcal Barrel','Peated Cask','Gin Barrel'],
+    Wood:['Charred Staves','Maple Wood','Amburana','Acacia Wood'],
+    Fortified:['Sauternes','Ice Wine','Marsala']},
+  'Off-Flavors':{Buttery:['Butterscotch Slick','Heavy Cream'],
+    Vegetal:['Boiled Broccoli','Asparagus Water','Green Onion','Parsnip'],
+    Stale:['Musty Basement','Attic Dust','Rusty Can','Old Keg Line','Damp Chalk']}},
+Whiskey:{
+  Cereal:{Grain:['Barley Husk','Grist','Muesli','Weetabix','Corn Grits','Malt Bin'],
+    Baked:['Oatcake','Scone','Brown Toast','Malted Bread','Ginger Biscuit']},
+  Fruity:{Orchard:['Cox Apple','Russet Apple','Conference Pear','Apple Crumble','Fruit Salad'],
+    Dried:['Fig Roll','Prune Compote','Dried Cranberry','Raisin Tea Loaf'],
+    Citrus:['Seville Orange','Blood Orange','Candied Lemon','Lime Cordial','Orange Oil']},
+  'Floral & Grassy':{Floral:['Gorse','Wild Thyme Flower','Bog Myrtle','Dandelion','Clover'],
+    Grassy:['Barley Field','Wet Moss','Bramble Leaf','Gooseberry Bush','Damp Fern']},
+  'Peaty & Smoky':{
+    Smoke:{'Classic Smoke':['Wood Ash','Char Ember'],
+      'Coastal Smoke*':['Dried Kelp Smoke','Beach Bonfire','Harbour Air','Oyster Smoke'],
+      'Industrial Smoke*':['Diesel Fume','Tar Rope','Railway Sleeper','Foundry']},
+    Medicinal:['Cough Syrup','Eucalyptus Balm','Wintergreen','Surgical Spirit']},
+  Woody:{Oak:['Oak Char','Wine Cask','Rum Cask','Mizunara','Wet Timber'],
+    Char:['Burnt Caramel','Charred Steak','Coffee Bean','Black Treacle']},
+  'Winey & Sherried':{Fortified:['Tawny Port','Ruby Port','Muscatel','Fino'],
+    Rich:['Sticky Toffee Pudding','Panettone','Rumtopf','Cherry Brandy','Black Forest Cake']},
+  Feinty:{Leathery:['New Brogues','Tack Room','Barbour Wax','Pipe Rack'],
+    Waxy:['Sealing Wax','Waxed Paper','Church Candle','Lip Balm']},
+  Sulphury:{Sulphur:['Burnt Toast Edge','Fireworks Smoke','Charred Rubber','Hot Spring']},
+  'Sweet & Spice':{Sweet:['Tablet','Fudge','Treacle Toffee','Honeyed Porridge','Syrup Sponge'],
+    Spice:['Cracked Coriander','Fennel Seed','Bay Leaf','Curry Leaf','Sichuan Pepper']}},
+Chocolate:{
+  Cocoa:{'Pure Cocoa':['Criollo Nib','Raw Cacao','Cocoa Liquor','Dutched Cocoa'],
+    Baked:['Molten Cake','Cocoa Cookie','Chocolate Tart','Torta Caprese']},
+  Fruity:{Berry:['Wild Blueberry','Elderberry','Boysenberry','Berry Yogurt'],
+    Citrus:['Blood Orange','Mandarin','Citron','Orange Marmalade'],
+    'Stone Fruit':['White Peach','Greengage','Dried Apricot'],
+    Tropical:['Rambutan','Soursop','Dragonfruit','Green Banana','Plantain'],
+    Dried:['Sultana','Dried Mango','Fig Jam','Date Molasses']},
+  Floral:{Flowers:['Neroli','Freesia','Cherry Blossom','Heliotrope']},
+  Nutty:{Nuts:['Roasted Cashew','Candied Almond','Coconut Flesh','Pili Nut','Sacha Inchi'],
+    Confection:['Turrón','Pecan Pie','Sesame Brittle','Almond Croissant']},
+  'Caramel & Dairy':{Caramelized:['Butter Toffee','Caramel Flan','Banoffee','Maple Fudge'],
+    Dairy:['Mascarpone','Clotted Cream','Buttermilk','Milk Skin']},
+  'Fermented & Winey*':{Bright:['White Wine','Cider','Lambic','Green Grape'],
+    Deep:['Madeira','Bourbon','Dark Beer','Soy Tamari']},
+  Spiced:{Warm:['Cinnamon Toast','Speculoos','Masala Chai','Mexican Cinnamon'],
+    Bold:['Guajillo','Pink Pepper','Clove Bud','Juniper']},
+  'Vegetal & Fresh':{Green:['Nori','Steamed Rice','Bamboo','Shiso'],
+    Fresh:['Spearmint','Wintergreen','Cucumber Skin','Fir Needle']},
+  'Earthy & Roasted':{Earth:['Cave','Clay','Porcini','Tobacco Barn'],
+    Roast:['Barley Coffee','Charred Marshmallow','Molasses Char','Grill Smoke']}},
+Cider:{
+  Fruity:{Apple:['Gala','Fuji','Braeburn','Discovery','Cox Pippin','Windfall Apples','Apple Core'],
+    Orchard:['Greengage','Mirabelle','Nashi','Cherry','Elderberry'],
+    Citrus:['Bergamot','Candied Lemon','Orange Marmalade']},
+  'Floral & Honey':{Floral:['Cherry Blossom','Gorse','Wildflower Meadow','Linden'],
+    Honeyed:['Clover Honey','Honey Butter','Royal Jelly']},
+  'Funky & Wild':{Wild:['Farmhouse Floor','Cider Cellar','Sheep Wool','Autumn Orchard','Bruised Windfall'],
+    Sharp:['Green Gooseberry','Rhubarb','Crab Apple Juice','White Vinegar Nip','Citric Bite']},
+  'Tannic & Woody':{Tannin:['Quince Skin','Persimmon','Green Walnut','Oversteeped Tea'],
+    Woody:['Old Barrel','Chestnut Wood','Green Oak','Twig']},
+  Spiced:{Warm:['Cardamom','Vanilla','Dried Orange Peel','Gingerbread'],
+    Earthy:['Autumn Leaves','Damp Straw','Cellar Beam','Woodsmoke']}},
+Rum:{
+  'Sweet & Caramel':{Sugars:['Muscovado','Jaggery','Sugarcane Press','Sugar Loaf','Blackstrap'],
+    Confection:['Rum Ball','Coconut Candy','Caramelized Banana','Cinnamon Sugar','Candy Floss']},
+  Fruity:{Tropical:['Ripe Guava','Starfruit','Ackee','Sugar Apple','Baked Plantain','Passion Curd'],
+    Dried:['Rum-Soaked Raisin','Dried Pineapple','Candied Papaya','Date Molasses'],
+    Citrus:['Blood Orange','Tangerine','Burnt Citrus Peel','Lime Leaf']},
+  'Funky & Estery':{Esters:['Banana Foam','Mango Skin','Fruit Cocktail','Airplane Glue','Juicy Fruit'],
+    Hogo:['Harbour Water','Fermenting Cane','Muddy Molasses','Wild Yeast','Damp Burlap']},
+  Spice:{Baking:['Mace','Fenugreek','Bay Rum','Cocoa Powder','Coffee Spice'],
+    Pungent:['Cracked Pepper','Grilled Ginger','Allspice Berry','Clove Stem']},
+  'Oak & Aged':{Barrel:['Tropical Oak','Solera Wood','Charred Hogshead','Coconut Husk'],
+    Mature:['Humidor','Saddle Leather','Molasses Tar','Dark Honey','Burnt Fig']}},
+Gin:{
+  'Juniper & Pine':{Conifer:['Crushed Juniper','Gin Botanical Bag','Alpine Forest','Snow on Pine','Larch']},
+  Citrus:{Peel:['Dried Orange Wheel','Pink Grapefruit','Kumquat','Lemon Verbena Zest','Bitter Orange']},
+  Floral:{Blossom:['Iris','Heather','Lilac','Peony','Cherry Blossom','Sakura']},
+  'Fruit-Forward*':{Berries:['Lingonberry','Sea Buckthorn','Cranberry','Elderberry'],
+    Orchard:['Bramley Apple','Gooseberry','White Grape'],
+    Stone:['Greengage','Peach','Mirabelle']},
+  Herbal:{'Green Herbs':['Angelica Leaf','Yarrow','Lovage','Woodruff','Pine Herb'],
+    Savory:['Rosemary Brine','Green Peppercorn','Fennel Bulb','Sea Lettuce','Oyster Shell']},
+  Spice:{Warm:['Orris Warmth','Clove','Allspice','Cinnamon Bark','Coriander Blossom'],
+    Peppery:['Grains of Selim','Alligator Pepper','White Pepper','Peppercorn Brine']},
+  'Earthy & Rooty':{Roots:['Dandelion Root','Chicory Root','Marshmallow Root','Sarsaparilla'],
+    Earth:['Forest Loam','Mushroom','Truffle','Rain on Soil']}},
+'Mezcal & Tequila':{
+  'Roasted Agave':{'Sweet Roast':['Earth Oven','Roast Chestnut','Molasses Squash','Grilled Corn','Barbacoa Sweetness'],
+    Sugary:['Cooked Piloncillo','Cane Syrup','Toffee Agave']},
+  Vegetal:{Green:['Agave Leaf','Cactus Water','Chayote','Green Tomato','Fresh Yucca'],
+    Herbal:['Lemongrass','Bay Laurel','Pepper Leaf','Wild Oregano','Rue']},
+  Smoky:{Smoke:['Oak Ember','Clay Oven','Palm Charcoal','Roasted Chile Smoke','Incense'],
+    Burnt:['Burnt Tortilla','Charred Husk','Ashen Wood']},
+  Fruity:{Citrus:['Sour Orange','Limequat','Grapefruit Pith'],
+    Tropical:['Mamey','Cherimoya','Ripe Papaya','Nance','Cactus Fruit']},
+  'Lactic & Fermented*':{Ferment:['Masa','Corn Beer','Fermented Agave Sap','Queso Fresco'],
+    Funk:['Rancho Funk','Wet Adobe','Fermented Hay']},
+  'Earthy & Mineral':{Earth:['Desert Dust','Sun-Baked Clay','Creosote Bush','Root Cellar'],
+    Mineral:['River Rock','Limestone Dust','Copper Still','Volcanic Ash']},
+  'Spice & Pepper':{Spice:['Ancho','Chipotle','Pasilla','Mole Spice','Roasted Cumin']}},
+Sake:{
+  Fruity:{Orchard:['Twentieth Century Pear','Fuji Apple','Green Grape','Champagne Grape'],
+    Tropical:['Honeydew Rind','White Dragonfruit','Young Pineapple','Lychee Syrup'],
+    Citrus:['Iyokan','Citron','White Grapefruit']},
+  Floral:{Blossom:['Peach Blossom','Gardenia','Freesia','Snowbell','Magnolia']},
+  'Rice & Cereal':{Grain:['Fresh Mochi','Rice Cracker','Sweet Rice Water','Koji Rice Steam'],
+    Koji:['Chestnut Cream','Amazake Pudding','Sweet Rice Malt']},
+  'Creamy & Lactic':{Dairy:['Calpis','Milk Candy','Fresh Yogurt Whey','Panna Cotta'],
+    Yeasty:['Rice Bread','Sweet Bun','Proofing Sponge']},
+  'Savory & Umami':{Umami:['White Miso','Clam Broth','Steamed Egg Custard','Kelp Water'],
+    Nutty:['Chestnut','Macadamia','Toasted Rice Nut']},
+  'Aged & Koshu':{Oxidative:['Aged Mirin','Molasses','Dried Persimmon','Nut Skin','Old Cedar']},
+  Mineral:{Clean:['Well Water','Granite Spring','Bamboo Forest Air','Fresh Tatami']}},
+Kombucha:{
+  'Tart & Acidic':{Vinegar:['Coconut Vinegar','Black Vinegar','Pickle Brine'],
+    'Bright Tart':['Calamansi','Green Strawberry','Cranberry','Underripe Mango']},
+  Fruity:{Orchard:['Honeycrisp','Pear Skin','Quince Jelly'],
+    'Stone & Berry':['White Peach','Boysenberry','Sour Cherry','Red Grape']},
+  'Tea & Tannic':{Tea:['Darjeeling','Sencha','Genmaicha','Pu-erh','Chai']},
+  'Funky & Fermented':{Ferment:['Rye Sour','Fermented Honey','Cider Lees','Kvass'],
+    Wild:['Compost Sweetness','Hay Loft','Orchard Windfall']},
+  'Sweet & Floral':{Sweet:['Raw Honeycomb','Date Syrup','Coconut Sugar'],
+    Floral:['Orange Blossom','Violet','Chrysanthemum','Butterfly Pea']}},
+Cheese:{
+  'Fresh & Lactic':{Milky:['Mozzarella Whey','Burrata Cream','Milk Froth','Fresh Curd'],
+    Tangy:['Fromage Blanc','Quark','Lemon Yogurt','Cultured Butter']},
+  'Grassy & Herbal':{Pasture:['Spring Pasture','Clover Field','Herb Butter','Green Peppercorn'],
+    Vegetal:['Steamed Leek','Braised Cabbage','Truffled Potato','Roasted Squash']},
+  Fruity:{Bright:['Green Grape','Quince','Apple Skin','White Peach'],
+    Rich:['Apricot Preserve','Membrillo','Dried Cherry','Rum Raisin']},
+  Nutty:{Toasted:['Toasted Pine Nut','Brazil Nut','Macadamia','Chestnut Purée'],
+    Browned:['Beurre Noisette','Toasted Rye','Crispy Cheese Edge','Pretzel Crust']},
+  'Sweet & Caramel':{Caramelized:['Caramelized Whey','Gjetost Sweetness','Brûléed Sugar','Fig Caramel'],
+    'Sweet Cream':['Ice Cream Base','Sweetened Condensed Milk','Cheesecake','Butter Mint']},
+  'Earthy & Mushroom':{Fungal:['Champignon Stem','Truffle Oil','Mushroom Soil','Autumn Woods'],
+    Cellar:['Ripening Room','Stone Shelf','Cool Slate','Aged Rind Dust']},
+  'Pungent & Funky':{'Washed Rind':['Beef Tallow','Braised Onion','Pork Broth','Yeasty Rind','Sea Brine Wash'],
+    Blue:['Pepper Steak','Char Mold','Wet Iron','Tingling Salt']},
+  'Oniony & Alliaceous*':{Allium:['Caramelized Shallot','Onion Soup','Garlic Butter','Ramp']},
+  Smoky:{Smoke:['Beechwood','Alder Smoke','Smoked Salt','Bonfire Cheese Rind']}},
+Honey:{
+  Floral:{Delicate:['Snow Lotus','Lychee Blossom','Blackberry Blossom','Apple Blossom'],
+    Perfumed:['Neroli','Ylang-Ylang','Violet','Damask Rose']},
+  Fruity:{Fresh:['White Grape','Melon','Yuzu','Red Berry'],
+    Ripe:['Baked Apple','Quince Paste','Fig Jam','Overripe Banana']},
+  'Warm & Caramel':{Sugary:['Demerara','Sticky Rice Syrup','Panela','Honey Fudge'],
+    Rich:['Egg Custard','Baklava','Brown Butter','Salted Toffee']},
+  'Herbal & Fresh':{Green:['Wild Thyme','Marjoram','Bay Leaf','Fennel Pollen'],
+    Dry:['Dried Thyme','Meadow Hay','Everlasting Flower','Dried Sage']},
+  'Woody & Resinous':{Forest:['Pine Honeydew','Larch Resin','Forest Balsam','Sap Bark'],
+    Dark:['Smoked Oak','Walnut Husk','Black Cardamom','Burnt Resin']},
+  'Earthy & Malty':{Malty:['Ovaltine Malt','Porridge','Toasted Barley','Black Bread Crust'],
+    Wild:['Cave Comb','Wild Hive','Forest Floor','Bee Smoke']},
+  'Off Notes':{Off:['Overheated Sugar','Damp Box','Plastic Tub','Briny Ferment']}},
+'Olive Oil':{
+  'Green & Grassy':{'Fresh Cut':['Lawn Clippings','Green Hay','Crushed Stems','Spring Meadow'],
+    Vegetal:['Raw Zucchini','Cucumber Peel','Pea Pod','Green Chard','Wild Chicory']},
+  Fruity:{Ripe:['Black Olive Paste','Ripe Apricot','Yellow Plum','Overripe Pear'],
+    Fresh:['Green Almond Milk','Lime Zest','Granny Smith','White Grape']},
+  'Nutty & Buttery':{Nuts:['Toasted Pine Nut','Fresh Walnut','Almond Skin','Pecan'],
+    Buttery:['Avocado Butter','Silky Cream','Egg Yolk','Clarified Butter']},
+  'Pungent & Peppery':{Peppery:['Peppery Finish','Raw Radish','Nasturtium','Green Chili'],
+    'Bitter Greens':['Kale Rib','Escarole','Grape Seed','Green Tea Bitterness']},
+  Defects:{Rancid:['Old Fryer Oil','Wax Crayon','Oxidized Nut','Stale Breadcrumb'],
+    Fermented:['Table Olive Brine','Boozy Ferment','Vinegar Mother'],
+    Musty:['Wet Burlap','Cellar Floor','Mold Bloom']}},
+'Maple Syrup':{
+  Confection:{Vanilla:['Vanilla Fudge','Pastry Cream','Toasted Meringue','Cake Frosting']},
+  Caramelized:{Sugars:['Maple Cream','Wet Brown Sugar','Butter Caramel','Candy Apple']},
+  Roasted:{Dark:['French Roast','Molasses Cookie','Grilled Peach Char','Burnt Ends']},
+  Milky:{Dairy:['Malted Shake','Warm Milk','Rice Pudding','Melted Ice Cream']},
+  Fruity:{Fruits:['Roasted Plum','Fig Compote','Golden Raisin','Poached Pear','Orange Glaze']},
+  'Floral & Herbal':{Flowers:['Basswood Flower','Goldenrod','Apple Blossom'],
+    Herbaceous:['Sweet Fern','Toasted Hay','Birch Leaf','Nettle Tea']},
+  'Spice & Woody':{Spice:['Tonka','Vanilla Bark','Curry Leaf','Burnt Cinnamon'],
+    Woody:['Maple Bark','Toasted Birch','Log Cabin','Campfire Log']}}
+};
+// second wave — same rules as EXTRA
+const EXTRA2={
+Coffee:{
+  Fruity:{
+    Berry:['Wild Blueberry','Strawberry Jam','Raspberry Coulis','Blackberry Pie','Elderberry Syrup','Currant Jelly'],
+    'Stone Fruit':['Poached Peach','Plum Skin','Grilled Peach','Cherry Cola','Stewed Plum','Apricot Nectar'],
+    Orchard:['Quince Jelly','Pear Drop','Apple Blossom','Cider Apple','Apple Skin','Mulled Cider'],
+    Tropical:['Papaya Nectar','Mango Lassi','Passion Curd','Grilled Pineapple','Banana Bread','Piña Colada'],
+    'Winey & Jammy':['Mulled Wine','Sherry','Fruit Compote','Cherry Liqueur','Blackcurrant Cordial']},
+  Floral:{Flowers:['Apple Blossom','Cherry Blossom','Wisteria','Osmanthus','Clover Blossom','Dandelion'],
+    'Perfumed*':['Sandalwood Perfume','Vetiver','Cologne']},
+  Sweet:{Caramelized:['Werther Candy','Banoffee','Sticky Bun','Caramel Latte Syrup'],
+    Vanilla:['Vanilla Milkshake','Panna Cotta','Angel Cake'],
+    'Confectionery*':['Gummy Bear','Sherbet','Bubblegum','Licorice Allsorts']},
+  'Nutty & Cocoa':{Nutty:['Hazelnut Spread','Almond Croissant','Pecan Pie','Chestnut Purée','Gianduja'],
+    Cocoa:['Cocoa Butter','White Chocolate','Chocolate Mousse','Rocky Road']},
+  Spices:{Warming:['Mulling Spice','Speculoos','Hot Cross Bun','Cardamom Bun'],
+    'Savory Spice*':['Smoked Paprika','Ancho','Mole Negro']},
+  Roasted:{Cereal:['Coffee Cake','Digestive Biscuit','Malted Milk Biscuit','Waffle Cone','Brioche Toast'],
+    Burnt:['Charcoal Grill','Wood-Fired Oven','Toasted Marshmallow Edge'],
+    Tobacco:['Fresh Rolling Tobacco','Smoked Leaf']},
+  'Green & Vegetal':{Vegetal:['Bell Pepper Seed','Cucumber Water','Raw Beet','Jicama'],
+    'Herb-like':['Lemongrass','Verbena','Shiso','Wild Fennel']},
+  'Sour & Fermented':{Sour:['Green Tamarind','Passionfruit Tart','Umeboshi','Salted Lime'],
+    Fermented:['Lambic','Natural Wine','Kefir','Fermented Honey']},
+  Other:{'Savory & Brothy*':['Tomato Soup','Seaweed Broth','Truffle Salt'],
+    Chemical:['Menthol','Ethanol','Fresh Paint']}},
+Tea:{
+  Floral:{'White Florals':['Snow Jasmine','Grapefruit Blossom','White Peony Petal','Tiare'],
+    'Rich Florals':['Freesia','Tuberose Absolute','Night Jasmine','Wild Ginger Flower'],
+    Wildflower:['Wild Aster','Sagebrush Bloom','Thistle','Golden Chrysanthemum']},
+  Fruity:{Citrus:['Buddha’s Hand','Green Mandarin','Lime Blossom Fruit','Chenpi'],
+    Orchard:['Snow Pear','Yali Pear','Hawthorn Fruit','Rose Apple'],
+    Melon:['Muskmelon','Bitter Melon Rind','Chilled Melon Ball'],
+    'Stone Fruit':['Dried Plum Skin','Loquat Jam','Yellow Cherry','Sour Plum Drink'],
+    Tropical:['Pineapple Core','Green Papaya','Passionfruit Husk','Salak'],
+    Berry:['Mulberry Leaf Fruit','Bilberry','Aronia','White Currant'],
+    Dried:['Persimmon Cake','Dried Apple Ring','Golden Berry','Candied Kumquat']},
+  Vegetal:{Grassy:['Morning Dew Grass','Bamboo Shoot','Fresh Reed','Rice Sprout'],
+    'Green Veg':['Chayote','Bitter Gourd','Water Spinach','Chrysanthemum Greens'],
+    Herbaceous:['Pandan','Curry Leaf','Perilla','Wild Mint'],
+    'Steamed Greens':['Steamed Edamame','Warm Pea Purée','Blanched Watercress']},
+  Marine:{Oceanic:['Wakame','Sea Grape','Tidal Flat','Dried Shrimp Air','Salt Spray']},
+  'Nutty & Toasty':{Nuts:['Torreya Nut','Sunflower Seed','Roasted Peanut Shell','Pili Nut'],
+    Toasted:['Charred Rice Crust','Waffle','Toasted Millet','Barley Tea Roast']},
+  Sweet:{Honeyed:['Longan Honey','Osmanthus Honey','Honey Water'],
+    Caramelized:['Brown Sugar Boba','Caramel Rice','Roasted Sweet Potato'],
+    Confection:['Matcha White Chocolate','Taro Paste','Mung Bean Cake','Maltose']},
+  'Savory & Milky':{Umami:['Steamed Crab','Seafood Broth','Chicken Fat','Egg White'],
+    Milky:['Milk Foam','Butter Tea','Fresh Cheese Curd','Evaporated Milk']},
+  Smoky:{Smoke:['Pinewood Fire','Roasted Chestnut Shell','Kiln Air','Dried Longan Smoke']},
+  Earthy:{Soil:['Rain-Soaked Trail','Bamboo Grove Floor','Aged Earth Cellar'],
+    Aged:['Ginseng Chest','Aged Tangerine Peel','Old Tea House','Ink Stone'],
+    Mineral:['Yixing Clay','Spring Rock','Copper Coin','Gravel Path']},
+  Medicinal:{'Herbal Medicine':['Chrysanthemum Decoction','Monk Fruit','Loquat Syrup','Honeysuckle Tonic']},
+  Cooling:{'Camphor & Mint':['Cold Mountain Stream','Peppermint Oil','Cooling Balm','Winter Air']},
+  Spiced:{Warm:['Dried Orange Spice','Five Spice','Warm Clove Bud'],
+    Woody:['Wet Cedar','Incense Wood','Old Bamboo Basket','Camphor Laurel']},
+  'Animalic & Musky':{Musky:['Honey Musk','Warm Skin','Dried Silkworm','Old Wool']}},
+Wine:{
+  Fruity:{'Red Fruit':{'Fresh Red':['Red Cherry Skin','Pink Grapefruit Flesh','Watermelon Rind'],
+      'Ripe & Jammy*':['Black Forest Jam','Roasted Strawberry','Cherry Cordial'],
+      'Tart Red*':['Red Plum Skin','Cranberry Bite','Sumac']},
+    'Dark Fruit':['Blackberry Bramble','Cassis Bud','Blue Plum','Huckleberry','Açaí'],
+    Citrus:['Bergamot','Makrut Lime','Orange Bitters','Grapefruit Oil'],
+    'Orchard & Stone':['Mirabelle Jam','Peach Fuzz','Apple Blossom','Fresh Fig'],
+    Tropical:['Papaya','Passionfruit Seed','Salted Mango','Jackfruit'],
+    Dried:['Fig Newton','Sun-Dried Grape','Apricot Leather','Tamarind']},
+  'Confected*':{Candy:['Red Licorice','Fruit Pastille','Candied Violet','Marshmallow'],
+    Syrupy:['Cherry Syrup','Blackberry Cordial','Honey Drizzle']},
+  Floral:{'Blue Florals':['Wisteria Vine','Lupin'],
+    'White Florals':['Gardenia','Stephanotis','Citrus Blossom'],
+    Rose:['Rose Petal Jam','Rose Lychee Cream'],
+    'Herb Flowers':['Chive Blossom','Thyme Flower','Wild Carrot Lace']},
+  Herbal:{Green:['Snow Pea Shoot','Fresh Tarragon','Lemon Verbena','Fig Leaf'],
+    'Dried Herb':['Dried Dill','Smoked Thyme','Tisane Blend','Curry Leaf'],
+    'Vegetal & Savory':['Roasted Red Pepper','Tapenade','Umami Broth','Beet Green']},
+  Spice:{'Sweet Spice':['Mulling Spice','Baked Cinnamon Apple','Clove Orange Pomander'],
+    Pungent:['Horseradish Whisper','Wasabi Stem','Dried Chili Flake']},
+  'Earth & Mineral':{Earth:['Rained-On Vineyard','Cellar Dust','Fresh Tilled Row','Truffle Shaving'],
+    Mineral:['Wet Slate Roof','Crushed Seashell','Salt Flat','Hot Stone','Match Tip']},
+  Oak:{Barrel:['Whiskey Barrel','Toasted Hazelnut Oak','Cigar Cedar','Baking Chocolate Oak'],
+    Char:['Grilled Bread','Fire-Roasted Nut','Espresso Crema','Lapsang Smoke']},
+  Microbial:{Yeast:['Panettone','Sourdough Starter','Baguette Crust'],
+    Dairy:['Salted Butter','Clotted Cream','Yogurt Whey'],
+    Wild:['Lambic Funk','Hay Loft','Sheep Pen']},
+  Aged:{Tertiary:['Fig Balsamic','Aged Cigar','Antique Leather Chair','Cocoa Dust'],
+    Oxidative:['Amontillado Nut','Bruised Pear','Sherry Rancio','Toasted Sesame'],
+    Petrol:['Vinyl Glove','Camphor Oil','Shoe Polish']},
+  Faults:{'Cork & Must':['Basement Carpet','Wet Plaster'],
+    Volatile:['Paint Thinner','Pickled Ginger'],
+    Reduction:['Sewer Whiff','Spent Match Head'],
+    'Mousy & Other*':['Stale Tortilla','Dirty Dishrag']},
+  'Autolytic & Sparkling':{Bakery:['Ladyfinger','Yeast Roll','Vanilla Wafer'],
+    'Creamy Mousse':['Chantilly','Custard Foam','Sherbet Fizz']},
+  'Fortified & Dessert':{'Nutty Oxidative':['Pecan Praline','Roasted Chestnut','Coffee Nougat'],
+    Luscious:['Candied Orange Peel','Sultana Syrup','Peach Preserve','Caramelized Fig']}},
+Beer:{
+  Malty:{Bready:['Sourdough Boule','Soft Pretzel','Graham Flour','Biscotti'],
+    Caramelized:['Rum Raisin Caramel','Amber Candy','Pecan Roll','Maple Bacon'],
+    Roasted:['Stout Cake','Burnt Grain Husk','Roast Hazelnut','Cocoa Grit']},
+  Hoppy:{Citrus:['Sour Orange','Calamansi','Grapefruit Zest Oil','Lime Leaf'],
+    Tropical:['Passionfruit Pulp','Guanabana','Ripe Mango Skin','Tangerine Dream'],
+    'Stone Fruit':['Peach Ring Candy','Apricot Jam','Cherry Skin'],
+    Piney:['Grand Fir','Redwood','Conifer Sap','Christmas Tree'],
+    'Dank & Resinous':['Terpene Oil','Sticky Icky','Juniper Resin','Burnt Sage'],
+    'Floral & Herbal':['Jasmine','Honeysuckle','Bee Balm','Lemon Verbena','Yarrow']},
+  Fermentation:{Esters:['Grape Candy','Pear Cider','Melon Rind','Berry Yogurt','Apple Peel'],
+    'Spicy Phenols':['Clove Cigarette','Smoked Vanilla','Peppercorn Medley'],
+    Yeast:['Belgian Abbey Air','Yeast Cake','Rising Loaf']},
+  'Sour & Funky':{Tart:['Key Lime Pie','Green Currant','Cider Vinegar Nip','Passionfruit Tart','Salty Gose Tang'],
+    Funk:['Lambic Cellar','Brett Leather','Wet Saddle','Farm Gate','Blue Cheese Rind']},
+  Adjuncts:{'Sweet Additions':['Tiramisu','Horchata','Banana Split','Maple Pecan','Toasted Meringue'],
+    Fruited:['Blackcurrant','Gooseberry','Yuzu','Dragonfruit','White Peach'],
+    Spiced:['Cacao Husk','Ancho Chili','Peppermint','Gingerbread','Toasted Coconut Spice']},
+  'Barrel-Aged*':{Spirit:['Armagnac','Calvados','Añejo Cask'],
+    Wood:['Palo Santo','Cherry Wood','Chestnut Barrel'],
+    Fortified:['Oloroso','PX Cask','Banyuls']},
+  'Off-Flavors':{Buttery:['Melted Movie Butter','Cream Slick'],
+    Vegetal:['Canned Green Bean','Boiled Cabbage Water','Raw Squash'],
+    Stale:['Cellar Mold','Papery Finish','Old Bread','Faded Hops']}},
+Whiskey:{
+  Cereal:{Grain:['Spent Grain','Warm Mash Tun','Corn Silk','Rye Spice Grain','Porridge Oats'],
+    Baked:['Banana Bread','Seed Cake','Hobnob','Waffle','Barmbrack']},
+  Fruity:{Orchard:['Toffee Apple','Pear Tart','Quince Jelly','Apple Strudel'],
+    Dried:['Date Loaf','Dried Fig Roll','Raisin Scone','Apricot Leather'],
+    Citrus:['Orange Marmalade Toast','Lemon Drizzle Cake','Candied Grapefruit','Bergamot']},
+  'Floral & Grassy':{Floral:['Lavender Field','Rose Garden','Apple Blossom','Sweet William'],
+    Grassy:['Hay Barn','Cut Silage','Meadow After Rain','Green Bracken']},
+  'Peaty & Smoky':{Smoke:{'Classic Smoke':['Peat Stack','Ember Glow','Turf Fire'],
+      'Coastal Smoke*':['Rock Pool Smoke','Fishing Net','Salted Driftwood'],
+      'Industrial Smoke*':['Coal Scuttle','Engine Room','Creosote Fence']},
+    Medicinal:['Mouthwash','Pine Disinfectant','Liniment','First Aid Kit']},
+  Woody:{Oak:['Sherry Butt','Quarter Cask','Toasted Stave','Oak Vanilla Cream'],
+    Char:['Charred BBQ','Grill Grate','Burnt Oak Chip','Smoked Molasses']},
+  'Winey & Sherried':{Fortified:['Vin Santo','Manzanilla','Cream Sherry','Port Pipe'],
+    Rich:['Dundee Cake','Brandy Butter','Toffee Pudding','Glacé Cherry']},
+  Feinty:{Leathery:['Old Satchel','Leather Armchair','Bookbinding Glue','Stable Door'],
+    Waxy:['Waxed Cotton','Honeycomb Wax','Crayon Box','Pomade']},
+  Sulphury:{Sulphur:['Match Factory','Vulcanized Rubber','Mineral Spring Egg','Struck Steel']},
+  'Sweet & Spice':{Sweet:['Buttered Crumpet','Custard Cream','Millionaire Shortbread','Honey Glaze'],
+    Spice:['Stem Ginger','Nutmeg Butter','Clove Rock Candy','Spiced Orange']}},
+Chocolate:{
+  Cocoa:{'Pure Cocoa':['Forastero Depth','Cocoa Cake','Pressing Room','Winnowed Shell'],
+    Baked:['Choc-Chip Cookie','Black Forest','Marble Cake']},
+  Fruity:{Berry:['Raspberry Coulis','Strawberry Jam','Blackberry Crumble'],
+    Citrus:['Candied Yuzu','Orange Oil','Bergamot Cream'],
+    'Stone Fruit':['Cherry Compote','Peach Yogurt','Plum Jam'],
+    Tropical:['Coconut Cream','Mango Sticky Rice','Passion Ganache'],
+    Dried:['Prune Armagnac','Raisin Fudge','Dried Fig Ball']},
+  Floral:{Flowers:['Rosewater','Orange Flower Water','Violet Cream','Jasmine Tea Note']},
+  Nutty:{Nuts:['Praline Paste','Toasted Coconut','Peanut Skin','Walnut Cake'],
+    Confection:['Ferrero Style','Nut Nougatine','Maple Walnut Fudge']},
+  'Caramel & Dairy':{Caramelized:['Wet Caramel','Toffee Popcorn','Burnt Butterscotch'],
+    Dairy:['Malted Shake','Milk Jam','Whipped Ganache','Yogurt Coating']},
+  'Fermented & Winey*':{Bright:['Berry Kombucha','Sour Cherry Beer','Verjus'],
+    Deep:['Rum Raisin','Amaro','Aged Balsamic','Tawny Port']},
+  Spiced:{Warm:['Gingerbread','Hot Cross Spice','Cardamom Bun'],
+    Bold:['Sichuan Tingle','Habanero Whisper','Black Cardamom Smoke']},
+  'Vegetal & Fresh':{Green:['Pandan','Green Banana Peel','Raw Cacao Pulp'],
+    Fresh:['Peppermint Bark','Cooling Mint Cream','Juniper Air']},
+  'Earthy & Roasted':{Earth:['Terracotta','Root Cellar','Fermentation Box','Jungle Floor'],
+    Roast:['French Roast','Grilled Plantain','Fire-Toasted Nib','Ash Roast']}},
+Cider:{
+  Fruity:{Apple:['Jonagold','Winesap','Golden Russet','Pressed Pomace','Orchard Ladder Apple'],
+    Orchard:['White Currant','Loquat','Wild Plum','Service Berry'],
+    Citrus:['Meyer Lemon','Pink Grapefruit','Citrus Blossom']},
+  'Floral & Honey':{Floral:['Pear Blossom','Quince Flower','Sweetbriar','Acacia'],
+    Honeyed:['Orchard Honey','Warm Mead','Honey Crisp Glaze']},
+  'Funky & Wild':{Wild:['Late Harvest Funk','Fermenting Leaves','Old Press Cloth','Field Mouse Musk'],
+    Sharp:['Underripe Crab','Green Apple Skin','Sour Pomace','Champagne Acid']},
+  'Tannic & Woody':{Tannin:['Bitter Almond Skin','Green Banana Tannin','Tea Bag Squeeze'],
+    Woody:['Orchard Prunings','Seasoned Oak','Wet Cider Barrel']},
+  Spiced:{Warm:['Chai Mull','Baked Apple Spice','Orange Clove Stud'],
+    Earthy:['Bonfire Night','Wet Bark','Turned Compost','Cellar Stone']}},
+Rum:{
+  'Sweet & Caramel':{Sugars:['First-Press Cane','Boiling House','Amber Syrup','Wet Sugar'],
+    Confection:['Tres Leches','Dulce Wafer','Coconut Macaroon','Rum Toffee','Banana Fudge']},
+  Fruity:{Tropical:['Cooked Guava','Julie Mango','Breadfruit','Coconut Jelly','Tamarind Ball'],
+    Dried:['Fig Preserve','Burnt Raisin','Dried Guava Roll'],
+    Citrus:['Curaçao Peel','Grilled Lime','Orange Sherbet']},
+  'Funky & Estery':{Esters:['Ripe Fruit Basket','Ester Bloom','Candy Banana','Solvent Sweetness'],
+    Hogo:['Dunder Pit','Fermentation Heat','Sea Rot Rope','Mango Peel Funk','Iodine Brine']},
+  Spice:{Baking:['Spiced Cake','Vanilla Custard Spice','Nutmeg Shell','Warm Clove Honey'],
+    Pungent:['Scotch Bonnet Warmth','Peppered Cacao','Ginger Beer Bite']},
+  'Oak & Aged':{Barrel:['Tropic-Aged Stave','Rancio Oak','Toasted Coconut Cask'],
+    Mature:['Cane Field Fire','Cathedral Wood','Aged Demerara','Cigar Ash','Leather Trunk']}},
+Gin:{
+  'Juniper & Pine':{Conifer:['Mountain Juniper','Winter Forest','Pine Gin Snap','Resinous Burst','Cedar Tip']},
+  Citrus:{Peel:['Blood Orange','Sicilian Lemon','Green Mandarin','Grapefruit Twist','Lime Flower Zest']},
+  Floral:{Blossom:['Rose Garden','Elderflower Cordial','Violet Pastille','Orange Flower Water','Linden']},
+  'Fruit-Forward*':{Berries:['Wild Sloe','Bramble','Redcurrant','Black Cherry'],
+    Orchard:['Crisp Apple','Pear Skin','Quince Jelly'],
+    Stone:['Plum Gin Note','White Peach','Apricot Kernel']},
+  Herbal:{'Green Herbs':['Bay Laurel','Makrut Leaf','Olive Leaf','Thai Basil','Garden Mint'],
+    Savory:['Salted Cucumber','Nori','Green Olive Brine','Celery Salt']},
+  Spice:{Warm:['Angelica Seed','Cassia Bark','Vanilla Pod','Warm Nutmeg'],
+    Peppery:['Cracked Cubeb','Sansho Pepper','Peppermint Heat']},
+  'Earthy & Rooty':{Roots:['Fresh Ginger','Horseradish Root','Elecampane','Licorice Twig'],
+    Earth:['Forest Path','Fallen Pine Needles','Damp Bracken','Stone Well']}},
+'Mezcal & Tequila':{
+  'Roasted Agave':{'Sweet Roast':['Pit-Roast Sweetness','Maguey Syrup','Roasted Pineapple Core','Smoked Yam'],
+    Sugary:['Agave Candy','Warm Honey Water','Raw Sugar Crust']},
+  Vegetal:{Green:['Fresh Cut Maguey','Aloe Gel','Green Bean','Prickly Pear Pad'],
+    Herbal:['Pericón','Mountain Mint','Dried Avocado Leaf','Wild Sage']},
+  Smoky:{Smoke:['Earth Pit Smoke','Mesquite Coal','Village Kitchen','Toasted Corn Husk'],
+    Burnt:['Charred Agave Skin','Smoldering Leaves','Black Char']},
+  Fruity:{Citrus:['Lime Oil','Bitter Orange','Yuzu Note'],
+    Tropical:['Guanábana','Baked Banana','Melon Seed','Tuna Fruit']},
+  'Lactic & Fermented*':{Ferment:['Tejuino','Bagasse Ferment','Sour Corn Dough'],
+    Funk:['Goat Hide','Rustic Cheese','Fermented Nopal']},
+  'Earthy & Mineral':{Earth:['High Desert Rain','Agave Root Earth','Dry Riverbed'],
+    Mineral:['Quarry Dust','Silver Ore','Salt Rim','Hot Stone Griddle']},
+  'Spice & Pepper':{Spice:['Green Peppercorn','Toasted Chile Seed','Cacao Nib Spice','Achiote']}},
+Sake:{
+  Fruity:{Orchard:['Kyoho Grape','Snow Apple','Sweet Nashi Juice','Muscat Jelly'],
+    Tropical:['Melon Soda','White Strawberry','Banana Milk','Yuzu Sorbet'],
+    Citrus:['Shikuwasa','Green Yuzu Peel','Citrus Blossom Water']},
+  Floral:{Blossom:['Sakura Petal','Pear Blossom','White Wisteria','Rice Flower']},
+  'Rice & Cereal':{Grain:['New Crop Rice','Rice Husk','Warm Rice Steam','Rice Koji Cake'],
+    Koji:['Koji Honey','Sweet Ferment Steam','Chestnut Rice']},
+  'Creamy & Lactic':{Dairy:['Yogurt Drink','Soft Cheese','Milk Pudding','Cream Soda Float'],
+    Yeasty:['Sweet Sake Bun','Rice Dough','Bakery Steam']},
+  'Savory & Umami':{Umami:['Dried Scallop','Mushroom Dashi','Soy Milk Skin','Sea Bream Broth'],
+    Nutty:['Sesame Paste','Walnut Cream','Roasted Soybean']},
+  'Aged & Koshu':{Oxidative:['Black Honey','Aged Soy','Dried Date','Medicinal Herb Sweetness','Antique Gold']},
+  Mineral:{Clean:['Soft Spring','Cedar Bucket Water','Winter Stream','Polished Stone']}},
+Kombucha:{
+  'Tart & Acidic':{Vinegar:['Kombucha Mother Tang','Plum Vinegar','Honey Vinegar'],
+    'Bright Tart':['Lemon Sherbet','Green Gooseberry','Tart Cherry','Yuzu Fizz']},
+  Fruity:{Orchard:['Apple Blossom Juice','Cider Press','Asian Pear'],
+    'Stone & Berry':['Raspberry Fizz','Blueberry Skin','Plum Soda','Cherry Cola']},
+  'Tea & Tannic':{Tea:['First Flush','Smoked Tea','Hojicha','Yellow Tea']},
+  'Funky & Fermented':{Ferment:['Sour Beer','Fermented Pear','Honey Mead Note'],
+    Wild:['Cellar Beam','Rainwater Barrel','Wild Bloom']},
+  'Sweet & Floral':{Sweet:['Barley Malt Syrup','Ripe Fruit Nectar','Palm Sugar'],
+    Floral:['Linden','Honeysuckle','Rose Lemonade']}},
+Cheese:{
+  'Fresh & Lactic':{Milky:['Panna','Warm Ricotta','Milk Bloom','Cottage Curd'],
+    Tangy:['Goat Curd','Skyr','Lactic Bite','Cultured Cream']},
+  'Grassy & Herbal':{Pasture:['Mountain Meadow','Dried Alpine Flowers','New Mown Field'],
+    Vegetal:['Grilled Leek','Wild Nettle','Fennel Gratin']},
+  Fruity:{Bright:['Pear Skin','Lemon Curd','Fresh Grape'],
+    Rich:['Toasted Fig','Apricot Chutney','Port-Washed Fruit','Cherry Preserve']},
+  Nutty:{Toasted:['Hazelnut Butter','Roasted Almond Skin','Toasted Sunflower'],
+    Browned:['Raclette Crust','Toasted Cheese Sandwich','Golden Gratin']},
+  'Sweet & Caramel':{Caramelized:['Roasted Whey Fudge','Brown Sugar Crust','Toffee Rind'],
+    'Sweet Cream':['Vanilla Cream','Fior di Latte','Sweet Butter Curl']},
+  'Earthy & Mushroom':{Fungal:['Cave Mushroom','Truffled Rind','Forest Log'],
+    Cellar:['Affinage Cellar','Wet Brick','Ripening Straw Mat']},
+  'Pungent & Funky':{'Washed Rind':['Trappist Rind','Broth-Washed Crust','Meaty Umami Rind'],
+    Blue:['Roquefort Cave Air','Green-Veined Bite','Spicy Blue Crumble']},
+  'Oniony & Alliaceous*':{Allium:['Wild Leek','Fried Shallot','Green Garlic']},
+  Smoky:{Smoke:['Juniper Smoke','Oak-Smoked Rind','Chimney Cheese']}},
+Honey:{
+  Floral:{Delicate:['Star Thistle','Sourwood','Gallberry','Almond Blossom'],
+    Perfumed:['Frangipani','Sweet Alyssum','Night Blooming Jasmine']},
+  Fruity:{Fresh:['Nectarine','White Mulberry','Golden Kiwi'],
+    Ripe:['Plum Jam','Baked Peach','Sultana']},
+  'Warm & Caramel':{Sugary:['Crystallized Comb','Warm Fudge','Maple Cream'],
+    Rich:['Nougat','Buttered Toast Drizzle','Sweet Sherry Note']},
+  'Herbal & Fresh':{Green:['Basil Flower','Mint Meadow','Green Fennel'],
+    Dry:['Sage Brush','Sun-Dried Grass','Wild Oregano']},
+  'Woody & Resinous':{Forest:['Cedar Honeydew','Spruce Tip Syrup','Warm Sap'],
+    Dark:['Chestnut Tannin','Smoked Timber','Molasses Wood']},
+  'Earthy & Malty':{Malty:['Amber Ale Note','Wort','Brown Toast'],
+    Wild:['Heath Funk','Bracken Honey','Old Hive Wood']},
+  'Off Notes':{Off:['Scorched Kettle','Damp Cellar Note','Sour Mash']}},
+'Olive Oil':{
+  'Green & Grassy':{'Fresh Cut':['Crushed Grass Juice','Olive Mill Air','Green Stem Sap'],
+    Vegetal:['Braised Artichoke','Green Pepper Skin','Snap Bean','Wild Fennel']},
+  Fruity:{Ripe:['Ripe Tomato Flesh','Golden Delicious','Butter Pear'],
+    Fresh:['Green Almond Slice','Herb Apple','Citrus Leaf']},
+  'Nutty & Buttery':{Nuts:['Blanched Almond','Green Pistachio','Sesame Paste'],
+    Buttery:['Warm Brioche Butter','Vanilla Butter','Soft Cream']},
+  'Pungent & Peppery':{Peppery:['Back-Throat Burn','Cress Bite','Ginger Snap Heat'],
+    'Bitter Greens':['Artichoke Heart','Bitter Chicory Root','Green Walnut']},
+  Defects:{Rancid:['Old Nut Bin','Linoleum','Stale Fry Oil'],
+    Fermented:['Muddy Vats','Overripe Olive Mash','Bready Ferment'],
+    Musty:['Humid Warehouse','Old Mop','Attic Beam']}},
+'Maple Syrup':{
+  Confection:{Vanilla:['Marshmallow Cream','Vanilla Taffy','Sugar Cookie']},
+  Caramelized:{Sugars:['Maple Praline','Candied Bacon Glaze','Toasted Sugar Crust']},
+  Roasted:{Dark:['Roasted Chestnut','Smoked Maple','Espresso Bark']},
+  Milky:{Dairy:['Maple Latte Foam','Sweet Cream Butter','Milk Caramel']},
+  Fruity:{Fruits:['Apple Fritter','Grilled Pineapple','Date Paste','Persimmon']},
+  'Floral & Herbal':{Flowers:['Elderflower','Violet Leaf','Spring Sap Blossom'],
+    Herbaceous:['Cedar Tips','Wintergreen Leaf','Forest Herb Tea']},
+  'Spice & Woody':{Spice:['Clove Honey','Warm Anise','Spiced Rum Note'],
+    Woody:['Sap Bucket Wood','Sugar Shack Steam','Split Firewood']}}
+};
+
 // ---------- color helpers ----------
 function hexToHsl(hex){
   const n=parseInt(hex.slice(1),16), r=(n>>16&255)/255, g=(n>>8&255)/255, b=(n&255)/255;
@@ -578,9 +1196,12 @@ function hexToHsl(hex){
 }
 const hsl=([h,s,l])=>`hsl(${h.toFixed(1)} ${s.toFixed(1)}% ${l.toFixed(1)}%)`;
 const parseC=c=>c[0]==='#'?hexToHsl(c):c.match(/[\d.]+/g).map(Number);
-function derive(base,i,n){ // spread children across lightness, drift hue slightly
+// label hash → color/texture depend on the NAME, not sibling position, so a note
+// looks identical in Essentials and Everything even as siblings appear around it
+const hashL=s=>{let h=0; for(const c of s.toLowerCase()) h=(h*31+c.charCodeAt(0))>>>0; return h;};
+function derive(base,label){ // vary lightness + drift hue within the parent's hue family
   const [h,s,l]=parseC(base);
-  const t=n>1? i/(n-1) : .5;
+  const t=(hashL(label)%97)/96;
   return [h+(t-.5)*22, Math.min(s+6,90), Math.max(20,Math.min(76, l-11+t*24))];
 }
 function luminance(cssColor){ // via canvas-free HSL/hex parse: we only feed hsl() or hex
@@ -601,20 +1222,37 @@ const DEEP=/\*$/;
 function makeNode(label,spec,color,deep){
   const node={label,color};
   if(Array.isArray(spec)){
-    const leaves=spec.filter(s=>deep||!DEEP.test(s));
-    node.children=leaves.map((s,i)=>({label:s.replace(DEEP,''),color:hsl(derive(color,i,leaves.length))}));
+    const leaves=spec.filter(s=>deep||!DEEP.test(s)), seen=new Set();
+    node.children=leaves.map(s=>{const l=s.replace(DEEP,''); return {label:l,color:hsl(derive(color,l))};})
+      .filter(c=>!seen.has(c.label)&&seen.add(c.label)); // dedupe: starred + EXTRA may name the same note
   }else if(spec&&spec.subs){
     const keys=Object.keys(spec.subs).filter(k=>deep||!DEEP.test(k));
-    node.children=keys.map((k,i)=>{
-      const child=spec.subs[k];
-      const c=child.color||hsl(derive(spec.color||color,i,keys.length));
-      return makeNode(k.replace(DEEP,''),child,child.color||c,deep);
+    node.children=keys.map(k=>{
+      const child=spec.subs[k], l=k.replace(DEEP,'');
+      const c=child.color||hsl(derive(spec.color||color,l));
+      return makeNode(l,child,c,deep);
     });
   }
   return node;
 }
+// EXTRA holds Everything-only bulk data (defined below DATA): same shape, no stars needed.
+// Arrays append to existing subs; unknown keys add whole new subs/families (full DATA format).
+function deepData(){
+  const d=structuredClone(DATA);
+  for(const EX of [EXTRA,EXTRA2]) for(const s in EX){
+    (function merge(t,e){
+      for(const k in e){
+        if(!(k in t)){ t[k]=structuredClone(e[k]); continue; } // clone: never alias EXTRA into the tree
+        if(Array.isArray(t[k])&&Array.isArray(e[k])) t[k]=t[k].concat(e[k]);
+        else merge(t[k].subs,e[k]);
+      }
+    })(d[s].subs,EX[s]);
+  }
+  return d;
+}
 function buildRoot(deep){
-  const root={label:'Flavor Explorer',children:Object.keys(DATA).map(k=>makeNode(k,DATA[k],DATA[k].color,deep))};
+  const data=deep?deepData():DATA;
+  const root={label:'Flavor Explorer',children:Object.keys(data).map(k=>makeNode(k,data[k],data[k].color,deep))};
   // collapse single-child chains: a category with one subcategory adopts its children directly
   (function collapse(n){
     if(!n.children) return;
@@ -640,8 +1278,8 @@ const TEXTURES=[
   {i:'repeating-radial-gradient(circle at 72% 28%, rgba(255,255,255,.09) 0 2px, transparent 2px 13px)', s:'auto'},
   {i:'radial-gradient(circle at 6px 6px, rgba(0,0,0,.15) 2px, transparent 2.4px)', s:'19px 19px'}
 ];
-function paint(el,node,i){
-  const t=TEXTURES[i%TEXTURES.length];
+function paint(el,node){ // texture from the label hash — stable across modes
+  const t=TEXTURES[hashL(node.label)%TEXTURES.length];
   el.style.background=`${t.i} ${node.color}`;
   el.style.backgroundSize=t.s;
   el.style.backgroundColor=node.color;
@@ -833,8 +1471,7 @@ function renderCards(main,cur){
 }
 
 function renderLeaf(main,node){
-  const d=document.createElement('div'); d.className='leaf';
-  paint(d,node,Math.max(0,(path.at(-2)?.children||[]).indexOf(node))); // same texture as its grid tile
+  const d=document.createElement('div'); d.className='leaf'; paint(d,node);
   const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; d.appendChild(l);
   main.appendChild(d);
   const n=document.createElement('p'); n.className='leaf-note';
