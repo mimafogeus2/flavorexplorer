@@ -1350,11 +1350,13 @@ function renderStrata(){
     strata.insertBefore(makeStratum(e,keep+i),strata.querySelector('.out'));
   });
 }
+// search folding: "creme brulee" finds Crème Brûlée, "buddha's" finds Buddha’s
+const fold=s=>s.normalize('NFD').replace(/\p{M}/gu,'').replace(/[’‘]/g,"'").toLowerCase();
 // flat index of every category and note, with its full chain for navigation
 function buildIndex(root){
   const ix=[];
   (function idx(n,chain){
-    (n.children||[]).forEach((c,i)=>{ const ch=[...chain,c]; ix.push({node:c,chain:ch,i}); idx(c,ch); });
+    (n.children||[]).forEach((c,i)=>{ const ch=[...chain,c]; ix.push({node:c,chain:ch,i,fold:fold(c.label)}); idx(c,ch); });
   })(root,[]);
   return ix;
 }
@@ -1372,10 +1374,10 @@ $('#dDeep').onclick=()=>setDepth('deep');
 
 function renderSearch(q){
   const main=$('#main'); main.innerHTML='';
-  const ql=q.toLowerCase();
+  const ql=fold(q);
   const scope=path.length>1?path[1]:null; // inside a wheel, search only that wheel
-  const hits=INDEX.filter(e=>(!scope||e.chain[0]===scope)&&e.node.label.toLowerCase().includes(ql));
-  hits.sort((a,b)=>{const al=a.node.label.toLowerCase(),bl=b.node.label.toLowerCase();
+  const hits=INDEX.filter(e=>(!scope||e.chain[0]===scope)&&e.fold.includes(ql));
+  hits.sort((a,b)=>{const al=a.fold,bl=b.fold;
     return (bl.startsWith(ql)-al.startsWith(ql))||al.localeCompare(bl);});
   const h=document.createElement('h1'); h.className='prompt';
   h.textContent=(hits.length?`${hits.length} match${hits.length===1?'':'es'}`:'No matches')+(scope?` in ${scope.label}`:'');
