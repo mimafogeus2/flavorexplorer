@@ -194,6 +194,7 @@ body.sheet-open #sheet{transform:none}
 
 /* advanced table — same board language as Flavor Journey */
 :root{--cell:26px; --line:#4a3d33}
+@media (pointer:coarse){ :root{--cell:34px} .axis .mini{min-width:2.4rem; min-height:2.2rem} .ib{width:2.4rem; height:2.4rem} } /* finger-sized cells on touch screens, as in Flavor Journey */
 .board{display:flex; gap:7px; align-items:flex-start; padding:.4rem 0 .8rem; width:max-content}
 .axis{flex:none; display:flex; flex-direction:column; align-items:flex-end; position:sticky; left:0; z-index:2;
   background:var(--bg-2); padding-right:4px; min-width:1.6rem}
