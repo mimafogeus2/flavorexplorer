@@ -1810,9 +1810,12 @@ function renderSheet(){
     });
     body.appendChild(ul);
   }
-  const ft=el('div','shft'), clr=el('button','danger','Clear all');
-  clr.disabled=!sh?.items.length;
-  clr.onclick=()=>{ if(confirm(`Remove all ${sh.items.length} from the ${subj} sheet?`)){ sh.items=[]; sh.vals={}; delete sh.from; saveSheets(); syncOn(); renderSheet(); } };
+  const ft=el('div','shft'), clr=el('button','danger',subj?`New ${subj}`:'New');
+  clr.disabled=!sh?.items.length; clr.title=`Clear the sheet to start a new ${subj} tasting`;
+  clr.onclick=()=>{ // no need to ask when the sheet matches the tasting it's saved as
+    const saved=from&&sameNotes(sh,from);
+    if(saved||confirm(`Start a new ${subj} tasting? The ${sh.items.length} notes on the sheet aren’t saved and will be cleared.`)){
+      sh.items=[]; sh.vals={}; delete sh.from; saveSheets(); syncOn(); renderSheet(); } };
   const has=!!sh?.items.length, exp=el('div','exp');
   const sv=el('button','mini save','Save'), copy=el('button','mini','Copy'), dl=el('button','mini','Download'), pr=el('button','mini','Print / PDF');
   [sv,copy,dl,pr].forEach(b=>b.disabled=!has);
@@ -1839,6 +1842,9 @@ $('#tastBtn').onclick=()=>{ location.hash='#tastings'; };
 const tastingText=t=>sheetText(t.subj,t,[t.title,`${t.subj} · ${fmtWhen(t.when)}`,...(t.details?['',t.details]:[])]);
 const tastingOf=sh=>sh.from&&TASTINGS.find(t=>t.id===sh.from)||null;
 const snap=sh=>JSON.parse(JSON.stringify({items:sh.items,vals:sh.vals,rows:sh.rows,mode:sh.mode}));
+// same notes and ratings, ignoring the zero padding the table adds to vals
+const sameNotes=(a,b)=>{ const n=x=>JSON.stringify([x.items.map(i=>i.k),x.items.map(i=>Object.entries(x.vals[i.k]||{})
+  .map(([L,v])=>[L,v.join('').replace(/0+$/,'')]).filter(e=>e[1]).sort())]); return n(a)===n(b); }; // ponytail: List/Table mode and empty rows aren't worth a prompt
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const nowLocal=()=>{ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,16); }; // datetime-local format
 const fmtWhen=w=>new Date(w).toLocaleString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
