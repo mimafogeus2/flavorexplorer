@@ -173,6 +173,9 @@ body.sheet-open #sheet{transform:none}
   .pdate{display:block; font-family:var(--body); font-weight:400; font-size:.85rem; color:#6b5d52; margin-top:.2rem}
   .cell{border-color:#b9ab9e !important}
   .plog{display:block; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; line-height:1.5; white-space:pre-wrap; margin-top:1.2rem; break-inside:avoid}
+  body.pmain #sheet,body.pmain .tact,body.pmain .tctl{display:none !important}
+  body.pmain main{display:block !important; overflow:visible; max-width:none; padding:0}
+  body.pmain .tboard{overflow:visible}
   .sw,.carea{-webkit-print-color-adjust:exact; print-color-adjust:exact}
   .srow{break-inside:avoid; border-bottom-color:#e5dcd3}
 }
@@ -270,8 +273,27 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
 .btn:hover{background:var(--bg)}
 .btn.primary{background:var(--ink); color:var(--bg); border-color:var(--ink); font-weight:600}
 .mini.save{border-style:solid; color:var(--ink)}
-.editing{display:block; margin-top:.2rem; font-size:.75rem; color:var(--ink-dim)}
+.editing{display:block; margin-top:.2rem; font-family:var(--body); font-weight:400; font-size:.75rem; color:var(--ink-dim)}
 .editing b{color:var(--ink); font-weight:600}
+
+/* saved tastings screen */
+.editing a{color:var(--ink); font-weight:600; text-decoration:none}
+.editing a:hover{text-decoration:underline}
+.ttools,.tact{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin:-.4rem 0 1.4rem}
+.tact .danger{margin-left:auto}
+.tgroup{margin-bottom:1.6rem}
+.tgh{display:flex; align-items:center; gap:.6rem; font-family:var(--display); font-weight:600; font-size:1.15rem; margin-bottom:.3rem}
+.tgh small{font-family:var(--body); font-weight:400; font-size:.75rem; color:var(--ink-dim)}
+.tlist{list-style:none; padding:0}
+.trow{display:block; padding:.6rem .7rem; border-radius:8px; color:var(--ink); text-decoration:none; border-bottom:1px solid #3a2f28}
+.trow:hover,.trow:focus-visible{background:var(--bg-2)}
+.trow b{display:block; font-family:var(--display); font-weight:500; font-size:1.02rem}
+.trow small{display:block; font-size:.75rem; color:var(--ink-dim); margin-top:.15rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.tdetails{white-space:pre-wrap; line-height:1.55; color:#d9cfc4; max-width:42rem; margin-bottom:1.4rem; background:var(--bg-2); padding:.9rem 1rem; border-radius:10px}
+.tctl{display:flex}
+.tboard{overflow-x:auto; flex:none} .tboard .board{--bb:var(--bg)}
+.tnotes{max-width:34rem; width:100%}
+.tfam{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-dim); margin:1rem 0 .2rem}
 
 /* related-notes popover: anchored to the hovered note, does not follow the mouse */
 #rel{position:fixed; z-index:30; width:270px; max-height:min(70dvh,460px); overflow:auto; background:var(--bg-2);
@@ -306,6 +328,10 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
     <button id="mGrid" aria-pressed="true">Grid</button>
     <button id="mCards" aria-pressed="false">Cards</button>
   </div>
+  <button id="tastBtn" class="iconbtn" aria-label="Saved tastings" title="Saved tastings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18.5V6.5a3 3 0 0 1 3-3h11v13H8a3 3 0 0 0-3 3 3 3 0 0 0 3 3h11"/></svg>
+    <span class="badge"></span>
+  </button>
   <button id="sheetBtn" class="iconbtn" aria-label="Tasting sheet" aria-expanded="false" aria-controls="sheet" title="Tasting sheet">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8.5h6M9 12h6M9 15.5h4"/></svg>
     <span class="badge"></span>
@@ -1472,7 +1498,11 @@ $('#mCards').onclick=()=>setMode('cards');
 const pathToHash=p=>'#/'+p.slice(1).map(n=>encodeURIComponent(n.label)).join('/');
 function drill(node){ lastDir='r'; location.hash=pathToHash([...path,node]); }
 function jumpTo(level){ location.hash=pathToHash(path.slice(0,level+1)); }
+let TV=null; // saved-tastings view: null (explorer), 'list', or a tasting id
 function applyHash(){
+  const m=location.hash.match(/^#tastings(?:\/(.+))?$/);
+  TV=m?(m[1]?decodeURIComponent(m[1]):'list'):null;
+  if(TV){ path=[ROOT]; render(); return; }
   const labels=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean).map(decodeURIComponent);
   const old=path, p=[ROOT];
   for(const l of labels){
@@ -1488,13 +1518,24 @@ function applyHash(){
 }
 window.addEventListener('hashchange',applyHash);
 
-const HOME={home:true};
+const HOME={home:true}, TL={tl:true};
+let tEntryMemo=null; // stable per tasting+title, so the strata diff doesn't replay its animation
+const tEntry=t=>{ const key=t.id+'|'+t.title+'|'+t.subj; return tEntryMemo?.key===key?tEntryMemo:(tEntryMemo={key,t}); };
 function makeStratum(entry,k){ // k = index in the entries list; for real nodes, path[k]
   const b=document.createElement('button');
   if(entry===HOME){
     b.className='stratum home';
     b.innerHTML=`<span class="lbl">What are you tasting?</span><span class="hint">start over ↩</span>`;
     b.onclick=()=>jumpTo(0);
+  }else if(entry===TL){
+    b.className='stratum home';
+    b.innerHTML=`<span class="lbl">Saved tastings</span><span class="hint">all tastings ↩</span>`;
+    b.onclick=()=>{ location.hash='#tastings'; };
+  }else if(entry.t){
+    b.className='stratum'; paint(b,ROOT.children.find(n=>n.label===entry.t.subj)||{label:'',color:'#555'});
+    b.innerHTML=`<span class="lbl"></span>`;
+    b.querySelector('.lbl').textContent=`${entry.t.subj} · ${entry.t.title}`;
+    b.onclick=()=>$('#main').scrollTo({top:0,behavior:'smooth'});
   }else{
     b.className='stratum'; paint(b,entry,k-1);
     b.innerHTML=`<span class="lbl"></span><span class="hint">return here ↩</span>`;
@@ -1508,7 +1549,8 @@ function renderStrata(){
   // diff against current DOM: untouched bars keep their elements (no animation replay),
   // only appended bars drop in and removed bars rise out
   const strata=$('#strata');
-  const entries=path.length>1?[HOME,...path.slice(1)]:[];
+  const t=TV&&TV!=='list'&&TASTINGS.find(x=>x.id===TV);
+  const entries=TV?[HOME,TL,...(t?[tEntry(t)]:[])]:path.length>1?[HOME,...path.slice(1)]:[];
   const existing=[...strata.children].filter(el=>!el.classList.contains('out'));
   let keep=0;
   while(keep<existing.length&&keep<entries.length&&existing[keep]._node===entries[keep]) keep++;
@@ -1582,6 +1624,8 @@ function render(){
   hideRel();
   if(path.length>1&&sheetSubj!==path[1].label){ sheetSubj=path[1].label; saveSheets(); renderSheet(); }
   renderStrata();
+  $('#search').hidden=!!TV;
+  if(TV){ renderTastings(); return; }
   $('#search').placeholder=path.length>1?`Search ${path[1].label}…`:'Search flavors…';
   const q=$('#search').value.trim();
   if(q.length>=2){ renderSearch(q); return; }
@@ -1729,7 +1773,9 @@ function renderSheet(){
   const hd=el('div','shd'), h=el('h2',null,'Tasting sheet');
   if(subj) h.appendChild(el('small',null,subj));
   const from=sh&&tastingOf(sh);
-  if(from){ const e=el('span','editing','Editing: '); e.appendChild(el('b',null,from.title)); h.appendChild(e); }
+  if(from){ const e=el('span','editing','Editing: '), a=el('a',null,from.title); a.href='#tastings/'+encodeURIComponent(from.id);
+    a.onclick=()=>{ if(getComputedStyle(document.body).paddingRight==='0px') setDrawer(false); }; // drawer overlays (phone)
+    e.appendChild(a); h.appendChild(e); }
   hd.append(h,iconBtn('x','×','Close tasting sheet',()=>setDrawer(false)));
   box.appendChild(hd);
 
@@ -1775,10 +1821,7 @@ function renderSheet(){
   copy.title='Copy as text'; dl.title='Download as a text file'; pr.title='Print, or save as PDF from the print dialog';
   copy.onclick=async()=>{ try{ await navigator.clipboard.writeText(sheetText(subj)); copy.textContent='Copied ✓'; }
     catch{ copy.textContent='Copy failed'; } setTimeout(()=>copy.textContent='Copy',1600); };
-  dl.onclick=()=>{ const a=el('a'), d=new Date();
-    a.href=URL.createObjectURL(new Blob([sheetText(subj)],{type:'text/plain;charset=utf-8'}));
-    a.download=`${subj.toLowerCase().replace(/\W+/g,'-')}-tasting-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.txt`;
-    a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); };
+  dl.onclick=()=>download(`${slug(subj)}-tasting-${ymd(new Date())}.txt`,sheetText(subj));
   pr.onclick=()=>{ $('#sheet .pdate').textContent=stamp();
     const log=$('#sheet .plog'); if(log) log.textContent=sheetText(subj).split('\n').slice(3).join('\n');
     print(); };
@@ -1790,7 +1833,10 @@ function renderSheet(){
 // ---------- saved tastings: snapshots of a sheet plus title, time and details ----------
 // a sheet loaded from (or saved as) a tasting carries `from`; Save then overwrites it
 let TASTINGS=JSON.parse(localStorage.getItem('fx-tastings')||'[]');
-const saveTastings=()=>localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS));
+function saveTastings(){ localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS)); $('#tastBtn .badge').textContent=TASTINGS.length||''; }
+$('#tastBtn .badge').textContent=TASTINGS.length||'';
+$('#tastBtn').onclick=()=>{ location.hash='#tastings'; };
+const tastingText=t=>sheetText(t.subj,t,[t.title,`${t.subj} · ${fmtWhen(t.when)}`,...(t.details?['',t.details]:[])]);
 const tastingOf=sh=>sh.from&&TASTINGS.find(t=>t.id===sh.from)||null;
 const snap=sh=>JSON.parse(JSON.stringify({items:sh.items,vals:sh.vals,rows:sh.rows,mode:sh.mode}));
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -1827,11 +1873,97 @@ function loadTasting(id){
   syncOn(); renderSheet(); setDrawer(true);
 }
 
+function renderTastings(){
+  const main=$('#main'); main.innerHTML='';
+  const h=el('h1','prompt'), small=el('small');
+  if(TV==='list'){
+    h.append('Saved tastings',small); small.textContent='Grouped by what you tasted, most recent first.'; main.appendChild(h);
+    const tools=el('div','ttools'), ex=el('button','btn','Export all'), im=el('button','btn','Import'), file=el('input');
+    ex.disabled=!TASTINGS.length; ex.title='Download every saved tasting as a backup file';
+    ex.onclick=()=>download(`flavor-explorer-tastings-${ymd(new Date())}.json`,JSON.stringify({app:'flavor-explorer',tastings:TASTINGS}),'application/json');
+    file.type='file'; file.accept='.json,application/json'; file.hidden=true;
+    im.title='Add tastings from a backup file'; im.onclick=()=>file.click();
+    file.onchange=async()=>{ const f=file.files[0]; file.value=''; if(f) alert(importTastings(await f.text())); render(); };
+    tools.append(ex,im,file); main.appendChild(tools);
+    if(!TASTINGS.length){ main.appendChild(el('p','sempty','No saved tastings yet. Add notes to the tasting sheet, then press Save.')); return; }
+    const groups=new Map(); // Map keeps first-seen order: groups come out by their newest tasting
+    [...TASTINGS].sort((a,b)=>b.when.localeCompare(a.when)).forEach(t=>{ groups.has(t.subj)||groups.set(t.subj,[]); groups.get(t.subj).push(t); });
+    groups.forEach((ts,subj)=>{
+      const sec=el('section','tgroup'), gh=el('h2','tgh'), ul=el('ul','tlist');
+      const sn=ROOT.children.find(n=>n.label===subj);
+      if(sn) gh.appendChild(swatch(sn));
+      gh.append(subj,el('small',null,`${ts.length}`));
+      ts.forEach(t=>{ const li=el('li'), a=el('a','trow'); a.href='#tastings/'+encodeURIComponent(t.id);
+        a.append(el('b',null,t.title),el('small',null,[fmtWhen(t.when),t.items.map(i=>i.label).join(', ')].filter(Boolean).join(' · ')));
+        li.appendChild(a); ul.appendChild(li); });
+      sec.append(gh,ul); main.appendChild(sec);
+    });
+    return;
+  }
+  const t=TASTINGS.find(x=>x.id===TV);
+  if(!t){ h.append('Tasting not found',small); small.textContent='It may have been deleted, or saved on another device.'; main.appendChild(h); return; }
+  h.append(t.title,small); small.textContent=`${t.subj} · ${fmtWhen(t.when)}`; main.appendChild(h);
+  const act=el('div','tact'), btn=(txt,fn,cls)=>{ const b=el('button','btn'+(cls?' '+cls:''),txt); b.onclick=fn; return b; };
+  const copy=btn('Copy',async()=>{ try{ await navigator.clipboard.writeText(tastingText(t)); copy.textContent='Copied ✓'; }
+    catch{ copy.textContent='Copy failed'; } setTimeout(()=>copy.textContent='Copy',1600); });
+  act.append(
+    btn('Load into sheet',()=>loadTasting(t.id),'primary'), copy,
+    btn('Download',()=>download(`${slug(t.title)||'tasting'}-${t.when.slice(0,10)}.txt`,tastingText(t))),
+    btn('Print / PDF',()=>{ document.body.classList.add('pmain'); print(); document.body.classList.remove('pmain'); }),
+    btn('Delete',()=>{ if(!confirm(`Delete “${t.title}”? This can’t be undone.`)) return;
+      TASTINGS=TASTINGS.filter(x=>x!==t); saveTastings(); renderSheet(); location.hash='#tastings'; },'danger'));
+  act.firstChild.title='Open it in the tasting sheet to edit it';
+  main.appendChild(act);
+  if(t.details) main.appendChild(el('p','tdetails',t.details));
+  const cfg=PROG[t.subj];
+  if(t.mode==='adv'&&cfg&&t.items.length){
+    const ctl=el('div','tctl'); ctl.appendChild(flipBtn(render)); main.appendChild(ctl);
+    const wrap=el('div','tboard'); wrap.appendChild(buildBoard(t.subj,cfg,t,false)); main.appendChild(wrap);
+  }else{
+    const box=el('div','tnotes'), fams=new Map();
+    t.items.forEach(it=>{ const f=it.chain[1]; fams.has(f)||fams.set(f,[]); fams.get(f).push(it); });
+    fams.forEach((items,f)=>{
+      box.appendChild(el('h3','tfam',f));
+      const ul=el('ul','slist');
+      items.forEach(it=>{ const li=el('li','srow'), tx=el('span','stx');
+        tx.append(el('b',null,it.label),el('small',null,it.chain.slice(1,-1).join(' › ')||it.chain[0]));
+        li.append(swatch(it),tx,iconBtn('go',ICON_GO,`Go to ${it.label}`,()=>goTo(t.subj,it.label,it.cat)));
+        if(!it.cat) hoverRel(li,t.subj,it.label);
+        ul.appendChild(li); });
+      box.appendChild(ul);
+    });
+    main.appendChild(box);
+  }
+}
+const cleanVals=t=>Object.fromEntries(t.items.map(i=>[i.k,Object.fromEntries(Object.entries(t.vals?.[i.k]||{})
+  .filter(([,a])=>Array.isArray(a)).map(([L,a])=>[L,a.map(x=>[0,1,2,3].includes(x)?x:0)]))]));
+// backup import: untrusted file, so keep only well-formed tastings; never overwrite one already here
+function importTastings(text){
+  let list; try{ const d=JSON.parse(text); list=Array.isArray(d)?d:d?.tastings; }catch{}
+  if(!Array.isArray(list)) return 'That file isn’t a Flavor Explorer tastings backup.';
+  const str=v=>typeof v==='string', subjects=new Set(ROOT.children.map(n=>n.label));
+  const ok=list.filter(t=>t&&str(t.id)&&str(t.title)&&str(t.when)&&subjects.has(t.subj)&&Array.isArray(t.items)
+    &&t.items.every(i=>i&&str(i.k)&&str(i.label)&&str(i.color)&&Array.isArray(i.chain)));
+  const have=new Set(TASTINGS.map(t=>t.id));
+  const added=ok.filter(t=>!have.has(t.id)).map(t=>({id:t.id,subj:t.subj,title:t.title,when:t.when,details:str(t.details)?t.details:'',
+    items:t.items,vals:cleanVals(t),rows:Number.isInteger(t.rows)&&t.rows>0?t.rows:undefined,mode:t.mode==='adv'?'adv':'basic'}));
+  TASTINGS.push(...added); saveTastings();
+  const dup=ok.length-added.length, bad=list.length-ok.length;
+  return `Imported ${added.length} tasting${added.length===1?'':'s'}.`+(dup?` ${dup} already here.`:'')+(bad?` ${bad} unreadable, skipped.`:'');
+}
+
 // ---------- export: a readable tasting log (not a backup) ----------
 const stamp=()=>new Date().toLocaleString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'});
 const STRENGTH=['','faint','medium','strong'];
-function sheetText(subj){
-  const sh=sheetFor(subj), cfg=PROG[subj], out=[`${subj} tasting`,stamp(),''];
+const slug=s=>s.toLowerCase().replace(/\W+/g,'-').replace(/^-|-$/g,'');
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function download(name,text,type='text/plain'){
+  const a=el('a'); a.href=URL.createObjectURL(new Blob([text],{type:type+';charset=utf-8'})); a.download=name;
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+// sh: a sheet or a saved tasting (same shape); head: the lines above the notes
+function sheetText(subj,sh=sheetFor(subj),head=[`${subj} tasting`,stamp()]){
+  const cfg=PROG[subj], out=[...head,''];
   if(cfg&&sh.mode==='adv'){
     const n=Array.isArray(cfg.rows)?cfg.rows.length:(sh.rows||cfg.start), labels=rowLabels(cfg,n);
     const w=Math.max(...cfg.subs.map(x=>x[1].length))+2, rated=new Set();
@@ -2067,6 +2199,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!$('#rel').hidden){ hideRel(); return; }
   if(e.key==='Escape'&&document.body.classList.contains('sheet-open')){ setDrawer(false); return; }
   if(e.target.closest?.('#sheet')) return;
+  if(e.key==='Escape'&&TV&&TV!=='list'){ location.hash='#tastings'; return; }
   if(e.key==='Escape'||e.key==='Backspace'){ if(path.length>1){ e.preventDefault(); jumpTo(path.length-2);} }
   if(mode==='cards'&&path.at(-1).children){
     if(e.key==='ArrowLeft'){ lastDir='l'; cardIndex=(cardIndex-1+path.at(-1).children.length)%path.at(-1).children.length; render(); }
