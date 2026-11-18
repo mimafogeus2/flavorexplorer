@@ -197,10 +197,10 @@ body.sheet-open #sheet{transform:none}
 /* advanced table — same board language as Flavor Journey */
 :root{--cell:26px; --line:#4a3d33}
 @media (pointer:coarse){ :root{--cell:34px} .axis .mini{min-width:2.4rem; min-height:2.2rem} .ib{width:2.4rem; height:2.4rem} } /* finger-sized cells on touch screens, as in Flavor Journey */
-.board{display:flex; gap:7px; align-items:flex-start; padding:.4rem 0 .8rem; width:max-content}
+.board{--bb:var(--bg-2); display:flex; gap:7px; align-items:flex-start; padding:.4rem 0 .8rem; width:max-content}
 .axis{flex:none; display:flex; flex-direction:column; align-items:flex-end; position:sticky; left:0; z-index:2;
-  background:var(--bg-2); padding-right:4px; min-width:1.6rem;
-  box-shadow:-1.2rem 0 0 var(--bg-2)} /* sticky stops at the scroller's padding: paint that strip so columns scrolling left hide behind the labels */
+  background:var(--bb); padding-right:4px; min-width:1.6rem;
+  box-shadow:-1.2rem 0 0 var(--bb)} /* sticky stops at the scroller's padding: paint that strip so columns scrolling left hide behind the labels */
 .hspace{height:var(--hh); flex:none}
 .axis .num{height:var(--cell); display:flex; align-items:center; font-size:.68rem; color:var(--ink-dim); white-space:nowrap; font-variant-numeric:tabular-nums}
 .axis .mini{margin-top:.3rem}
@@ -226,6 +226,21 @@ button.vlabel:hover{background:var(--bg)}
   border:1px solid rgba(239,231,221,.13); border-radius:3px; cursor:pointer; position:relative}
 .cell:hover{border-color:rgba(239,231,221,.4)}
 .board.demo .cell{cursor:default}
+/* flipped: notes are rows, the progression runs left → right, fill grows upward */
+.board.flip{flex-direction:column; align-items:stretch}
+.flip .axis{flex-direction:row; align-items:flex-end; position:static; padding:0 0 4px; box-shadow:none; background:none}
+.flip .hspace{height:auto; width:calc(var(--vl) + 24px)}
+.flip .axis .num{writing-mode:vertical-rl; width:var(--cell); height:auto; max-height:5.5rem; overflow:hidden; text-overflow:ellipsis; justify-content:center}
+.flip .axis .num.short{writing-mode:horizontal-tb}
+.flip .axis .mini{margin:0 0 0 .3rem}
+.flip .col{flex-direction:row; align-items:center; gap:4px}
+.flip .vlabel{writing-mode:horizontal-tb; height:auto; width:var(--vl); flex:none; text-align:left; padding:0 4px;
+  position:sticky; left:0; z-index:1; background:var(--bb); box-shadow:-1.2rem 0 0 var(--bb)}
+.flip .duo{flex-direction:column; height:auto; width:16px}
+.flip .duo span{width:auto; height:var(--cell); line-height:var(--cell)}
+.flip .cols{flex-direction:column}
+.flip .subcol{display:flex; height:var(--cell)}
+.flip .colx{margin:0 0 0 .2rem}
 
 /* help modal */
 dialog{background:var(--bg-2); color:var(--ink); border:1px solid var(--line); border-radius:var(--radius);
@@ -236,8 +251,7 @@ dialog p,dialog dd{font-size:.9rem; line-height:1.55; color:#d9cfc4}
 dialog p+p{margin-top:.6rem}
 dialog .x{position:absolute; top:.8rem; right:.8rem}
 dialog figure{background:var(--bg); border-radius:10px; padding:.8rem 1rem; margin:1rem 0; overflow-x:auto}
-dialog figure .board{background:transparent}
-dialog figure .axis{background:var(--bg); box-shadow:-1.2rem 0 0 var(--bg)}
+dialog figure .board{background:transparent; --bb:var(--bg)}
 dialog figcaption{font-size:.75rem; color:var(--ink-dim); margin-top:.3rem; line-height:1.5}
 .levels{display:flex; gap:1rem; flex-wrap:wrap; margin-top:.6rem}
 .levels span{display:flex; flex-direction:column; align-items:center; gap:.25rem; font-size:.68rem; color:var(--ink-dim)}
@@ -1709,7 +1723,7 @@ function renderSheet(){
       b.setAttribute('aria-pressed',(adv?'adv':'basic')===m);
       b.onclick=()=>{ sh.mode=m; saveSheets(); renderSheet(); }; seg.appendChild(b); });
     ctl.appendChild(seg);
-    if(adv) ctl.appendChild(iconBtn('help','?','How the table works',()=>openHelp(subj)));
+    if(adv) ctl.append(flipBtn(renderSheet),iconBtn('help','?','How the table works',()=>openHelp(subj)));
     box.appendChild(ctl);
   }
 
@@ -1826,21 +1840,27 @@ const PROG={
 };
 const LEVELS=['empty','⅓','⅔','full'];
 const CELL=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell'))||26;
-function areaClip(vals){ // right edge sits at v/3 of the cell width, sloped between rows (Flavor Journey)
+let FLIP=localStorage.getItem('fx-flip')==='1'; // table orientation: a reading preference, not tasting data
+function areaClip(vals,flip){ // right edge sits at v/3 of the cell width, sloped between rows (Flavor Journey)
   const W=CELL(),H=W,S=Math.round(W*.22),n=vals.length, pts=[[0,0]];
   vals.forEach((v,r)=>{ const x=(v/3*W).toFixed(1); pts.push([x, r*H+(r?S:0)], [x, (r+1)*H-(r<n-1?S:0)]); });
   pts.push([0,n*H]);
-  return `polygon(${pts.map(p=>`${p[0]}px ${p[1]}px`).join(',')})`;
+  const P=flip?pts.map(([x,y])=>[y,(W-x).toFixed(1)]):pts; // flipped: transpose, fill rises from the bottom edge
+  return `polygon(${P.map(p=>`${p[0]}px ${p[1]}px`).join(',')})`;
 }
 const rowLabels=(cfg,n)=>Array.isArray(cfg.rows)?cfg.rows:Array.from({length:n},(_,i)=>cfg.rows(i));
+function flipBtn(rerender){
+  const b=iconBtn('flip','⇄',FLIP?'Notes as columns':'Notes as rows',()=>{ FLIP=!FLIP; localStorage.setItem('fx-flip',FLIP?'1':''); rerender(); });
+  b.setAttribute('aria-pressed',FLIP); return b;
+}
 // live: the drawer's editable table; otherwise a static picture (help modal), with sh = {items, vals, rows}
 function buildBoard(subj,cfg,sh,live){
   const fixed=Array.isArray(cfg.rows), n=fixed?cfg.rows.length:(sh.rows||=cfg.start);
-  const board=el('div','board'+(live?'':' demo'));
+  const board=el('div','board'+(live?'':' demo')+(FLIP?' flip':''));
   const vl=Math.min(130,Math.max(48,Math.max(0,...sh.items.map(i=>i.label.length))*7.6+10)); // label column fits the longest name
   board.style.setProperty('--vl',vl+'px'); board.style.setProperty('--hh',vl+16+'px');
   const axis=el('div','axis'); axis.appendChild(el('div','hspace'));
-  rowLabels(cfg,n).forEach(l=>{ const d=el('div','num',l); d.title=`${cfg.rowName}: ${l}`; axis.appendChild(d); });
+  rowLabels(cfg,n).forEach(l=>{ const d=el('div','num'+(l.length<3?' short':''),l); d.title=`${cfg.rowName}: ${l}`; axis.appendChild(d); });
   if(live&&!fixed){
     const add=el('button','mini','+'); add.title=`Add ${cfg.rowName}`; add.setAttribute('aria-label',add.title);
     add.onclick=()=>{ sh.rows++; saveSheets(); renderSheet(); };
@@ -1864,15 +1884,15 @@ function buildBoard(subj,cfg,sh,live){
       const what=cfg.subs[si][2], full=`${L} · ${name[0].toUpperCase()+name.slice(1)} — ${what}`;
       if(live) tip(d,full); else d.title=full;
       const arr=v[L]||(v[L]=[]); while(arr.length<n) arr.push(0);
-      const sub=el('div','subcol'); sub.style.height=n*CELL()+'px';
-      const area=el('div','carea'+(si?' dim':'')); paint(area,it); area.style.clipPath=areaClip(arr.slice(0,n));
+      const sub=el('div','subcol'); sub.style[FLIP?'width':'height']=n*CELL()+'px';
+      const area=el('div','carea'+(si?' dim':'')); paint(area,it); area.style.clipPath=areaClip(arr.slice(0,n),FLIP);
       sub.appendChild(area);
       rowLabels(cfg,n).forEach((rl,r)=>{
         const c=el('button','cell'); c.title=LEVELS[arr[r]];
         if(live){
           c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`);
           c.onclick=()=>{ arr[r]=(arr[r]+3)%4; saveSheets(); // cycles empty → full → ⅔ → ⅓
-            area.style.clipPath=areaClip(arr.slice(0,n)); c.title=LEVELS[arr[r]];
+            area.style.clipPath=areaClip(arr.slice(0,n),FLIP); c.title=LEVELS[arr[r]];
             c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`); };
         }else{ c.tabIndex=-1; c.setAttribute('aria-hidden','true'); }
         sub.appendChild(c);
@@ -1902,22 +1922,23 @@ function openHelp(subj){
   const h=el('h2',null,`Reading the ${subj} table`); h.id='helpTitle';
   dlg.append(x,h,el('p',null,cfg.intro));
   const fig=el('figure'); fig.appendChild(buildBoard(subj,cfg,demo,false));
-  fig.appendChild(el('figcaption',null,`Rows (↓) are ${cfg.rowName==='infusion'?'infusions':cfg.rowName+' stages'}. Each note gets a column (→), split into ${cfg.subs.map(s=>`${s[0]} (${s[1]})`).join(', ')}. Here, ${a.label} is strongest at first and fades, while ${b.label} builds up and lingers.`));
+  fig.appendChild(el('figcaption',null,`${FLIP?'Columns (→)':'Rows (↓)'} are ${cfg.rowName==='infusion'?'infusions':cfg.rowName+' stages'}. Each note gets ${FLIP?'a row (↓)':'a column (→)'}, split into ${cfg.subs.map(s=>`${s[0]} (${s[1]})`).join(', ')}. Here, ${a.label} is strongest at first and fades, while ${b.label} builds up and lingers.`));
   dlg.appendChild(fig);
 
   dlg.appendChild(el('h3',null,'Filling it in'));
-  dlg.appendChild(el('p',null,'Tap flavors on the wheel to add them as columns. Then click a cell to set how strong that note is at that moment — each click cycles:'));
+  dlg.appendChild(el('p',null,`Tap flavors on the wheel to add them as ${FLIP?'rows':'columns'}. Then click a cell to set how strong that note is at that moment — each click cycles:`));
   const lv=el('div','levels');
   [0,3,2,1].forEach(v=>{ const s=el('span'), sub=el('div','subcol'), ar=el('div','carea'), c=el('div','cell');
-    sub.style.height=CELL()+'px'; paint(ar,a); ar.style.clipPath=areaClip([v]); sub.append(ar,c);
+    sub.style.height=CELL()+'px'; paint(ar,a); ar.style.clipPath=areaClip([v],FLIP); sub.append(ar,c);
     s.append(sub,LEVELS[v]==='empty'?'none':LEVELS[v]==='full'?'strong':LEVELS[v]==='⅔'?'medium':'faint'); lv.appendChild(s); });
   dlg.appendChild(lv);
 
-  dlg.appendChild(el('h3',null,'The columns'));
+  dlg.appendChild(el('h3',null,FLIP?'The rows':'The columns'));
   const dl=el('dl'); cfg.subs.forEach(([L,name,what])=>{ dl.append(el('dt',null,L),el('dd',null,`${name[0].toUpperCase()+name.slice(1)} — ${what}.`)); });
   dlg.appendChild(dl);
-  dlg.appendChild(el('h3',null,'Rows'));
-  dlg.appendChild(el('p',null,fixed?`The rows are fixed: ${cfg.rows.join(', ')}.`:`Use + and − under the row labels to add or remove ${cfg.rowName==='infusion'?'infusions':'rows'}.`));
+  const R=FLIP?'columns':'rows';
+  dlg.appendChild(el('h3',null,R[0].toUpperCase()+R.slice(1)));
+  dlg.appendChild(el('p',null,fixed?`The ${R} are fixed: ${cfg.rows.join(', ')}.`:`Use + and − ${FLIP?'after the column labels':'under the row labels'} to add or remove ${cfg.rowName==='infusion'?'infusions':R}.`));
   dlg.appendChild(el('h3',null,'What to look for'));
   dlg.appendChild(el('p',null,cfg.tip));
   dlg.showModal();
@@ -2003,6 +2024,7 @@ setDepth(depth); // sets toggle state and does the initial render from the URL
 // self-check (console only)
 console.assert(fold('Crème Brûlée')==='creme brulee'&&fold('Buddha’s')==="buddha's",'search folding');
 if(CELL()===26) console.assert(areaClip([3,0])==='polygon(0px 0px,26.0px 0px,26.0px 20px,0.0px 32px,0.0px 52px,0px 52px)','areaClip shape');
+if(CELL()===26) console.assert(areaClip([3,0],true)==='polygon(0px 26.0px,0px 0.0px,20px 0.0px,32px 26.0px,52px 26.0px,52px 26.0px)','flipped areaClip');
 console.assert(REL.Tea?.Honeysuckle?.confused?.has('Jasmine')&&REL.Tea?.Jasmine?.confused?.has('Honeysuckle'),'relations are symmetric');
 console.assert(keyOf('Coffee',{label:'Melon'})!==keyOf('Coffee',{label:'Melon',children:[]}),'note and category keys differ');
 </script>
