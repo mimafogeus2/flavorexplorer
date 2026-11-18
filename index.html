@@ -260,6 +260,19 @@ dialog dl{display:grid; grid-template-columns:auto 1fr; gap:.35rem .8rem; margin
 dialog dt{font-weight:700; font-size:.8rem; text-align:center; min-width:1.6rem; border:1px solid var(--line); border-radius:4px; align-self:start; padding:.05rem 0}
 dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-dim); margin:1.1rem 0 .3rem}
 
+/* save dialog */
+.fld{display:block; font-size:.75rem; color:var(--ink-dim); margin-top:.9rem}
+.fld input,.fld textarea{display:block; width:100%; margin-top:.3rem; font:inherit; font-size:.92rem; color:var(--ink); color-scheme:dark;
+  background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:.5rem .6rem}
+.fld textarea{resize:vertical; min-height:6rem; line-height:1.45}
+.dbtns{display:flex; justify-content:flex-end; gap:.5rem; margin-top:1.2rem; flex-wrap:wrap}
+.btn{font:inherit; font-size:.85rem; padding:.45rem 1rem; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer}
+.btn:hover{background:var(--bg)}
+.btn.primary{background:var(--ink); color:var(--bg); border-color:var(--ink); font-weight:600}
+.mini.save{border-style:solid; color:var(--ink)}
+.editing{display:block; margin-top:.2rem; font-size:.75rem; color:var(--ink-dim)}
+.editing b{color:var(--ink); font-weight:600}
+
 /* related-notes popover: anchored to the hovered note, does not follow the mouse */
 #rel{position:fixed; z-index:30; width:270px; max-height:min(70dvh,460px); overflow:auto; background:var(--bg-2);
   border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 18px 40px rgba(0,0,0,.5); padding:.8rem .9rem;
@@ -305,6 +318,7 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
 <div id="rel" role="dialog" aria-label="Related notes" hidden></div>
 <div id="tip" role="tooltip" hidden></div>
 <dialog id="help" aria-labelledby="helpTitle"></dialog>
+<dialog id="saveDlg" aria-labelledby="saveTitle"></dialog>
 
 <script src="related.js"></script>
 <script>
@@ -1714,6 +1728,8 @@ function renderSheet(){
 
   const hd=el('div','shd'), h=el('h2',null,'Tasting sheet');
   if(subj) h.appendChild(el('small',null,subj));
+  const from=sh&&tastingOf(sh);
+  if(from){ const e=el('span','editing','Editing: '); e.appendChild(el('b',null,from.title)); h.appendChild(e); }
   hd.append(h,iconBtn('x','×','Close tasting sheet',()=>setDrawer(false)));
   box.appendChild(hd);
 
@@ -1750,10 +1766,12 @@ function renderSheet(){
   }
   const ft=el('div','shft'), clr=el('button','danger','Clear all');
   clr.disabled=!sh?.items.length;
-  clr.onclick=()=>{ if(confirm(`Remove all ${sh.items.length} from the ${subj} sheet?`)){ sh.items=[]; sh.vals={}; saveSheets(); syncOn(); renderSheet(); } };
+  clr.onclick=()=>{ if(confirm(`Remove all ${sh.items.length} from the ${subj} sheet?`)){ sh.items=[]; sh.vals={}; delete sh.from; saveSheets(); syncOn(); renderSheet(); } };
   const has=!!sh?.items.length, exp=el('div','exp');
-  const copy=el('button','mini','Copy'), dl=el('button','mini','Download'), pr=el('button','mini','Print / PDF');
-  [copy,dl,pr].forEach(b=>b.disabled=!has);
+  const sv=el('button','mini save','Save'), copy=el('button','mini','Copy'), dl=el('button','mini','Download'), pr=el('button','mini','Print / PDF');
+  [sv,copy,dl,pr].forEach(b=>b.disabled=!has);
+  sv.title=from?`Update “${from.title}”, or save as a new tasting`:'Save this tasting';
+  sv.onclick=()=>openSave(subj);
   copy.title='Copy as text'; dl.title='Download as a text file'; pr.title='Print, or save as PDF from the print dialog';
   copy.onclick=async()=>{ try{ await navigator.clipboard.writeText(sheetText(subj)); copy.textContent='Copied ✓'; }
     catch{ copy.textContent='Copy failed'; } setTimeout(()=>copy.textContent='Copy',1600); };
@@ -1764,9 +1782,49 @@ function renderSheet(){
   pr.onclick=()=>{ $('#sheet .pdate').textContent=stamp();
     const log=$('#sheet .plog'); if(log) log.textContent=sheetText(subj).split('\n').slice(3).join('\n');
     print(); };
-  exp.append(copy,dl,pr);
+  exp.append(sv,copy,dl,pr);
   ft.append(exp,clr); box.appendChild(ft);
   h.appendChild(el('span','pdate')); // print-only date line
+}
+
+// ---------- saved tastings: snapshots of a sheet plus title, time and details ----------
+// a sheet loaded from (or saved as) a tasting carries `from`; Save then overwrites it
+let TASTINGS=JSON.parse(localStorage.getItem('fx-tastings')||'[]');
+const saveTastings=()=>localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS));
+const tastingOf=sh=>sh.from&&TASTINGS.find(t=>t.id===sh.from)||null;
+const snap=sh=>JSON.parse(JSON.stringify({items:sh.items,vals:sh.vals,rows:sh.rows,mode:sh.mode}));
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const nowLocal=()=>{ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,16); }; // datetime-local format
+const fmtWhen=w=>new Date(w).toLocaleString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+function field(label,input){ const l=el('label','fld',label); l.appendChild(input); return l; }
+function openSave(subj){
+  const sh=sheetFor(subj), t=tastingOf(sh), dlg=$('#saveDlg'); dlg.innerHTML='';
+  const f=el('form'); f.method='dialog';
+  const h=el('h2',null,t?'Save tasting':`Save ${subj} tasting`); h.id='saveTitle';
+  const ti=el('input'); ti.required=true; ti.maxLength=200; ti.pattern='.*\\S.*'; // not just spaces
+  ti.value=t?.title||`${subj} · ${new Date().toLocaleDateString(undefined,{month:'short',day:'numeric'})}`;
+  const wi=el('input'); wi.type='datetime-local'; wi.value=t?.when||nowLocal();
+  const de=el('textarea'); de.rows=5; de.value=t?.details||''; de.placeholder='Origin, brewing, price, who you tasted with…';
+  const btns=el('div','dbtns'), btn=(txt,v,cls)=>{ const b=el('button','btn'+(cls?' '+cls:''),txt); b.value=v; return b; };
+  const cancel=btn('Cancel','cancel'); cancel.formNoValidate=true;
+  btns.append(cancel,...(t?[btn('Save as new','new'),btn('Update','over','primary')]:[btn('Save','new','primary')]));
+  f.append(h,field('Title',ti),field('Date & time',wi),field('Details',de),btns);
+  f.onsubmit=e=>{
+    const v=e.submitter?.value; if(v==='cancel') return;
+    const rec={subj,title:ti.value.trim(),when:wi.value||nowLocal(),details:de.value,...snap(sh)};
+    if(v==='over') Object.assign(t,rec);
+    else{ const n={id:newId(),...rec}; TASTINGS.push(n); sh.from=n.id; }
+    saveTastings(); saveSheets(); renderSheet(); render();
+  };
+  dlg.appendChild(f); dlg.showModal(); ti.select();
+}
+function loadTasting(id){
+  const t=TASTINGS.find(x=>x.id===id); if(!t) return;
+  const cur=sheetFor(t.subj);
+  if(cur.items.length&&cur.from!==id&&!confirm(`Replace the notes on your current ${t.subj} sheet with “${t.title}”?`)) return;
+  SHEETS[t.subj]={...snap(t),from:id}; sheetSubj=t.subj; saveSheets();
+  location.hash=pathToHash([ROOT,ROOT.children.find(n=>n.label===t.subj)]);
+  syncOn(); renderSheet(); setDrawer(true);
 }
 
 // ---------- export: a readable tasting log (not a backup) ----------
