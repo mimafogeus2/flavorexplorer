@@ -155,7 +155,25 @@ body.sheet-open #sheet{transform:none}
 .shctl{display:flex; align-items:center; gap:.5rem; padding:0 1.1rem .8rem}
 .shctl .seg button{font-size:.75rem; padding:.3rem .8rem}
 .shbody{flex:1; min-height:0; overflow:auto; padding:0 1.1rem; overscroll-behavior:contain}
-.shft{display:flex; justify-content:flex-end; padding:.7rem 1.1rem; border-top:1px solid var(--line)}
+.shft{display:flex; justify-content:space-between; align-items:center; gap:.5rem; padding:.7rem 1.1rem; border-top:1px solid var(--line)}
+.exp{display:flex; gap:.4rem; flex-wrap:wrap}
+.exp .mini{padding:.25rem .6rem}
+.mini:disabled{opacity:.35; cursor:default; border-style:dashed; color:var(--ink-dim)}
+.pdate,.plog{display:none}
+/* print: just the tasting sheet, on light paper, colors kept */
+@media print{
+  body{display:block; height:auto; overflow:visible; padding:0 !important; background:#fff; color:#241a12;
+    --bg:#fff; --bg-2:#fff; --ink:#241a12; --ink-dim:#6b5d52; --line:#cbbfb3}
+  header,#strata,main,#rel,#tip,.shctl,.shft,.ib,.axis .mini{display:none !important}
+  #sheet{position:static; width:auto; transform:none; box-shadow:none; border:0; display:block}
+  .shbody{overflow:visible; padding:0}
+  .shd{padding:0 0 1rem}
+  .pdate{display:block; font-family:var(--body); font-weight:400; font-size:.85rem; color:#6b5d52; margin-top:.2rem}
+  .cell{border-color:#b9ab9e !important}
+  .plog{display:block; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; line-height:1.5; white-space:pre-wrap; margin-top:1.2rem; break-inside:avoid}
+  .sw,.carea{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .srow{break-inside:avoid; border-bottom-color:#e5dcd3}
+}
 .sempty{color:var(--ink-dim); font-size:.88rem; line-height:1.5; padding:1.4rem 0}
 .sempty kbd{font:inherit; font-size:.78rem; border:1px solid var(--line); border-radius:4px; padding:0 .3rem}
 .slist{list-style:none; padding:0; display:flex; flex-direction:column}
@@ -1698,6 +1716,7 @@ function renderSheet(){
       : 'Pick a subject, then tap the flavors you taste to collect them here.';
   }else if(adv){
     body.appendChild(buildBoard(subj,cfg,sh,true));
+    body.appendChild(el('pre','plog')); // print-only: the readable log under the picture
   }else{
     const ul=el('ul','slist');
     sh.items.forEach(it=>{
@@ -1714,7 +1733,54 @@ function renderSheet(){
   const ft=el('div','shft'), clr=el('button','danger','Clear all');
   clr.disabled=!sh?.items.length;
   clr.onclick=()=>{ if(confirm(`Remove all ${sh.items.length} from the ${subj} sheet?`)){ sh.items=[]; sh.vals={}; saveSheets(); syncOn(); renderSheet(); } };
-  ft.appendChild(clr); box.appendChild(ft);
+  const has=!!sh?.items.length, exp=el('div','exp');
+  const copy=el('button','mini','Copy'), dl=el('button','mini','Download'), pr=el('button','mini','Print / PDF');
+  [copy,dl,pr].forEach(b=>b.disabled=!has);
+  copy.title='Copy as text'; dl.title='Download as a text file'; pr.title='Print, or save as PDF from the print dialog';
+  copy.onclick=async()=>{ try{ await navigator.clipboard.writeText(sheetText(subj)); copy.textContent='Copied ✓'; }
+    catch{ copy.textContent='Copy failed'; } setTimeout(()=>copy.textContent='Copy',1600); };
+  dl.onclick=()=>{ const a=el('a'), d=new Date();
+    a.href=URL.createObjectURL(new Blob([sheetText(subj)],{type:'text/plain;charset=utf-8'}));
+    a.download=`${subj.toLowerCase().replace(/\W+/g,'-')}-tasting-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.txt`;
+    a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); };
+  pr.onclick=()=>{ $('#sheet .pdate').textContent=stamp();
+    const log=$('#sheet .plog'); if(log) log.textContent=sheetText(subj).split('\n').slice(3).join('\n');
+    print(); };
+  exp.append(copy,dl,pr);
+  ft.append(exp,clr); box.appendChild(ft);
+  h.appendChild(el('span','pdate')); // print-only date line
+}
+
+// ---------- export: a readable tasting log (not a backup) ----------
+const stamp=()=>new Date().toLocaleString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'});
+const STRENGTH=['','faint','medium','strong'];
+function sheetText(subj){
+  const sh=sheetFor(subj), cfg=PROG[subj], out=[`${subj} tasting`,stamp(),''];
+  if(cfg&&sh.mode==='adv'){
+    const n=Array.isArray(cfg.rows)?cfg.rows.length:(sh.rows||cfg.start), labels=rowLabels(cfg,n);
+    const w=Math.max(...cfg.subs.map(x=>x[1].length))+2, rated=new Set();
+    out.push(`Notes: ${sh.items.map(i=>i.label).join(', ')}`,'');
+    labels.forEach((l,r)=>{
+      if(r) out.push('');
+      out.push(/^\d+$/.test(l)?`${cfg.rowName[0].toUpperCase()+cfg.rowName.slice(1)} ${l}`:l);
+      cfg.subs.forEach(([L,name])=>{
+        const hits=sh.items.map(it=>[it,sh.vals[it.k]?.[L]?.[r]||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]);
+        hits.forEach(([it])=>rated.add(it.k));
+        out.push(`  ${(name[0].toUpperCase()+name.slice(1)+':').padEnd(w)} ${hits.map(([it,v])=>`${it.label} (${STRENGTH[v]})`).join(', ')||'—'}`);
+      });
+    });
+    const un=sh.items.filter(i=>!rated.has(i.k));
+    if(un.length) out.push('',`Noted but not rated: ${un.map(i=>i.label).join(', ')}`);
+  }else{
+    const fams=new Map(); // group by family, in the order they were added
+    sh.items.forEach(it=>{ const f=it.chain[1]; fams.has(f)||fams.set(f,[]); fams.get(f).push(it); });
+    fams.forEach((items,f)=>{
+      out.push(f);
+      items.forEach(it=>{ const mid=it.chain.slice(2,-1).join(' › ');
+        out.push(it.chain.length===2?'  (the whole family)':`  ${it.label}${it.cat?' (category)':''}${mid?` · ${mid}`:''}`); });
+    });
+  }
+  return out.join('\n')+'\n';
 }
 function removeItem(subj,k){
   const sh=sheetFor(subj); sh.items=sh.items.filter(x=>x.k!==k); delete sh.vals[k];
