@@ -119,16 +119,120 @@ main{flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; overscroll-behavi
 @keyframes inR{from{transform:translateX(40px); opacity:0}}
 .counter{text-align:center; color:var(--ink-dim); font-size:.85rem; margin-top:1rem; font-variant-numeric:tabular-nums}
 
-/* leaf terminal view */
-.leaf{
-  margin:auto; width:min(70vw,380px); aspect-ratio:1; border-radius:50%; overflow:hidden;
-  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:2rem;
-  box-shadow:0 18px 40px rgba(0,0,0,.4); animation:pop .3s ease both;
-}
-.leaf .lbl{font-family:var(--display); font-weight:600; font-size:2.4rem; transform:translateY(6px)}
 .leaf-note{text-align:center; color:var(--ink-dim); font-size:.85rem; margin-top:1.2rem}
 
 button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+/* selected notes / categories */
+.tile.on,.card.on{outline:3px solid var(--ink); outline-offset:3px}
+.tile.on::after,.card.on::after{content:'✓'; position:absolute; top:.45rem; left:50%; transform:translateX(-50%);
+  font-size:.8rem; font-weight:700; line-height:1}
+.tile:not(.is-leaf).on::after{left:.75rem; transform:none}
+.flash{animation:flash 1.2s ease 2}
+@keyframes flash{50%{filter:brightness(1.35); transform:scale(1.04)}}
+
+/* header icon button */
+.iconbtn{position:relative; width:2.1rem; height:2.1rem; border-radius:50%; border:1px solid var(--line);
+  background:transparent; color:var(--ink); cursor:pointer; display:grid; place-items:center; padding:0; flex:none}
+.iconbtn:hover{background:var(--bg-2)}
+.iconbtn svg{width:1.05rem; height:1.05rem}
+.badge{position:absolute; top:-.3rem; right:-.35rem; min-width:1.1rem; height:1.1rem; padding:0 .25rem; border-radius:999px;
+  background:var(--ink); color:var(--bg); font-size:.66rem; font-weight:700; display:grid; place-items:center; font-variant-numeric:tabular-nums}
+.badge:empty{display:none}
+
+/* tasting sheet drawer */
+body{--dw:min(380px,92vw)}
+body.adv{--dw:min(560px,96vw)}
+#sheet{position:fixed; top:0; right:0; bottom:0; width:var(--dw); z-index:20; background:var(--bg-2);
+  border-left:1px solid var(--line); box-shadow:-18px 0 40px rgba(0,0,0,.35);
+  display:flex; flex-direction:column; transform:translateX(105%); transition:transform .25s ease, width .2s ease}
+body.sheet-open #sheet{transform:none}
+@media (min-width:1000px){ body.sheet-open{padding-right:var(--dw)} }
+.shd{display:flex; align-items:flex-start; gap:.6rem; padding:1.1rem 1.1rem .7rem}
+.shd h2{font-family:var(--display); font-weight:600; font-size:1.25rem; flex:1}
+.shd h2 small{display:block; font-family:var(--body); font-weight:400; font-size:.8rem; color:var(--ink-dim); margin-top:.15rem}
+.shctl{display:flex; align-items:center; gap:.5rem; padding:0 1.1rem .8rem}
+.shctl .seg button{font-size:.75rem; padding:.3rem .8rem}
+.shbody{flex:1; min-height:0; overflow:auto; padding:0 1.1rem; overscroll-behavior:contain}
+.shft{display:flex; justify-content:flex-end; padding:.7rem 1.1rem; border-top:1px solid var(--line)}
+.sempty{color:var(--ink-dim); font-size:.88rem; line-height:1.5; padding:1.4rem 0}
+.sempty kbd{font:inherit; font-size:.78rem; border:1px solid var(--line); border-radius:4px; padding:0 .3rem}
+.slist{list-style:none; padding:0; display:flex; flex-direction:column}
+.srow{display:flex; align-items:center; gap:.7rem; padding:.45rem 0; border-bottom:1px solid #3a2f28}
+.sw{flex:none; width:1.6rem; height:1.6rem; border-radius:50%}
+.sw.cat{border-radius:5px}
+.stx{flex:1; min-width:0; display:flex; flex-direction:column}
+.stx b{font-family:var(--display); font-weight:500; font-size:.98rem}
+.stx small{font-size:.68rem; color:var(--ink-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ib{flex:none; width:1.8rem; height:1.8rem; border-radius:50%; border:0; background:transparent; color:var(--ink-dim);
+  cursor:pointer; display:grid; place-items:center; padding:0; font:inherit; font-size:1.05rem; line-height:1}
+.ib:hover{color:var(--ink); background:var(--bg)}
+.ib.rm:hover{color:#e07a6c}
+.ib svg{width:.95rem; height:.95rem}
+.danger{background:none; border:0; color:var(--ink-dim); font:inherit; font-size:.8rem; cursor:pointer}
+.danger:hover{color:#e07a6c}
+.danger:disabled{opacity:.35; cursor:default; color:var(--ink-dim)}
+
+/* advanced table — same board language as Flavor Journey */
+:root{--cell:26px; --line:#4a3d33}
+.board{display:flex; gap:7px; align-items:flex-start; padding:.4rem 0 .8rem; width:max-content}
+.axis{flex:none; display:flex; flex-direction:column; align-items:flex-end; position:sticky; left:0; z-index:2;
+  background:var(--bg-2); padding-right:4px; min-width:1.6rem}
+.hspace{height:var(--hh); flex:none}
+.axis .num{height:var(--cell); display:flex; align-items:center; font-size:.68rem; color:var(--ink-dim); white-space:nowrap; font-variant-numeric:tabular-nums}
+.axis .mini{margin-top:.3rem}
+.mini{background:transparent; border:1px dashed var(--line); border-radius:6px; color:var(--ink-dim);
+  font:inherit; font-size:.78rem; padding:.1rem .45rem; cursor:pointer}
+.mini:hover{color:var(--ink); border-style:solid}
+.col{flex:none; display:flex; flex-direction:column; align-items:center}
+.colx{margin-top:.2rem}
+.vlabel{writing-mode:vertical-rl; height:var(--vl); background:transparent; border:0; color:var(--ink); font:inherit;
+  font-size:.8rem; padding:2px 0; text-align:right; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-radius:6px}
+button.vlabel:hover{background:var(--bg)}
+.duo{display:flex; gap:2px; height:16px}
+.duo span{width:var(--cell); text-align:center; font-size:.6rem; color:var(--ink-dim); cursor:help}
+.cols{display:flex; gap:2px}
+.subcol{position:relative; width:var(--cell); flex:none}
+.carea{position:absolute; inset:0; pointer-events:none}
+.carea.dim{opacity:.55}
+.cell{display:block; width:var(--cell); height:var(--cell); padding:0; background:transparent;
+  border:1px solid rgba(239,231,221,.13); border-radius:3px; cursor:pointer; position:relative}
+.cell:hover{border-color:rgba(239,231,221,.4)}
+.board.demo .cell{cursor:default}
+
+/* help modal */
+dialog{background:var(--bg-2); color:var(--ink); border:1px solid var(--line); border-radius:var(--radius);
+  padding:1.4rem 1.5rem; width:min(34rem,calc(100vw - 2rem)); max-height:calc(100dvh - 2rem); margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h2{font-family:var(--display); font-weight:600; font-size:1.4rem; margin-bottom:.6rem; padding-right:2rem}
+dialog p,dialog dd{font-size:.9rem; line-height:1.55; color:#d9cfc4}
+dialog p+p{margin-top:.6rem}
+dialog .x{position:absolute; top:.8rem; right:.8rem}
+dialog figure{background:var(--bg); border-radius:10px; padding:.8rem 1rem; margin:1rem 0; overflow-x:auto}
+dialog figure .board{background:transparent}
+dialog figure .axis{background:var(--bg)}
+dialog figcaption{font-size:.75rem; color:var(--ink-dim); margin-top:.3rem; line-height:1.5}
+.levels{display:flex; gap:1rem; flex-wrap:wrap; margin-top:.6rem}
+.levels span{display:flex; flex-direction:column; align-items:center; gap:.25rem; font-size:.68rem; color:var(--ink-dim)}
+.levels .subcol{height:var(--cell)}
+dialog dl{display:grid; grid-template-columns:auto 1fr; gap:.35rem .8rem; margin:.8rem 0}
+dialog dt{font-weight:700; font-size:.8rem; text-align:center; min-width:1.6rem; border:1px solid var(--line); border-radius:4px; align-self:start; padding:.05rem 0}
+dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-dim); margin:1.1rem 0 .3rem}
+
+/* related-notes popover: anchored to the hovered note, does not follow the mouse */
+#rel{position:fixed; z-index:30; width:270px; max-height:min(70dvh,460px); overflow:auto; background:var(--bg-2);
+  border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 18px 40px rgba(0,0,0,.5); padding:.8rem .9rem;
+  animation:pop .15s ease both}
+#rel[hidden]{display:none}
+#rel .rhd{font-family:var(--display); font-weight:600; font-size:1rem; margin-bottom:.2rem}
+#rel h4{font-size:.66rem; text-transform:uppercase; letter-spacing:.13em; color:var(--ink-dim); font-weight:600; margin:.7rem 0 .25rem}
+.rrow{display:flex; align-items:center; gap:.2rem}
+.rnote{flex:1; min-width:0; display:flex; align-items:center; gap:.55rem; background:transparent; border:0; color:var(--ink);
+  font:inherit; font-size:.86rem; text-align:left; cursor:pointer; padding:.22rem .3rem; border-radius:6px}
+.rnote:hover{background:var(--bg)}
+.rnote .sw{width:1.15rem; height:1.15rem}
+.rnote.on .sw{outline:2px solid var(--ink); outline-offset:2px}
+.rnote.on::after{content:'✓'; margin-left:auto; font-size:.75rem; color:var(--ink-dim)}
+.rrow .ib{width:1.6rem; height:1.6rem}
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important; transition:none !important}
 }
@@ -147,11 +251,19 @@ button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
     <button id="mGrid" aria-pressed="true">Grid</button>
     <button id="mCards" aria-pressed="false">Cards</button>
   </div>
+  <button id="sheetBtn" class="iconbtn" aria-label="Tasting sheet" aria-expanded="false" aria-controls="sheet" title="Tasting sheet">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8.5h6M9 12h6M9 15.5h4"/></svg>
+    <span class="badge"></span>
+  </button>
   </div>
 </header>
 <nav id="strata" aria-label="Tasting path"></nav>
 <main id="main"></main>
+<aside id="sheet" aria-label="Tasting sheet" inert></aside>
+<div id="rel" role="dialog" aria-label="Related notes" hidden></div>
+<dialog id="help" aria-labelledby="helpTitle"></dialog>
 
+<script src="related.js"></script>
 <script>
 // ---------- data: families carry a color; deeper colors are derived ----------
 const DATA = {
@@ -1268,7 +1380,7 @@ const PROMPTS=[
   ['What are you tasting?','Pick a subject — each one has its own wheel.'],
   ['Which family calls out?','Trust your first impression.'],
   ['Getting closer — which kind?',''],
-  ['Name it.','Tap the flavor that matches.']
+  ['Name it.','Tap the flavors you taste to add them to your sheet.']
 ];
 const TEXTURES=[
   {i:'radial-gradient(circle at 2px 2px, rgba(255,255,255,.28) 1.2px, transparent 1.4px)', s:'13px 13px'},
@@ -1287,7 +1399,7 @@ function paint(el,node){ // texture from the label hash — stable across modes
 }
 
 // ---------- state ----------
-let path=[ROOT], mode=localStorage.getItem('fx-mode')||'grid', cardIndex=0, lastDir='r';
+let focusK=null, path=[ROOT], mode=localStorage.getItem('fx-mode')||'grid', cardIndex=0, lastDir='r';
 const $=s=>document.querySelector(s);
 
 function setMode(m){
@@ -1311,8 +1423,10 @@ function applyHash(){
     if(!n) break;
     p.push(n);
   }
+  if(p.length>1&&!p.at(-1).children){ p.pop(); history.replaceState(null,'',pathToHash(p)); } // old note links
   const removed=old[p.length]; // set when navigating up: the child we came from
-  cardIndex=removed?Math.max(0,(p.at(-1).children||[]).indexOf(removed)):0;
+  const kids=p.at(-1).children||[], fi=focusK?kids.findIndex(n=>keyOf(p[1]?.label,n)===focusK):-1;
+  cardIndex=fi>=0?fi:removed?Math.max(0,kids.indexOf(removed)):0;
   path=p; render();
 }
 window.addEventListener('hashchange',applyHash);
@@ -1394,25 +1508,28 @@ function renderSearch(q){
     const crumbs=e.chain.slice(scope?1:0,-1).map(n=>n.label).join(' › ');
     if(crumbs){const x=document.createElement('span'); x.className='ctx'; x.textContent=crumbs; st.appendChild(x);}
     b.appendChild(st);
-    b.onclick=()=>{ $('#search').value='';
+    tag(b,e.chain);
+    b.onclick=ev=>{ if(!e.node.children||ev.shiftKey){ toggleItem(e.chain); return; }
+      $('#search').value='';
       const target=pathToHash([ROOT,...e.chain]);
       if(location.hash===target) render(); else location.hash=target; };
     g.appendChild(b);
   });
-  main.appendChild(g);
+  main.appendChild(g); syncOn();
   if(hits.length>60){const p=document.createElement('p'); p.className='leaf-note';
     p.textContent=`Showing 60 of ${hits.length} — keep typing to narrow down.`; main.appendChild(p);}
 }
 
 function render(){
   const cur=path.at(-1);
+  hideRel();
+  if(path.length>1&&sheetSubj!==path[1].label){ sheetSubj=path[1].label; saveSheets(); renderSheet(); }
   renderStrata();
   $('#search').placeholder=path.length>1?`Search ${path[1].label}…`:'Search flavors…';
   const q=$('#search').value.trim();
   if(q.length>=2){ renderSearch(q); return; }
 
   const main=$('#main'); main.innerHTML='';
-  if(!cur.children){ renderLeaf(main,cur); return; }
 
   const depth=Math.min(path.length-1,PROMPTS.length-1);
   // levels can vary in depth now — if this level holds flavors, always prompt "Name it."
@@ -1432,10 +1549,11 @@ function renderGrid(main,cur){
     b.style.animationDelay=`${i*22}ms`;
     if(node.children){ const c=document.createElement('span'); c.className='count'; c.textContent=node.children.length; b.appendChild(c); }
     const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; b.appendChild(l);
-    b.onclick=()=>drill(node,i);
+    const chain=[...path.slice(1),node]; tag(b,chain);
+    b.onclick=e=>activate(chain,e.shiftKey);
     g.appendChild(b);
   });
-  main.appendChild(g);
+  main.appendChild(g); syncOn(); flashFocus(g);
 }
 
 function renderCards(main,cur){
@@ -1450,7 +1568,8 @@ function renderCards(main,cur){
   if(node.children){ const c=document.createElement('span'); c.className='count'; c.textContent=node.children.length; card.appendChild(c); }
   const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; card.appendChild(l);
   const s=document.createElement('span'); s.className='sub';
-  s.textContent=node.children?'tap to dive in':'a flavor — swipe for more'; card.appendChild(s);
+  s.textContent=node.children?'tap to dive in · shift-click to add':'tap to add or remove'; card.appendChild(s);
+  const chain=[...path.slice(1),node]; tag(card,chain);
 
   const step=d=>{ lastDir=d>0?'r':'l'; cardIndex=(cardIndex+d+kids.length)%kids.length; render(); };
   prev.onclick=()=>step(-1); next.onclick=()=>step(1);
@@ -1462,22 +1581,309 @@ function renderCards(main,cur){
   card.addEventListener('pointerup',()=>{
     card.style.transition=''; card.style.transform='';
     if(Math.abs(dx)>60) step(dx<0?1:-1);
-    else if(Math.abs(dx)<8 && node.children) drill(node,cardIndex);
     x0=null;
   });
+  card.addEventListener('click',e=>{ if(Math.abs(dx)<8) activate(chain,e.shiftKey); dx=0; });
   card.addEventListener('pointercancel',()=>{ card.style.transform=''; x0=null; });
 
-  wrap.appendChild(card); stage.append(prev,wrap,next); main.appendChild(stage);
+  wrap.appendChild(card); stage.append(prev,wrap,next); main.appendChild(stage); syncOn(); flashFocus(stage);
   const c=document.createElement('div'); c.className='counter';
   c.textContent=`${cardIndex+1} / ${kids.length}`; main.appendChild(c);
 }
 
-function renderLeaf(main,node){
-  const d=document.createElement('div'); d.className='leaf'; paint(d,node);
-  const l=document.createElement('span'); l.className='lbl'; l.textContent=node.label; d.appendChild(l);
-  main.appendChild(d);
-  const n=document.createElement('p'); n.className='leaf-note';
-  n.textContent='Found it. Tap any layer above to keep exploring.'; main.appendChild(n);
+// ---------- tasting sheet: one per subject, persisted ----------
+// item keys are subject + label (categories get a trailing '/'), so a note stays selected
+// across Essentials/Everything even when collapsing changes its path
+function keyOf(subj,node){ return `${subj}|${node.label}${node.children?'/':''}`; }
+let SHEETS=JSON.parse(localStorage.getItem('fx-sheets')||'{}');
+let sheetSubj=localStorage.getItem('fx-sheet-subj')||'';
+function saveSheets(){ localStorage.setItem('fx-sheets',JSON.stringify(SHEETS)); localStorage.setItem('fx-sheet-subj',sheetSubj); }
+const sheetFor=s=>SHEETS[s]||(SHEETS[s]={items:[],mode:'basic',vals:{}});
+const isOn=k=>!!SHEETS[k.slice(0,k.indexOf('|'))]?.items.some(x=>x.k===k);
+
+function tag(el,chain){ el.dataset.k=keyOf(chain[0].label,chain.at(-1));
+  if(!chain.at(-1).children) hoverRel(el,chain[0].label,chain.at(-1).label); }
+function syncOn(){
+  document.querySelectorAll('[data-k]').forEach(el=>{ const on=isOn(el.dataset.k);
+    el.classList.toggle('on',on); if(!el.dataset.k.endsWith('/')) el.setAttribute('aria-pressed',on); });
+}
+function activate(chain,shift){ // click on a tile/card: categories drill, notes (or shift+category) toggle
+  if(chain.at(-1).children&&!shift) drill(chain.at(-1)); else toggleItem(chain);
+}
+function toggleItem(chain){ // chain: nodes from the subject down to the note/category
+  const subj=chain[0].label, node=chain.at(-1), sh=sheetFor(subj), k=keyOf(subj,node);
+  if(chain.length<2) return; // a whole subject isn't a flavor
+  const i=sh.items.findIndex(x=>x.k===k);
+  if(i>=0){ sh.items.splice(i,1); delete sh.vals[k]; }
+  else sh.items.push({k,label:node.label,color:node.color,cat:!!node.children,chain:chain.map(n=>n.label)});
+  sheetSubj=subj; saveSheets(); syncOn(); renderSheet();
+  if(i<0&&!document.body.classList.contains('sheet-open')) setDrawer(true);
+}
+// find a node by subject + label in the current tree (null if this detail level doesn't have it)
+function findEntry(subj,label,cat){
+  return INDEX.find(e=>e.chain[0].label===subj&&e.node.label===label&&!!e.node.children===!!cat)||null;
+}
+function goTo(subj,label,cat){ // open the category holding a note (or the category itself)
+  const e=findEntry(subj,label,cat); if(!e) return;
+  hideRel(); $('#search').value='';
+  focusK=keyOf(subj,e.node);
+  if(innerWidth<1000) setDrawer(false);
+  const target=pathToHash([ROOT,...(cat?e.chain:e.chain.slice(0,-1))]);
+  if(location.hash===target) applyHash(); else location.hash=target;
+}
+function flashFocus(scope){
+  if(!focusK) return;
+  const el=[...scope.querySelectorAll('[data-k]')].find(x=>x.dataset.k===focusK); focusK=null;
+  if(el){ el.scrollIntoView({block:'center',behavior:'smooth'}); el.classList.add('flash'); }
+}
+
+// ---------- drawer ----------
+function setDrawer(open){
+  document.body.classList.toggle('sheet-open',open);
+  $('#sheet').inert=!open;
+  $('#sheetBtn').setAttribute('aria-expanded',open);
+  if(!open) hideRel();
+}
+$('#sheetBtn').onclick=()=>setDrawer(!document.body.classList.contains('sheet-open'));
+
+const ICON_GO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
+const el=(t,cls,txt)=>{const e=document.createElement(t); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e;};
+function swatch(item){ const s=el('span','sw'+(item.cat?' cat':'')); paint(s,item); s.style.backgroundSize='8px 8px'; return s; }
+function iconBtn(cls,html,label,fn){ const b=el('button','ib '+cls); b.innerHTML=html; b.setAttribute('aria-label',label); b.title=label; b.onclick=fn; return b; }
+
+function renderSheet(){
+  const box=$('#sheet'); box.innerHTML='';
+  const subj=sheetSubj, sh=subj?sheetFor(subj):null, cfg=PROG[subj];
+  const adv=!!(sh&&cfg&&sh.mode==='adv');
+  document.body.classList.toggle('adv',adv);
+  $('#sheetBtn .badge').textContent=sh?.items.length||'';
+
+  const hd=el('div','shd'), h=el('h2',null,'Tasting sheet');
+  if(subj) h.appendChild(el('small',null,subj));
+  hd.append(h,iconBtn('x','×','Close tasting sheet',()=>setDrawer(false)));
+  box.appendChild(hd);
+
+  if(cfg){
+    const ctl=el('div','shctl'), seg=el('div','seg'); seg.setAttribute('role','group'); seg.setAttribute('aria-label','Sheet mode');
+    [['basic','List'],['adv','Table']].forEach(([m,t])=>{ const b=el('button',null,t);
+      b.setAttribute('aria-pressed',(adv?'adv':'basic')===m);
+      b.onclick=()=>{ sh.mode=m; saveSheets(); renderSheet(); }; seg.appendChild(b); });
+    ctl.appendChild(seg);
+    if(adv) ctl.appendChild(iconBtn('help','?','How the table works',()=>openHelp(subj)));
+    box.appendChild(ctl);
+  }
+
+  const body=el('div','shbody'); box.appendChild(body);
+  if(!sh||!sh.items.length){
+    body.appendChild(el('p','sempty')).innerHTML=subj
+      ? 'Nothing here yet. Tap a flavor to add it; tap again to take it out. <kbd>Shift</kbd>-click a category to add the whole category.'
+      : 'Pick a subject, then tap the flavors you taste to collect them here.';
+  }else if(adv){
+    body.appendChild(buildBoard(subj,cfg,sh,true));
+  }else{
+    const ul=el('ul','slist');
+    sh.items.forEach(it=>{
+      const li=el('li','srow'), tx=el('span','stx');
+      tx.append(el('b',null,it.label),el('small',null,it.chain.slice(1,-1).join(' › ')||it.chain[0]));
+      li.append(swatch(it),tx,
+        iconBtn('go',ICON_GO,`Go to ${it.label}`,()=>goTo(subj,it.label,it.cat)),
+        iconBtn('rm','×',`Remove ${it.label}`,()=>removeItem(subj,it.k)));
+      if(!it.cat) hoverRel(li,subj,it.label);
+      ul.appendChild(li);
+    });
+    body.appendChild(ul);
+  }
+  const ft=el('div','shft'), clr=el('button','danger','Clear all');
+  clr.disabled=!sh?.items.length;
+  clr.onclick=()=>{ if(confirm(`Remove all ${sh.items.length} from the ${subj} sheet?`)){ sh.items=[]; sh.vals={}; saveSheets(); syncOn(); renderSheet(); } };
+  ft.appendChild(clr); box.appendChild(ft);
+}
+function removeItem(subj,k){
+  const sh=sheetFor(subj); sh.items=sh.items.filter(x=>x.k!==k); delete sh.vals[k];
+  saveSheets(); syncOn(); renderSheet();
+}
+
+// ---------- advanced table: drinks that change across brews / temperature / time ----------
+// rows: fixed list, or a namer (i → label) when rows can be added. subs: [letter, name, what to note]
+const NPF=[['N','nose','what you smell before sipping'],['P','palate','what you taste while it’s in your mouth'],['F','finish','what lingers after you swallow']];
+const PROG={
+  Tea:{rows:i=>`${i+1}`, start:3, rowName:'infusion', subs:[['T','taste','flavor while the sip is in your mouth'],['A','aftertaste','what lingers, and what shows up only after swallowing']],
+    demo:['Orchid','Honey'],
+    intro:'Gongfu and other multi-steep brewing change a tea from cup to cup. Each row is one infusion; add rows as you keep steeping.',
+    tip:'Early infusions are often aromatic and floral; later ones turn sweet, mineral or woody. Watching a note fade or bloom across rows is the point of the table.'},
+  Coffee:{rows:['Hot','Warm','Cool'], rowName:'temperature', subs:[['F','flavor','taste and retronasal aroma while sipping'],['A','aftertaste','what stays after you swallow']],
+    demo:['Blueberry','Dark Chocolate'],
+    intro:'Coffee changes a lot as it cools — this is how cuppers taste it. Each row is a temperature stage: hot (just brewed), warm (about ten minutes later), and cool (near room temperature).',
+    tip:'Acidity and fruit usually get clearer as the cup cools; roast and bitter notes tend to fade. Sweetness often peaks when it’s warm.'},
+  Wine:{rows:i=>['Poured','15 min','30 min','1 hr','2 hr'][i]||`${i-2} hr`, start:3, rowName:'time in glass', subs:NPF,
+    demo:['Cassis','Leather'],
+    intro:'Wine opens up with air. Each row is a moment after pouring; add rows if you keep the glass going.',
+    tip:'Young, closed wines often start with primary fruit and gain spice or savory notes with air; old wines can fade quickly — note when a note drops away.'},
+  Whiskey:{rows:i=>i?`Water ${i}`:'Neat', start:2, rowName:'dilution', subs:NPF,
+    demo:['Vanilla','Pear'],
+    intro:'A few drops of water can unlock or hide aromas. The first row is the whiskey neat; each extra row is one more addition of water.',
+    tip:'Water usually lifts fruity and floral esters on the nose and softens alcohol heat; heavy, oily or peaty notes may open up or dull — compare row by row.'},
+  Beer:{rows:['Cold','Mid-glass','Warm'], rowName:'stage', subs:NPF,
+    demo:['Grapefruit','Caramel'],
+    intro:'Beer reveals more as it warms. Each row is a stage of the same glass: straight from the fridge, halfway through, and the last warm sips.',
+    tip:'Malt sweetness, esters and alcohol show more as it warms; hop bitterness and carbonation bite are sharper cold.'},
+  Sake:{rows:['Chilled','Room','Warm'], rowName:'serving temperature', subs:NPF,
+    demo:['Melon','Steamed Rice'],
+    intro:'Sake is served across a wide range of temperatures, and the same bottle can taste very different. Each row is one serving temperature: chilled (hiya), room temperature (jōon), and warmed (kan).',
+    tip:'Chilling sharpens fruity ginjō aromas and acidity; warming brings out rice, umami and sweetness, and softens dryness.'}
+};
+const LEVELS=['empty','⅓','⅔','full'];
+const CELL=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell'))||26;
+function areaClip(vals){ // right edge sits at v/3 of the cell width, sloped between rows (Flavor Journey)
+  const W=CELL(),H=W,S=Math.round(W*.22),n=vals.length, pts=[[0,0]];
+  vals.forEach((v,r)=>{ const x=(v/3*W).toFixed(1); pts.push([x, r*H+(r?S:0)], [x, (r+1)*H-(r<n-1?S:0)]); });
+  pts.push([0,n*H]);
+  return `polygon(${pts.map(p=>`${p[0]}px ${p[1]}px`).join(',')})`;
+}
+const rowLabels=(cfg,n)=>Array.isArray(cfg.rows)?cfg.rows:Array.from({length:n},(_,i)=>cfg.rows(i));
+// live: the drawer's editable table; otherwise a static picture (help modal), with sh = {items, vals, rows}
+function buildBoard(subj,cfg,sh,live){
+  const fixed=Array.isArray(cfg.rows), n=fixed?cfg.rows.length:(sh.rows||=cfg.start);
+  const board=el('div','board'+(live?'':' demo'));
+  const vl=Math.min(130,Math.max(48,Math.max(0,...sh.items.map(i=>i.label.length))*7.6+10)); // label column fits the longest name
+  board.style.setProperty('--vl',vl+'px'); board.style.setProperty('--hh',vl+16+'px');
+  const axis=el('div','axis'); axis.appendChild(el('div','hspace'));
+  rowLabels(cfg,n).forEach(l=>{ const d=el('div','num',l); d.title=`${cfg.rowName}: ${l}`; axis.appendChild(d); });
+  if(live&&!fixed){
+    const add=el('button','mini','+'); add.title=`Add ${cfg.rowName}`; add.setAttribute('aria-label',add.title);
+    add.onclick=()=>{ sh.rows++; saveSheets(); renderSheet(); };
+    axis.appendChild(add);
+    if(n>1){ const rm=el('button','mini','−'); rm.title=`Remove last ${cfg.rowName}`; rm.setAttribute('aria-label',rm.title);
+      rm.onclick=()=>{ const r=n-1;
+        if(Object.values(sh.vals).some(v=>Object.values(v).some(a=>a[r]))&&!confirm(`Row “${rowLabels(cfg,n)[r]}” has notes — remove it?`)) return;
+        sh.rows--; Object.values(sh.vals).forEach(v=>Object.values(v).forEach(a=>a.length=Math.min(a.length,sh.rows)));
+        saveSheets(); renderSheet(); };
+      axis.appendChild(rm); }
+  }
+  board.appendChild(axis);
+  sh.items.forEach(it=>{
+    const col=el('div','col');
+    const lbl=el(live?'button':'span','vlabel',it.label);
+    if(live){ lbl.title=`Go to ${it.label}`; lbl.onclick=()=>goTo(subj,it.label,it.cat); if(!it.cat) hoverRel(lbl,subj,it.label); }
+    const duo=el('div','duo'), cols=el('div','cols');
+    const v=sh.vals[it.k]||(sh.vals[it.k]={});
+    cfg.subs.forEach(([L,name],si)=>{
+      const d=el('span',null,L); d.title=name; duo.appendChild(d);
+      const arr=v[L]||(v[L]=[]); while(arr.length<n) arr.push(0);
+      const sub=el('div','subcol'); sub.style.height=n*CELL()+'px';
+      const area=el('div','carea'+(si?' dim':'')); paint(area,it); area.style.clipPath=areaClip(arr.slice(0,n));
+      sub.appendChild(area);
+      rowLabels(cfg,n).forEach((rl,r)=>{
+        const c=el('button','cell'); c.title=LEVELS[arr[r]];
+        if(live){
+          c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`);
+          c.onclick=()=>{ arr[r]=(arr[r]+3)%4; saveSheets(); // cycles empty → full → ⅔ → ⅓
+            area.style.clipPath=areaClip(arr.slice(0,n)); c.title=LEVELS[arr[r]];
+            c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`); };
+        }else{ c.tabIndex=-1; c.setAttribute('aria-hidden','true'); }
+        sub.appendChild(c);
+      });
+      cols.appendChild(sub);
+    });
+    col.append(lbl,duo,cols);
+    if(live) col.appendChild(iconBtn('rm colx','×',`Remove ${it.label}`,()=>removeItem(subj,it.k)));
+    board.appendChild(col);
+  });
+  return board;
+}
+
+// ---------- help modal: per-subject explanation with a live-rendered example table ----------
+function openHelp(subj){
+  const cfg=PROG[subj], dlg=$('#help'); dlg.innerHTML='';
+  const fixed=Array.isArray(cfg.rows), n=fixed?cfg.rows.length:cfg.start;
+  const leaves=INDEX.filter(e=>e.chain[0].label===subj&&!e.node.children);
+  const pick=l=>(leaves.find(e=>e.node.label===l)||leaves[0]).node;
+  const [a,b]=cfg.demo.map(pick);
+  // demo shape: the first note fades across rows, the second emerges late and lingers
+  const ramp=(up,s)=>Array.from({length:n},(_,r)=>{ const t=n>1?r/(n-1):0; return Math.max(0,Math.round((up?t:1-t)*3)-s); });
+  const vals={}, mk=(it,up)=>{ vals[it.label]=Object.fromEntries(cfg.subs.map(([L],si)=>[L,ramp(up,si===0?0:up?0:1)])); return {k:it.label,label:it.label,color:it.color}; };
+  const demo={items:[mk(a,false),mk(b,true)],vals,rows:n};
+
+  const x=iconBtn('x','×','Close',()=>dlg.close());
+  const h=el('h2',null,`Reading the ${subj} table`); h.id='helpTitle';
+  dlg.append(x,h,el('p',null,cfg.intro));
+  const fig=el('figure'); fig.appendChild(buildBoard(subj,cfg,demo,false));
+  fig.appendChild(el('figcaption',null,`Rows (↓) are ${cfg.rowName==='infusion'?'infusions':cfg.rowName+' stages'}. Each note gets a column (→), split into ${cfg.subs.map(s=>`${s[0]} (${s[1]})`).join(', ')}. Here, ${a.label} is strongest at first and fades, while ${b.label} builds up and lingers.`));
+  dlg.appendChild(fig);
+
+  dlg.appendChild(el('h3',null,'Filling it in'));
+  dlg.appendChild(el('p',null,'Tap flavors on the wheel to add them as columns. Then click a cell to set how strong that note is at that moment — each click cycles:'));
+  const lv=el('div','levels');
+  [0,3,2,1].forEach(v=>{ const s=el('span'), sub=el('div','subcol'), ar=el('div','carea'), c=el('div','cell');
+    sub.style.height=CELL()+'px'; paint(ar,a); ar.style.clipPath=areaClip([v]); sub.append(ar,c);
+    s.append(sub,LEVELS[v]==='empty'?'none':LEVELS[v]==='full'?'strong':LEVELS[v]==='⅔'?'medium':'faint'); lv.appendChild(s); });
+  dlg.appendChild(lv);
+
+  dlg.appendChild(el('h3',null,'The columns'));
+  const dl=el('dl'); cfg.subs.forEach(([L,name,what])=>{ dl.append(el('dt',null,L),el('dd',null,`${name[0].toUpperCase()+name.slice(1)} — ${what}.`)); });
+  dlg.appendChild(dl);
+  dlg.appendChild(el('h3',null,'Rows'));
+  dlg.appendChild(el('p',null,fixed?`The rows are fixed: ${cfg.rows.join(', ')}.`:`Use + and − under the row labels to add or remove ${cfg.rowName==='infusion'?'infusions':'rows'}.`));
+  dlg.appendChild(el('h3',null,'What to look for'));
+  dlg.appendChild(el('p',null,cfg.tip));
+  dlg.showModal();
+}
+$('#help').addEventListener('click',e=>{ if(e.target===e.currentTarget) e.currentTarget.close(); }); // backdrop click
+
+// ---------- related notes popover ----------
+// RELATED (related.js): per subject, lines of "Note: confused A, B; similar C; with D; opposite E".
+// Relations are symmetric; a pair listed under several relations shows under the strongest one.
+const REL_ORDER=[['confused','Often confused with'],['similar','Similar to'],['with','Often found with'],['opposite','Contrasts with']];
+const REL={};
+for(const [subj,txt] of Object.entries(typeof RELATED==='object'?RELATED:{})){
+  const m=REL[subj]={}, add=(a,r,b)=>((m[a]??={})[r]??=new Set).add(b);
+  for(const ln of txt.split('\n')){
+    const i=ln.indexOf(':'); if(i<0) continue;
+    const a=ln.slice(0,i).trim();
+    for(const part of ln.slice(i+1).split(';')){
+      const t=part.trim(), sp=t.indexOf(' '); if(sp<0) continue;
+      const r=t.slice(0,sp);
+      t.slice(sp+1).split(',').map(x=>x.trim()).filter(Boolean).forEach(b=>{ add(a,r,b); add(b,r,a); });
+    }
+  }
+}
+let relT=0;
+function hoverRel(target,subj,label){
+  target.addEventListener('pointerenter',e=>{ if(e.pointerType!=='mouse') return;
+    clearTimeout(relT); relT=setTimeout(()=>showRel(target,subj,label),380); });
+  target.addEventListener('pointerleave',()=>{ clearTimeout(relT); relT=setTimeout(hideRel,220); });
+}
+$('#rel').addEventListener('pointerenter',()=>clearTimeout(relT));
+$('#rel').addEventListener('pointerleave',()=>{ clearTimeout(relT); relT=setTimeout(hideRel,220); });
+function hideRel(){ clearTimeout(relT); $('#rel').hidden=true; }
+function showRel(target,subj,label){
+  if(!target.isConnected) return;
+  const r=REL[subj]?.[label]; if(!r) return hideRel();
+  const pop=$('#rel'); pop.innerHTML='';
+  pop.appendChild(el('div','rhd',label));
+  const shown=new Set([label]);
+  for(const [rel,title] of REL_ORDER){
+    const list=[...(r[rel]||[])].filter(l=>!shown.has(l)).map(l=>findEntry(subj,l,false)).filter(Boolean);
+    if(!list.length) continue;
+    pop.appendChild(el('h4',null,title));
+    list.forEach(e=>{ shown.add(e.node.label);
+      const row=el('div','rrow'), b=el('button','rnote');
+      b.dataset.k=keyOf(subj,e.node);
+      b.append(swatch({label:e.node.label,color:e.node.color}),el('span',null,e.node.label));
+      b.title='Add to / remove from tasting sheet';
+      b.onclick=()=>toggleItem(e.chain);
+      row.append(b,iconBtn('go',ICON_GO,`Go to ${e.node.label}`,()=>goTo(subj,e.node.label,false)));
+      pop.appendChild(row);
+    });
+  }
+  if(shown.size===1) return hideRel();
+  pop.hidden=false; syncOn();
+  // anchor beside the note: right of it if there's room, else left; clamp to the viewport
+  const a=target.getBoundingClientRect(), w=pop.offsetWidth, h=pop.offsetHeight, m=8;
+  let x=a.right+m; if(x+w>innerWidth-m) x=a.left-m-w; if(x<m) x=Math.min(innerWidth-w-m,Math.max(m,a.left));
+  let y=Math.min(Math.max(m,a.top),innerHeight-h-m);
+  if(x<a.right&&x+w>a.left&&y<a.bottom&&y+h>a.top) y=a.bottom+m<innerHeight-h?a.bottom+m:Math.max(m,a.top-h-m); // overlaps: go below/above
+  pop.style.left=x+'px'; pop.style.top=y+'px';
 }
 
 $('#search').addEventListener('input',()=>render());
@@ -1485,17 +1891,26 @@ document.addEventListener('keydown',e=>{
   const si=$('#search');
   if(e.target===si){ if(e.key==='Escape'){ si.value=''; si.blur(); render(); } return; }
   if(e.key==='/'){ e.preventDefault(); si.focus(); return; }
+  if(e.key==='Escape'&&!$('#rel').hidden){ hideRel(); return; }
+  if(e.key==='Escape'&&document.body.classList.contains('sheet-open')){ setDrawer(false); return; }
+  if(e.target.closest?.('#sheet')) return;
   if(e.key==='Escape'||e.key==='Backspace'){ if(path.length>1){ e.preventDefault(); jumpTo(path.length-2);} }
   if(mode==='cards'&&path.at(-1).children){
     if(e.key==='ArrowLeft'){ lastDir='l'; cardIndex=(cardIndex-1+path.at(-1).children.length)%path.at(-1).children.length; render(); }
     if(e.key==='ArrowRight'){ lastDir='r'; cardIndex=(cardIndex+1)%path.at(-1).children.length; render(); }
-    if(e.key==='Enter'&&document.activeElement?.className!=='nav'){ const n=path.at(-1).children[cardIndex]; if(n.children&&document.activeElement?.classList.contains('card')) drill(n,cardIndex); }
   }
 });
 
 $('#mGrid').setAttribute('aria-pressed',mode==='grid');
 $('#mCards').setAttribute('aria-pressed',mode==='cards');
+renderSheet();
 setDepth(depth); // sets toggle state and does the initial render from the URL
+
+// self-check (console only)
+console.assert(fold('Crème Brûlée')==='creme brulee'&&fold('Buddha’s')==="buddha's",'search folding');
+if(CELL()===26) console.assert(areaClip([3,0])==='polygon(0px 0px,26.0px 0px,26.0px 20px,0.0px 32px,0.0px 52px,0px 52px)','areaClip shape');
+console.assert(REL.Tea?.Honeysuckle?.confused?.has('Jasmine')&&REL.Tea?.Jasmine?.confused?.has('Honeysuckle'),'relations are symmetric');
+console.assert(keyOf('Coffee',{label:'Melon'})!==keyOf('Coffee',{label:'Melon',children:[]}),'note and category keys differ');
 </script>
 </body>
 </html>
