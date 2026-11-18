@@ -146,7 +146,9 @@ body.adv{--dw:min(560px,96vw)}
   border-left:1px solid var(--line); box-shadow:-18px 0 40px rgba(0,0,0,.35);
   display:flex; flex-direction:column; transform:translateX(105%); transition:transform .25s ease, width .2s ease}
 body.sheet-open #sheet{transform:none}
-@media (min-width:1000px){ body.sheet-open{padding-right:var(--dw)} }
+/* side-by-side whenever ~360px of content still fits next to the drawer; overlay only on phones */
+@media (min-width:740px){ body.sheet-open:not(.adv){padding-right:var(--dw)} }
+@media (min-width:920px){ body.sheet-open.adv{padding-right:var(--dw)} }
 .shd{display:flex; align-items:flex-start; gap:.6rem; padding:1.1rem 1.1rem .7rem}
 .shd h2{font-family:var(--display); font-weight:600; font-size:1.25rem; flex:1}
 .shd h2 small{display:block; font-family:var(--body); font-weight:400; font-size:.8rem; color:var(--ink-dim); margin-top:.15rem}
@@ -1627,7 +1629,7 @@ function goTo(subj,label,cat){ // open the category holding a note (or the categ
   const e=findEntry(subj,label,cat); if(!e) return;
   hideRel(); $('#search').value='';
   focusK=keyOf(subj,e.node);
-  if(innerWidth<1000) setDrawer(false);
+  if(getComputedStyle(document.body).paddingRight==='0px') setDrawer(false); // drawer overlays (phone): get it out of the way
   const target=pathToHash([ROOT,...(cat?e.chain:e.chain.slice(0,-1))]);
   if(location.hash===target) applyHash(); else location.hash=target;
 }
