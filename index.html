@@ -191,7 +191,11 @@ body.sheet-open #sheet{transform:none}
   font-size:.8rem; padding:2px 0; text-align:right; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-radius:6px}
 button.vlabel:hover{background:var(--bg)}
 .duo{display:flex; gap:2px; height:16px}
-.duo span{width:var(--cell); text-align:center; font-size:.6rem; color:var(--ink-dim); cursor:help}
+.duo span{width:var(--cell); text-align:center; font-size:.6rem; color:var(--ink-dim); cursor:help; border-radius:3px}
+.duo span:hover,.duo span:focus-visible{color:var(--ink); background:var(--bg)}
+#tip{position:fixed; z-index:40; max-width:220px; background:var(--ink); color:var(--bg); font-size:.75rem; line-height:1.4;
+  padding:.4rem .6rem; border-radius:6px; box-shadow:0 8px 20px rgba(0,0,0,.4); pointer-events:none}
+#tip[hidden]{display:none}
 .cols{display:flex; gap:2px}
 .subcol{position:relative; width:var(--cell); flex:none}
 .carea{position:absolute; inset:0; pointer-events:none}
@@ -263,6 +267,7 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
 <main id="main"></main>
 <aside id="sheet" aria-label="Tasting sheet" inert></aside>
 <div id="rel" role="dialog" aria-label="Related notes" hidden></div>
+<div id="tip" role="tooltip" hidden></div>
 <dialog id="help" aria-labelledby="helpTitle"></dialog>
 
 <script src="related.js"></script>
@@ -1653,8 +1658,19 @@ const el=(t,cls,txt)=>{const e=document.createElement(t); if(cls)e.className=cls
 function swatch(item){ const s=el('span','sw'+(item.cat?' cat':'')); paint(s,item); s.style.backgroundSize='8px 8px'; return s; }
 function iconBtn(cls,html,label,fn){ const b=el('button','ib '+cls); b.innerHTML=html; b.setAttribute('aria-label',label); b.title=label; b.onclick=fn; return b; }
 
+// quick tooltip (native title is slow and easy to miss); fixed so the drawer's scroll box can't clip it
+function tip(target,text){
+  target.tabIndex=0; target.setAttribute('aria-label',text);
+  const show=()=>{ const t=$('#tip'); t.textContent=text; t.hidden=false;
+    const a=target.getBoundingClientRect(), w=t.offsetWidth, h=t.offsetHeight;
+    t.style.left=Math.max(8,Math.min(innerWidth-w-8,a.left+a.width/2-w/2))+'px';
+    t.style.top=(a.top-h-6<8?a.bottom+6:a.top-h-6)+'px'; };
+  target.addEventListener('pointerenter',show); target.addEventListener('focus',show);
+  target.addEventListener('pointerleave',hideTip); target.addEventListener('blur',hideTip);
+}
+function hideTip(){ $('#tip').hidden=true; }
 function renderSheet(){
-  const box=$('#sheet'); box.innerHTML='';
+  const box=$('#sheet'); box.innerHTML=''; hideTip();
   const subj=sheetSubj, sh=subj?sheetFor(subj):null, cfg=PROG[subj];
   const adv=!!(sh&&cfg&&sh.mode==='adv');
   document.body.classList.toggle('adv',adv);
@@ -1729,6 +1745,10 @@ const PROG={
     demo:['Grapefruit','Caramel'],
     intro:'Beer reveals more as it warms. Each row is a stage of the same glass: straight from the fridge, halfway through, and the last warm sips.',
     tip:'Malt sweetness, esters and alcohol show more as it warms; hop bitterness and carbonation bite are sharper cold.'},
+  Chocolate:{rows:['Early','Middle','Late','Finish'], rowName:'melt stage', subs:[['F','flavor','what you taste on your tongue'],['A','aroma','what rises into your nose as it melts (retronasal); pinch your nose to tell it apart from flavor']],
+    demo:['Raspberry','Caramel'],
+    intro:'Fine chocolate unfolds as it melts, so let a piece sit on your tongue instead of chewing. Each row is a stage of that one piece: early (first contact), middle (fully melting), late (the last of it), and the finish after it’s gone.',
+    tip:'Bright fruit and acidity usually show early; roast, nut and caramel notes build in the middle; bitterness and astringency often arrive late. A long, clean finish is a mark of quality.'},
   Sake:{rows:['Chilled','Room','Warm'], rowName:'serving temperature', subs:NPF,
     demo:['Melon','Steamed Rice'],
     intro:'Sake is served across a wide range of temperatures, and the same bottle can taste very different. Each row is one serving temperature: chilled (hiya), room temperature (jōon), and warmed (kan).',
@@ -1770,7 +1790,9 @@ function buildBoard(subj,cfg,sh,live){
     const duo=el('div','duo'), cols=el('div','cols');
     const v=sh.vals[it.k]||(sh.vals[it.k]={});
     cfg.subs.forEach(([L,name],si)=>{
-      const d=el('span',null,L); d.title=name; duo.appendChild(d);
+      const d=el('span',null,L); duo.appendChild(d);
+      const what=cfg.subs[si][2], full=`${L} · ${name[0].toUpperCase()+name.slice(1)} — ${what}`;
+      if(live) tip(d,full); else d.title=full;
       const arr=v[L]||(v[L]=[]); while(arr.length<n) arr.push(0);
       const sub=el('div','subcol'); sub.style.height=n*CELL()+'px';
       const area=el('div','carea'+(si?' dim':'')); paint(area,it); area.style.clipPath=areaClip(arr.slice(0,n));
