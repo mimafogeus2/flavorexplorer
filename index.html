@@ -64,8 +64,13 @@ header{
 .stratum .lbl{font-family:var(--display); font-weight:600; font-size:1rem}
 .stratum.home{background:var(--bg-2); color:var(--ink-dim); border-bottom:1px solid #453a31}
 .stratum.home .lbl{font-size:.85rem; font-weight:500; font-style:italic}
-.stratum .hint{margin-left:auto; font-size:.75rem; opacity:0; transition:opacity .15s}
-.stratum:hover .hint, .stratum:focus-visible .hint{opacity:.8}
+.stratum .hint{margin-left:auto; font-size:.75rem; opacity:.45; transition:opacity .15s}
+.stratum:hover .hint, .stratum:focus-visible .hint{opacity:.9}
+.stratum.cur{cursor:default}
+.stratum.cur .hint{display:none}
+.back{align-self:flex-start; margin:-.6rem 0 1rem; padding:.3rem .8rem .3rem .6rem; font:inherit; font-size:.85rem;
+  border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--ink-dim); cursor:pointer}
+.back:hover,.back:focus-visible{color:var(--ink); background:var(--bg-2)}
 .stratum.out{animation:rise .22s ease both; pointer-events:none}
 @keyframes drop{from{transform:translateY(-8px); opacity:0}}
 @keyframes rise{to{transform:translateY(-8px); opacity:0}}
@@ -1562,6 +1567,11 @@ function renderStrata(){
   entries.slice(keep).forEach((e,i)=>{
     strata.insertBefore(makeStratum(e,keep+i),strata.querySelector('.out'));
   });
+  // the bar you're on isn't a way back: no hint, no pointer
+  [...strata.children].filter(el=>!el.classList.contains('out')).forEach((el,i,a)=>{
+    const cur=i===a.length-1; el.classList.toggle('cur',cur);
+    cur?el.setAttribute('aria-current','location'):el.removeAttribute('aria-current');
+  });
 }
 // search folding: "creme brulee" finds Crème Brûlée, "buddha's" finds Buddha’s
 const fold=s=>s.normalize('NFD').replace(/\p{M}/gu,'').replace(/[’‘]/g,"'").toLowerCase();
@@ -1638,6 +1648,12 @@ function render(){
   const h=document.createElement('h1'); h.className='prompt'; h.textContent=title;
   if(sub){ const s=document.createElement('small'); s.textContent=sub; h.appendChild(s); }
   main.appendChild(h);
+  if(path.length>1){
+    const up=path.at(-2), b=document.createElement('button'); b.className='back';
+    b.textContent=`← ${up===ROOT?'All subjects':up.label}`;
+    b.onclick=()=>jumpTo(path.length-2);
+    main.appendChild(b);
+  }
 
   (mode==='grid'?renderGrid:renderCards)(main,cur);
 }
