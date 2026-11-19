@@ -68,7 +68,7 @@ header{
 .stratum:hover .hint, .stratum:focus-visible .hint{opacity:.9}
 .stratum.cur{cursor:default}
 .stratum.cur .hint{display:none}
-.back{align-self:flex-start; margin:-.6rem 0 1rem; padding:.3rem .8rem .3rem .6rem; font:inherit; font-size:.85rem;
+.back{align-self:flex-start; margin:0; padding:.3rem .8rem .3rem .6rem; font:inherit; font-size:.85rem;
   border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--ink-dim); cursor:pointer}
 .back:hover,.back:focus-visible{color:var(--ink); background:var(--bg-2)}
 .stratum.out{animation:rise .22s ease both; pointer-events:none}
@@ -1647,13 +1647,13 @@ function render(){
   const [title,sub]=cur.children.every(c=>!c.children)?PROMPTS[PROMPTS.length-1]:PROMPTS[depth];
   const h=document.createElement('h1'); h.className='prompt'; h.textContent=title;
   if(sub){ const s=document.createElement('small'); s.textContent=sub; h.appendChild(s); }
-  main.appendChild(h);
   if(path.length>1){
     const up=path.at(-2), b=document.createElement('button'); b.className='back';
     b.textContent=`← ${up===ROOT?'All subjects':up.label}`;
     b.onclick=()=>jumpTo(path.length-2);
     main.appendChild(b);
   }
+  main.appendChild(h);
 
   (mode==='grid'?renderGrid:renderCards)(main,cur);
 }
