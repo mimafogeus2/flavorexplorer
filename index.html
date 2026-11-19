@@ -2118,7 +2118,7 @@ function buildBoard(subj,cfg,sh,live){
           // hold still for HOLD_MS to start painting
           c.onpointerdown=e=>{ if(e.button) return; skipClick=false; clearTimeout(holdT);
             if(e.pointerType==='mouse'){ e.preventDefault(); startPaint(); return; }
-            holdXY=[e.clientX,e.clientY]; holdT=setTimeout(()=>{ holdT=null; navigator.vibrate?.(10); startPaint(); },HOLD_MS); };
+            holdXY=[e.clientX,e.clientY]; holdT=setTimeout(()=>{ holdT=null; tick(); startPaint(); },HOLD_MS); };
           c.onclick=e=>{ if(!e.detail||!skipClick) cycle(); }; // detail 0 = keyboard
           c.oncontextmenu=e=>e.preventDefault(); // long-press menu would steal the hold
         }else{ c.tabIndex=-1; c.setAttribute('aria-hidden','true'); }
@@ -2135,6 +2135,14 @@ function buildBoard(subj,cfg,sh,live){
 
 // drag from a cell paints its new value onto every cell the pointer crosses
 const HOLD_MS=350;
+// one haptic tick: Vibration API on Android; iOS 18+ has none, but toggling a native switch plays its haptic
+// ponytail: undocumented iOS side effect, may break or not fire outside a direct tap
+function tick(){
+  if(navigator.vibrate){ navigator.vibrate(10); return; }
+  const l=document.createElement('label'), i=document.createElement('input');
+  i.type='checkbox'; i.setAttribute('switch',''); l.append(i); l.style.display='none'; l.ariaHidden='true';
+  document.head.append(l); l.click(); l.remove();
+}
 let paintVal=null, skipClick=false, holdT=null, holdXY=null;
 const cancelHold=()=>{ clearTimeout(holdT); holdT=null; };
 addEventListener('pointermove',e=>{
