@@ -233,7 +233,7 @@ button.vlabel:hover{background:var(--bg)}
 .carea{position:absolute; inset:0; pointer-events:none}
 .carea.dim{opacity:.55}
 .cell{display:block; width:var(--cell); height:var(--cell); padding:0; background:transparent;
-  border:1px solid rgba(239,231,221,.13); border-radius:3px; cursor:pointer; position:relative}
+  border:1px solid rgba(239,231,221,.13); border-radius:3px; cursor:pointer; position:relative; touch-action:none}
 .cell:hover{border-color:rgba(239,231,221,.4)}
 .board.demo .cell{cursor:default}
 /* flipped: notes are rows, the progression runs left → right, fill grows upward */
@@ -2108,9 +2108,13 @@ function buildBoard(subj,cfg,sh,live){
         const c=el('button','cell'); c.title=LEVELS[arr[r]];
         if(live){
           c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`);
-          c.onclick=()=>{ arr[r]=(arr[r]+3)%4; saveSheets(); // cycles empty → full → ⅔ → ⅓
-            area.style.clipPath=areaClip(arr.slice(0,n),FLIP); c.title=LEVELS[arr[r]];
-            c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[arr[r]]}`); };
+          c._val=()=>arr[r];
+          c._set=val=>{ arr[r]=val; area.style.clipPath=areaClip(arr.slice(0,n),FLIP); c.title=LEVELS[val];
+            c.setAttribute('aria-label',`${it.label}, ${rl}, ${name}: ${LEVELS[val]}`); };
+          const cycle=()=>{ c._set((arr[r]+3)%4); saveSheets(); }; // empty → full → ⅔ → ⅓
+          // press cycles and starts a paint drag; click only handles keyboard (detail 0)
+          c.onpointerdown=e=>{ if(e.button) return; e.preventDefault(); cycle(); paintVal=arr[r]; };
+          c.onclick=e=>{ if(!e.detail) cycle(); };
         }else{ c.tabIndex=-1; c.setAttribute('aria-hidden','true'); }
         sub.appendChild(c);
       });
@@ -2122,6 +2126,16 @@ function buildBoard(subj,cfg,sh,live){
   });
   return board;
 }
+
+// drag from a cell paints its new value onto every cell the pointer crosses
+let paintVal=null;
+addEventListener('pointermove',e=>{
+  if(paintVal===null) return;
+  const t=document.elementFromPoint(e.clientX,e.clientY);
+  if(t?._set&&t._val()!==paintVal) t._set(paintVal);
+});
+const endPaint=()=>{ if(paintVal!==null){ paintVal=null; saveSheets(); } };
+addEventListener('pointerup',endPaint); addEventListener('pointercancel',endPaint);
 
 // ---------- help modal: per-subject explanation with a live-rendered example table ----------
 function openHelp(subj){
