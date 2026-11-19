@@ -144,6 +144,8 @@ button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
 .badge{position:absolute; top:-.3rem; right:-.35rem; min-width:1.1rem; height:1.1rem; padding:0 .25rem; border-radius:999px;
   background:var(--ink); color:var(--bg); font-size:.66rem; font-weight:700; display:grid; place-items:center; font-variant-numeric:tabular-nums}
 .badge:empty{display:none}
+.iconbtn.glow{animation:glow 1.2s ease}
+@keyframes glow{40%{box-shadow:0 0 0 3px var(--ink), 0 0 18px 4px var(--ink); color:var(--bg); background:var(--ink)}}
 
 /* tasting sheet drawer */
 body{--dw:min(380px,92vw)}
@@ -317,6 +319,7 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
 .rrow .ib{width:1.6rem; height:1.6rem}
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important; transition:none !important}
+  .iconbtn.glow{animation:glow 1.2s ease !important} /* a fade, not motion */
 }
 </style>
 </head>
@@ -335,7 +338,6 @@ dialog h3{font-size:.72rem; text-transform:uppercase; letter-spacing:.13em; colo
   </div>
   <button id="tastBtn" class="iconbtn" aria-label="Saved tastings" title="Saved tastings">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18.5V6.5a3 3 0 0 1 3-3h11v13H8a3 3 0 0 0-3 3 3 3 0 0 0 3 3h11"/></svg>
-    <span class="badge"></span>
   </button>
   <button id="sheetBtn" class="iconbtn" aria-label="Tasting sheet" aria-expanded="false" aria-controls="sheet" title="Tasting sheet">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8.5h6M9 12h6M9 15.5h4"/></svg>
@@ -1854,8 +1856,9 @@ function renderSheet(){
 // ---------- saved tastings: snapshots of a sheet plus title, time and details ----------
 // a sheet loaded from (or saved as) a tasting carries `from`; Save then overwrites it
 let TASTINGS=JSON.parse(localStorage.getItem('fx-tastings')||'[]');
-function saveTastings(){ localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS)); $('#tastBtn .badge').textContent=TASTINGS.length||''; }
-$('#tastBtn .badge').textContent=TASTINGS.length||'';
+function saveTastings(){ localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS)); }
+// pulse the saved-tastings button when something lands there (not on delete)
+function glowTastings(){ const b=$('#tastBtn'); b.classList.remove('glow'); void b.offsetWidth; b.classList.add('glow'); }
 $('#tastBtn').onclick=()=>{ location.hash='#tastings'; };
 const tastingText=t=>sheetText(t.subj,t,[t.title,`${t.subj} · ${fmtWhen(t.when)}`,...(t.details?['',t.details]:[])]);
 const tastingOf=sh=>sh.from&&TASTINGS.find(t=>t.id===sh.from)||null;
@@ -1884,7 +1887,7 @@ function openSave(subj){
     const rec={subj,title:ti.value.trim(),when:wi.value||nowLocal(),details:de.value,...snap(sh)};
     if(v==='over') Object.assign(t,rec);
     else{ const n={id:newId(),...rec}; TASTINGS.push(n); sh.from=n.id; }
-    saveTastings(); saveSheets(); renderSheet(); render();
+    saveTastings(); glowTastings(); saveSheets(); renderSheet(); render();
   };
   dlg.appendChild(f); dlg.showModal(); ti.select();
 }
@@ -1971,7 +1974,7 @@ function importTastings(text){
   const have=new Set(TASTINGS.map(t=>t.id));
   const added=ok.filter(t=>!have.has(t.id)).map(t=>({id:t.id,subj:t.subj,title:t.title,when:t.when,details:str(t.details)?t.details:'',
     items:t.items,vals:cleanVals(t),rows:Number.isInteger(t.rows)&&t.rows>0?t.rows:undefined,mode:t.mode==='adv'?'adv':'basic'}));
-  TASTINGS.push(...added); saveTastings();
+  TASTINGS.push(...added); saveTastings(); if(added.length) glowTastings();
   const dup=ok.length-added.length, bad=list.length-ok.length;
   return `Imported ${added.length} tasting${added.length===1?'':'s'}.`+(dup?` ${dup} already here.`:'')+(bad?` ${bad} unreadable, skipped.`:'');
 }
