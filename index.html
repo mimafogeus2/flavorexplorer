@@ -1734,7 +1734,7 @@ function toggleItem(chain){ // chain: nodes from the subject down to the note/ca
   if(chain.length<2) return; // a whole subject isn't a flavor
   const i=sh.items.findIndex(x=>x.k===k);
   if(i>=0){ sh.items.splice(i,1); delete sh.vals[k]; }
-  else sh.items.push({k,label:node.label,color:node.color,cat:!!node.children,chain:chain.map(n=>n.label)});
+  else{ sh.items.push({k,label:node.label,color:node.color,cat:!!node.children,chain:chain.map(n=>n.label)}); glow('#sheetBtn'); }
   sheetSubj=subj; saveSheets(); syncOn(); renderSheet();
   if(i<0&&!document.body.classList.contains('sheet-open')) setDrawer(true);
 }
@@ -1857,8 +1857,8 @@ function renderSheet(){
 // a sheet loaded from (or saved as) a tasting carries `from`; Save then overwrites it
 let TASTINGS=JSON.parse(localStorage.getItem('fx-tastings')||'[]');
 function saveTastings(){ localStorage.setItem('fx-tastings',JSON.stringify(TASTINGS)); }
-// pulse the saved-tastings button when something lands there (not on delete)
-function glowTastings(){ const b=$('#tastBtn'); b.classList.remove('glow'); void b.offsetWidth; b.classList.add('glow'); }
+// pulse a header button when something lands there (not on removal)
+function glow(sel){ const b=$(sel); b.classList.remove('glow'); void b.offsetWidth; b.classList.add('glow'); }
 $('#tastBtn').onclick=()=>{ location.hash='#tastings'; };
 const tastingText=t=>sheetText(t.subj,t,[t.title,`${t.subj} · ${fmtWhen(t.when)}`,...(t.details?['',t.details]:[])]);
 const tastingOf=sh=>sh.from&&TASTINGS.find(t=>t.id===sh.from)||null;
@@ -1887,7 +1887,7 @@ function openSave(subj){
     const rec={subj,title:ti.value.trim(),when:wi.value||nowLocal(),details:de.value,...snap(sh)};
     if(v==='over') Object.assign(t,rec);
     else{ const n={id:newId(),...rec}; TASTINGS.push(n); sh.from=n.id; }
-    saveTastings(); glowTastings(); saveSheets(); renderSheet(); render();
+    saveTastings(); glow('#tastBtn'); saveSheets(); renderSheet(); render();
   };
   dlg.appendChild(f); dlg.showModal(); ti.select();
 }
@@ -1974,7 +1974,7 @@ function importTastings(text){
   const have=new Set(TASTINGS.map(t=>t.id));
   const added=ok.filter(t=>!have.has(t.id)).map(t=>({id:t.id,subj:t.subj,title:t.title,when:t.when,details:str(t.details)?t.details:'',
     items:t.items,vals:cleanVals(t),rows:Number.isInteger(t.rows)&&t.rows>0?t.rows:undefined,mode:t.mode==='adv'?'adv':'basic'}));
-  TASTINGS.push(...added); saveTastings(); if(added.length) glowTastings();
+  TASTINGS.push(...added); saveTastings(); if(added.length) glow('#tastBtn');
   const dup=ok.length-added.length, bad=list.length-ok.length;
   return `Imported ${added.length} tasting${added.length===1?'':'s'}.`+(dup?` ${dup} already here.`:'')+(bad?` ${bad} unreadable, skipped.`:'');
 }
