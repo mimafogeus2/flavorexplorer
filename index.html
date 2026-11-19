@@ -1633,7 +1633,7 @@ function render(){
   const cur=path.at(-1);
   hideRel();
   if(path.length>1&&sheetSubj!==path[1].label){ sheetSubj=path[1].label; saveSheets(); renderSheet(); }
-  renderStrata();
+  renderStrata(); sheetBadge();
   $('#search').hidden=!!TV;
   if(TV){ renderTastings(); return; }
   $('#search').placeholder=path.length>1?`Search ${path[1].label}…`:'Search flavors…';
@@ -1779,12 +1779,14 @@ function tip(target,text){
   target.addEventListener('pointerleave',hideTip); target.addEventListener('blur',hideTip);
 }
 function hideTip(){ $('#tip').hidden=true; }
+// no count on the subject picker or saved tastings: no subject is in focus there
+const sheetBadge=()=>{ $('#sheetBtn .badge').textContent=path.length>1&&sheetSubj?sheetFor(sheetSubj).items.length||'':''; };
 function renderSheet(){
   const box=$('#sheet'); box.innerHTML=''; hideTip();
   const subj=sheetSubj, sh=subj?sheetFor(subj):null, cfg=PROG[subj];
   const adv=!!(sh&&cfg&&sh.mode==='adv');
   document.body.classList.toggle('adv',adv);
-  $('#sheetBtn .badge').textContent=sh?.items.length||'';
+  sheetBadge();
 
   const hd=el('div','shd'), h=el('h2',null,'Tasting sheet');
   if(subj) h.appendChild(el('small',null,subj));
